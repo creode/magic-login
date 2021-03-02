@@ -1,0 +1,26 @@
+{# @var craft \craft\web\twig\variables\CraftVariable #}
+{#
+/**
+ * Magic Login plugin for Craft CMS 3.x
+ *
+ * Magic Login Settings.twig
+ *
+ * @author    Creode
+ * @copyright Copyright (c) 2021 Creode
+ * @link      https://www.creode.co.uk
+ * @package   MagicLogin
+ * @since     1.0.0
+ */
+#}
+
+{% import "_includes/forms" as forms %}
+
+{% do view.registerAssetBundle("creode\\magiclogin\\assetbundles\\magiclogin\\MagicLoginAsset") %}
+
+{{ forms.textField({
+    label: 'Some Field',
+    instructions: 'Enter some setting here.',
+    id: 'someAttribute',
+    name: 'someAttribute',
+    value: settings['someAttribute']})
+}}

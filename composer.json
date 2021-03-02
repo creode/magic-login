@@ -1,0 +1,49 @@
+{
+    "name": "creode/magic-login",
+    "description": "A plugin which sits on top of the existing ",
+    "type": "craft-plugin",
+    "version": "1.0.0",
+    "keywords": [
+        "craft",
+        "cms",
+        "craftcms",
+        "craft-plugin",
+        "magic login"
+    ],
+    "support": {
+        "docs": "https://github.com/creode/magic-login/blob/master/README.md",
+        "issues": "https://github.com/creode/magic-login/issues"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Creode",
+            "homepage": "https://www.creode.co.uk"
+        }
+    ],
+    "require": {
+        "craftcms/cms": "^3.0.0"
+    },
+    "require-dev": {
+      "craftcms/cms": "^3.2.0",
+      "codeception/codeception": "^3.0",
+      "vlucas/phpdotenv": "^3.0"
+    },
+    "autoload": {
+        "psr-4": {
+          "creode\\magiclogin\\": "src/"
+        }
+    },
+    "extra": {
+        "name": "Magic Login",
+        "handle": "magic-login",
+        "developer": "Creode",
+        "developerUrl": "https://www.creode.co.uk",
+        "documentationUrl": "https://github.com/creode/magic-login/blob/master/README.md",
+        "changelogUrl": "https://raw.githubusercontent.com/creode/magic-login/master/CHANGELOG.md",
+        "components": {
+            "magicLoginService": "creode\\magiclogin\\services\\MagicLoginService"
+        },
+        "class": "creode\\magiclogin\\MagicLogin"
+    }
+}
