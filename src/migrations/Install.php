@@ -4,16 +4,14 @@
  *
  * A plugin which sits on top of the existing 
  *
+ * @copyright 2021 Creode
  * @link      https://www.creode.co.uk
- * @copyright Copyright (c) 2021 Creode
  */
 
 namespace creode\magiclogin\migrations;
 
-use creode\magiclogin\MagicLogin;
-
 use Craft;
-use craft\config\DbConfig;
+use craft\db\Connection;
 use craft\db\Migration;
 
 /**
@@ -97,20 +95,26 @@ class Install extends Migration
     {
         $tablesCreated = false;
 
-    // magiclogin_authrecord table
-        $tableSchema = Craft::$app->db->schema->getTableSchema('{{%magiclogin_authrecord}}');
+        // magiclogin_authrecord table
+        $tableSchema = Craft::$app
+            ->db
+            ->schema
+            ->getTableSchema('{{%magiclogin_authrecord}}');
+        
         if ($tableSchema === null) {
             $tablesCreated = true;
             $this->createTable(
                 '{{%magiclogin_authrecord}}',
                 [
                     'id' => $this->primaryKey(),
+                    'userId' => $this->integer()->notNull(),
+                    'publicKey' => $this->string()->notNull(),
+                    'privateKey' => $this->string()->notNull(),
+                    'timestamp' => $this->integer()->notNull(),
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
+                    // 'siteId' => $this->integer()->notNull(), - I don't think this is required right now but may be in future.
                     'uid' => $this->uid(),
-                // Custom columns in the table
-                    'siteId' => $this->integer()->notNull(),
-                    'some_field' => $this->string(255)->notNull()->defaultValue(''),
                 ]
             );
         }
@@ -125,24 +129,20 @@ class Install extends Migration
      */
     protected function createIndexes()
     {
-    // magiclogin_authrecord table
+        // magiclogin_authrecord table
         $this->createIndex(
-            $this->db->getIndexName(
-                '{{%magiclogin_authrecord}}',
-                'some_field',
-                true
-            ),
+            null,
             '{{%magiclogin_authrecord}}',
-            'some_field',
-            true
+            'publicKey',
         );
+
         // Additional commands depending on the db driver
-        switch ($this->driver) {
-            case DbConfig::DRIVER_MYSQL:
-                break;
-            case DbConfig::DRIVER_PGSQL:
-                break;
-        }
+        // switch ($this->driver) {
+        //     case Connection::DRIVER_MYSQL:
+        //         break;
+        //     case Connection::DRIVER_PGSQL:
+        //         break;
+        // }
     }
 
     /**
@@ -152,12 +152,12 @@ class Install extends Migration
      */
     protected function addForeignKeys()
     {
-    // magiclogin_authrecord table
+        // magiclogin_authrecord table
         $this->addForeignKey(
-            $this->db->getForeignKeyName('{{%magiclogin_authrecord}}', 'siteId'),
+            $this->db->getForeignKeyName('{{%magiclogin_authrecord}}', 'userId'),
             '{{%magiclogin_authrecord}}',
-            'siteId',
-            '{{%sites}}',
+            'userId',
+            '{{%users}}',
             'id',
             'CASCADE',
             'CASCADE'
@@ -180,7 +180,7 @@ class Install extends Migration
      */
     protected function removeTables()
     {
-    // magiclogin_authrecord table
+         // magiclogin_authrecord table
         $this->dropTableIfExists('{{%magiclogin_authrecord}}');
     }
 }

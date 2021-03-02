@@ -46,7 +46,7 @@ class MagicLoginController extends Controller
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['index', 'do-something'];
+    protected $allowAnonymous = ['index', 'auth', 'do-something'];
 
     // Public Methods
     // =========================================================================
@@ -54,13 +54,29 @@ class MagicLoginController extends Controller
     /**
      * Handle a request going to our plugin's index action URL,
      * e.g.: actions/magic-login/magic-login
-     *
+     * 
      * @return mixed
      */
     public function actionIndex()
     {
         $result = 'Welcome to the MagicLoginController actionIndex() method';
 
+        return $result;
+    }
+
+    /**
+     * Handle a request going to our plugin's actionDoSomething URL,
+     * e.g.: actions/magic-login/magic-login/auth
+     * 
+     * @param $publicKey Public key associated with the request.
+     * @param $timestamp Timestamp when the request was created.
+     * @param $signature Signature of the keys.
+     *
+     * @return mixed
+     */
+    public function actionAuth($publicKey, $timestamp, $signature)
+    {
+        $result = 'Hi!';
         return $result;
     }
 

@@ -22,7 +22,8 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^3.0.0"
+        "craftcms/cms": "^3.0.0",
+        "ircmaxell/random-lib": "^1.2"
     },
     "require-dev": {
       "craftcms/cms": "^3.2.0",
@@ -42,7 +43,7 @@
         "documentationUrl": "https://github.com/creode/magic-login/blob/master/README.md",
         "changelogUrl": "https://raw.githubusercontent.com/creode/magic-login/master/CHANGELOG.md",
         "components": {
-            "magicLoginService": "creode\\magiclogin\\services\\MagicLoginService"
+            "MagicLoginAuthService": "creode\\magiclogin\\services\\MagicLoginAuthService"
         },
         "class": "creode\\magiclogin\\MagicLogin"
     }

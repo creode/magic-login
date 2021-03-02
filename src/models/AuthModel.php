@@ -4,8 +4,8 @@
  *
  * A plugin which sits on top of the existing 
  *
+ * @copyright 2021 Creode
  * @link      https://www.creode.co.uk
- * @copyright Copyright (c) 2021 Creode
  */
 
 namespace creode\magiclogin\models;
@@ -23,9 +23,9 @@ use craft\base\Model;
  *
  * https://craftcms.com/docs/plugins/models
  *
- * @author    Creode
- * @package   MagicLogin
- * @since     1.0.0
+ * @package MagicLogin
+ * @author  Creode <contact@creode.co.uk>
+ * @since   1.0.0
  */
 class AuthModel extends Model
 {
@@ -33,11 +33,32 @@ class AuthModel extends Model
     // =========================================================================
 
     /**
-     * Some model attribute
+     * ID of the user to authenticate.
      *
      * @var string
      */
-    public $someAttribute = 'Some Default';
+    public $userId;
+
+    /**
+     * Public Key used in Authorisation.
+     *
+     * @var string
+     */
+    public $publicKey;
+
+    /**
+     * Private Key used in Authorisation.
+     *
+     * @var string
+     */
+    public $privateKey;
+
+    /**
+     * Timestamp used to determine if the link is still valid.
+     *
+     * @var int
+     */
+    public $timestamp;
 
     // Public Methods
     // =========================================================================
@@ -54,9 +75,10 @@ class AuthModel extends Model
      */
     public function rules()
     {
-        return [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
-        ];
+        $rules = parent::rules();
+        $rules[] = ['publicKey', 'privateKey', 'string'];
+        $rules[] = ['timestamp', 'number'];
+        
+        return $rules;
     }
 }

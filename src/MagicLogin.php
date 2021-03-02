@@ -10,7 +10,7 @@
 
 namespace creode\magiclogin;
 
-use creode\magiclogin\services\MagicLoginService as MagicLoginServiceService;
+use creode\magiclogin\services\MagicLoginAuthService as MagicLoginAuthService;
 use creode\magiclogin\models\Settings;
 
 use Craft;
@@ -36,7 +36,7 @@ use yii\base\Event;
  * @package   MagicLogin
  * @since     1.0.0
  *
- * @property  MagicLoginServiceService $magicLoginService
+ * @property  MagicLoginAuthService $MagicLoginAuthService
  * @property  Settings $settings
  * @method    Settings getSettings()
  */
@@ -102,6 +102,7 @@ class MagicLogin extends Plugin
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['siteActionTrigger1'] = 'magic-login/magic-login';
+                $event->rules['magic-login/auth/<publicKey:\w+>/<timestamp:\d+>/<signature:\w+>'] = 'magic-login/magic-login/auth';
             }
         );
 
