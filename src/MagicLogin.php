@@ -36,7 +36,8 @@ use yii\base\Event;
  * @package   MagicLogin
  * @since     1.0.0
  *
- * @property  MagicLoginAuthService $MagicLoginAuthService
+ * @property  MagicLoginAuthService $magicLoginAuthService
+ * @property  MagicLoginRandomGeneratorService $magicLoginRandomGeneratorService
  * @property  Settings $settings
  * @method    Settings getSettings()
  */
@@ -96,6 +97,12 @@ class MagicLogin extends Plugin
         parent::init();
         self::$plugin = $this;
 
+        $this->setComponents(
+            [
+                'magicLoginRandomGeneratorService' => MagicLoginRandomGeneratorService::class,
+                'magicLoginAuthService' => MagicLoginAuthService::class,
+            ]
+        );
         // Register our site routes
         Event::on(
             UrlManager::class,

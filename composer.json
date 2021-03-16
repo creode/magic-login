@@ -22,11 +22,14 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^3.0.0",
-        "ircmaxell/random-lib": "^1.2"
+        "craftcms/cms": "^3.5.0",
+        "paragonie/random-lib": "^2.0"
+    },
+    "replace": {
+        "paragonie/random_compat": ">=1"
     },
     "require-dev": {
-      "craftcms/cms": "^3.2.0",
+      "craftcms/cms": "^3.5.0",
       "codeception/codeception": "^3.0",
       "vlucas/phpdotenv": "^3.0"
     },
@@ -43,7 +46,8 @@
         "documentationUrl": "https://github.com/creode/magic-login/blob/master/README.md",
         "changelogUrl": "https://raw.githubusercontent.com/creode/magic-login/master/CHANGELOG.md",
         "components": {
-            "MagicLoginAuthService": "creode\\magiclogin\\services\\MagicLoginAuthService"
+            "MagicLoginAuthService": "creode\\magiclogin\\services\\MagicLoginAuthService",
+            "MagicLoginRandomGeneratorService": "creode\\magiclogin\\services\\MagicLoginRandomGeneratorService"
         },
         "class": "creode\\magiclogin\\MagicLogin"
     }

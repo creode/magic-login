@@ -73,11 +73,18 @@ class MagicLoginAuthService extends Component
             return false;
         }
 
-        // Create random tokens
-        $factory = new RandomLibFactory();
-        $generator = $factory->getHighStrengthGenerator();
-        $publicKey = $generator->generateString(64, 'abcdefghjkmnpqrstuvwxyz23456789');
-        $privateKey = $generator->generateString(128, 'abcdefghjkmnpqrstuvwxyz23456789');
+        $generator = MagicLogin::$plugin
+            ->magicLoginRandomGeneratorService
+            ->getHighStrengthGenerator();
+
+        $publicKey = $generator->generateString(
+            64,
+            'abcdefghjkmnpqrstuvwxyz23456789'
+        );
+        $privateKey = $generator->generateString(
+            128,
+            'abcdefghjkmnpqrstuvwxyz23456789'
+        );
 
         // Populate Record
         $record = new AuthRecord();
