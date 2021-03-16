@@ -14,6 +14,7 @@ use creode\magiclogin\MagicLogin;
 
 use Craft;
 use craft\base\Model;
+use craft\validators\DateTimeValidator;
 
 /**
  * AuthModel Model
@@ -76,8 +77,9 @@ class AuthModel extends Model
     public function rules()
     {
         $rules = parent::rules();
-        $rules[] = ['publicKey', 'privateKey', 'string'];
-        $rules[] = ['timestamp', 'number'];
+        $rules[] = [['publicKey', 'privateKey'], 'string'];
+        $rules[] = [['userId'], 'number'];
+        $rules[] = [['expiryDate'], DateTimeValidator::class];
         
         return $rules;
     }

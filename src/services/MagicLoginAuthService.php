@@ -88,13 +88,14 @@ class MagicLoginAuthService extends Component
 
         // Populate Record
         $record = new AuthRecord();
-        $timestamp = time();
+        $expiryDate = new \DateTime;
         $record->userId = $user->id;
         $record->publicKey = $publicKey;
         $record->privateKey = $privateKey;
-        $record->timestamp = $timestamp;
+        $record->expiryDate = $expiryDate;
         $record->save();
 
+        $timestamp = $expiryDate->getTimestamp();
         $signature = $this->generateSignature($privateKey, $publicKey, $timestamp);
         $magicLogin = Craft::$app->getSiteUrl() . "magic-login/auth/$publicKey/$timestamp/$signature";
 
