@@ -14,12 +14,15 @@ use creode\magiclogin\services\MagicLoginAuthService as MagicLoginAuthService;
 use creode\magiclogin\models\Settings;
 
 use Craft;
+use craft\web\View;
+
+use yii\base\Event;
 use craft\base\Plugin;
 use craft\services\Plugins;
 use craft\events\PluginEvent;
 use craft\web\UrlManager;
 use craft\events\RegisterUrlRulesEvent;
-
+use craft\events\RegisterTemplateRootsEvent;
 use yii\base\Event;
 
 /**

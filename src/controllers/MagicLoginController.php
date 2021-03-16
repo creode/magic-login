@@ -42,24 +42,34 @@ class MagicLoginController extends Controller
     // =========================================================================
 
     /**
+     * Allow the following routes to be anonymous.
+     * 
      * @var    bool|array Allows anonymous access to this controller's actions.
      *         The actions must be in 'kebab-case'
      * @access protected
      */
-    protected $allowAnonymous = ['index', 'auth', 'do-something'];
+    protected $allowAnonymous = [
+        'login',
+        'login-form',
+        'register',
+        'register-form',
+        'auth'
+    ];
 
     // Public Methods
     // =========================================================================
 
     /**
-     * Handle a request going to our plugin's index action URL,
-     * e.g.: actions/magic-login/magic-login
-     * 
-     * @return mixed
+     * Render the login form.
+     *
+     * @return string
      */
-    public function actionIndex()
+    public function actionLoginForm()
     {
-        $result = 'Welcome to the MagicLoginController actionIndex() method';
+        // TODO: If already logged in maybe redirect somewhere?
+
+        return \Craft::$app->view->renderTemplate('magic-login/login-form');
+    }
 
         return $result;
     }
