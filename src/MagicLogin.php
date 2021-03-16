@@ -10,20 +10,19 @@
 
 namespace creode\magiclogin;
 
-use creode\magiclogin\services\MagicLoginAuthService as MagicLoginAuthService;
-use creode\magiclogin\models\Settings;
-
 use Craft;
 use craft\web\View;
 
 use yii\base\Event;
 use craft\base\Plugin;
+use craft\web\UrlManager;
 use craft\services\Plugins;
 use craft\events\PluginEvent;
-use craft\web\UrlManager;
+use creode\magiclogin\models\Settings;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterTemplateRootsEvent;
-use yii\base\Event;
+use creode\magiclogin\services\MagicLoginAuthService;
+use creode\magiclogin\services\MagicLoginRandomGeneratorService;
 
 /**
  * Craft plugins are very much like little applications in and of themselves. We’ve made
@@ -93,7 +92,6 @@ class MagicLogin extends Plugin
      *
      * If you have a '/vendor/autoload.php' file, it will be loaded for you automatically;
      * you do not need to load it in your init() method.
-     *
      */
     public function init()
     {
@@ -106,13 +104,26 @@ class MagicLogin extends Plugin
                 'magicLoginAuthService' => MagicLoginAuthService::class,
             ]
         );
+
+        Event::on(
+            View::class,
+            View::EVENT_REGISTER_SITE_TEMPLATE_ROOTS,
+            function (RegisterTemplateRootsEvent $event) {
+                $event->roots['magic-login'] = __DIR__ . '/templates/magic-login';
+            }
+        );
+
+        // TODO: Setup a new "Magic Login" User group.
+
+        // TODO: Disable forgotten password / regular password login for users with Magic Link Group.
+
         // Register our site routes
         Event::on(
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['siteActionTrigger1'] = 'magic-login/magic-login';
                 $event->rules['magic-login/auth/<publicKey:\w+>/<timestamp:\d+>/<signature:\w+>'] = 'magic-login/magic-login/auth';
+                $event->rules['magic-login/login'] = 'magic-login/magic-login/login-form';
             }
         );
 
@@ -121,7 +132,7 @@ class MagicLogin extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_CP_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['cpActionTrigger1'] = 'magic-login/magic-login/do-something';
+                // $event->rules['cpActionTrigger1'] = 'magic-login/magic-login/do-something';
             }
         );
 
@@ -136,24 +147,24 @@ class MagicLogin extends Plugin
             }
         );
 
-/**
- * Logging in Craft involves using one of the following methods:
- *
- * Craft::trace(): record a message to trace how a piece of code runs. This is mainly for development use.
- * Craft::info(): record a message that conveys some useful information.
- * Craft::warning(): record a warning message that indicates something unexpected has happened.
- * Craft::error(): record a fatal error that should be investigated as soon as possible.
- *
- * Unless `devMode` is on, only Craft::warning() & Craft::error() will log to `craft/storage/logs/web.log`
- *
- * It's recommended that you pass in the magic constant `__METHOD__` as the second parameter, which sets
- * the category to the method (prefixed with the fully qualified class name) where the constant appears.
- *
- * To enable the Yii debug toolbar, go to your user account in the AdminCP and check the
- * [] Show the debug toolbar on the front end & [] Show the debug toolbar on the Control Panel
- *
- * http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html
- */
+        /**
+         * Logging in Craft involves using one of the following methods:
+         *
+         * Craft::trace(): record a message to trace how a piece of code runs. This is mainly for development use.
+         * Craft::info(): record a message that conveys some useful information.
+         * Craft::warning(): record a warning message that indicates something unexpected has happened.
+         * Craft::error(): record a fatal error that should be investigated as soon as possible.
+         *
+         * Unless `devMode` is on, only Craft::warning() & Craft::error() will log to `craft/storage/logs/web.log`
+         *
+         * It's recommended that you pass in the magic constant `__METHOD__` as the second parameter, which sets
+         * the category to the method (prefixed with the fully qualified class name) where the constant appears.
+         *
+         * To enable the Yii debug toolbar, go to your user account in the AdminCP and check the
+         * [] Show the debug toolbar on the front end & [] Show the debug toolbar on the Control Panel
+         *
+         * http://www.yiiframework.com/doc-2.0/guide-runtime-logging.html
+         */
         Craft::info(
             Craft::t(
                 'magic-login',

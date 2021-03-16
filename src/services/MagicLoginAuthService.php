@@ -12,9 +12,9 @@ namespace creode\magiclogin\services;
 
 use Craft;
 
-use RandomLib\Factory as RandomLibFactory;
 use craft\base\Component;
 use creode\magiclogin\MagicLogin;
+use creode\magiclogin\models\AuthModel;
 use creode\magiclogin\records\AuthRecord;
 
 /**
@@ -36,35 +36,15 @@ class MagicLoginAuthService extends Component
     // =========================================================================
 
     /**
-     * This function can literally be anything you want, and you can have as many service
-     * functions as you want
-     *
-     * From any other plugin file, call it like this:
-     *
-     *     MagicLogin::$plugin->MagicLoginAuthService->exampleService()
-     *
-     * @return mixed
-     */
-    public function exampleService()
-    {
-        $result = 'something';
-        // Check our Plugin's settings for `someAttribute`
-        if (MagicLogin::$plugin->getSettings()->someAttribute) {
-        }
-
-        return $result;
-    }
-
-    /**
      * Accepts in the username or email of a user
      * and generates a magic login link for them.
      *
      * @param string $userNameOrEmail of user to create link for.
      * 
-     * @return string
-     *  The login url that the user can click on.
+     * @return string|bool
+     *  The login url that the user can click on, false if user cannot be found.
      */
-    public function createMagicLogin($userNameOrEmail)
+    public function createMagicLogin(string $userNameOrEmail)
     {
         // Look up user
         $user = Craft::$app->users->getUserByUsernameOrEmail($userNameOrEmail);
@@ -97,9 +77,36 @@ class MagicLoginAuthService extends Component
 
         $timestamp = $expiryDate->getTimestamp();
         $signature = $this->generateSignature($privateKey, $publicKey, $timestamp);
-        $magicLogin = Craft::$app->getSiteUrl() . "magic-login/auth/$publicKey/$timestamp/$signature";
 
-        return $magicLogin;
+        $baseUrl = Craft::$app->getRequest()->getHostInfo();
+
+        return $baseUrl . "/magic-login/auth/$publicKey/$timestamp/$signature";
+
+        // TODO: Craft::$app->getUsers()->activateUser($user); - Activate the user if they aren't already.
+    }
+
+    /**
+     * Takes in someones username or email address and registers
+     * them as a craft user.
+     *
+     * @param string $userNameOrEmail Username or email address 
+     * @return void
+     */
+    public function registerMagicLinkUser(string $email)
+    {
+        // Look up user
+        $user = Craft::$app->users->getUserByUsernameOrEmail($email);
+
+        // User already exists so we can't register them. Create a link instead.
+        if ($user != null) {
+            return $this->createMagicLogin($email);
+        }
+
+        // TODO: Attach random password to user.
+
+        // TODO: Follow user registration flow.
+
+        // TODO: Send out magic link?
     }
 
     /**
@@ -112,7 +119,7 @@ class MagicLoginAuthService extends Component
      * @return string
      *  The Signature of the public key, private key and timestamp.
      */
-    public function generateSignature($privateKey, $publicKey, $timestamp)
+    public function generateSignature($privateKey, $publicKey, $timestamp) : string
     {
         $stringToHash = implode('-', array($publicKey, $timestamp));
         $signature = hash_hmac('sha1', $stringToHash, $privateKey);
@@ -124,10 +131,20 @@ class MagicLoginAuthService extends Component
      * Uses the public key to lookup the authorisation record in the database.
      *
      * @param string $publicKey
-     * @return \creode\magiclogin\records\AuthRecord
+     * @return \creode\magiclogin\models\AuthModel
      */
-    public function getAuthorisationRecord($publicKey) 
+    public function getAuthorisationRecord($publicKey) : AuthModel
     {
+        $model = new AuthModel();
         $record = AuthRecord::findOne(['publicKey' => $publicKey]);
+
+        if ($record) {
+            $attributes = $record->getAttributes();
+
+            // We do this to make a static model with only public parameters exposed.
+            $model->setAttributes($attributes, false);
+        }
+
+        return $model;
     }
 }
