@@ -122,6 +122,7 @@ class MagicLoginController extends Controller
         $this->requirePostRequest();
 
         $userSession = Craft::$app->getUser();
+        $userSettings = Craft::$app->getProjectConfig()->get('users') ?? [];
         $currentUser = $userSession->getIdentity();
         $generalConfig = Craft::$app->getConfig()->getGeneral();
 

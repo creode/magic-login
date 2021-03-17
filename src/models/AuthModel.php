@@ -59,7 +59,7 @@ class AuthModel extends Model
      *
      * @var int
      */
-    public $timestamp;
+    public $expriyDate;
 
     // Public Methods
     // =========================================================================
