@@ -6,7 +6,7 @@ A plugin which sits on top of the existing
 
 ## Requirements
 
-This plugin requires Craft CMS 3.0.0-beta.23 or later.
+This plugin requires Craft CMS 3.5.0 or later.
 
 ## Installation
 
@@ -33,6 +33,16 @@ To install the plugin, follow these instructions.
 ## Using Magic Login
 
 -Insert text here-
+
+## Running Magic Login Test Suite ##
+
+From the root of this plugin ensure to install the dependencies using composer:
+
+`composer install`
+
+From there you can access the codecept executable with the following:
+
+`php vendor/bin/codecept run`
 
 ## Magic Login Roadmap
 
