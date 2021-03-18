@@ -4,20 +4,19 @@
  *
  * A plugin which sits on top of the existing 
  *
+ * @copyright 2021 Creode
  * @link      https://www.creode.co.uk
- * @copyright Copyright (c) 2021 Creode
  */
 
 namespace creode\magiclogin\controllers;
 
 use Craft;
-
+use craft\controllers\UsersController;
 use craft\web\View;
 use craft\elements\User;
 use craft\web\Controller;
 use creode\magiclogin\MagicLogin;
 use yii\web\ForbiddenHttpException;
-use RandomLib\Factory as RandomLibFactory;
 
 /**
  * MagicLogin Controller
@@ -57,12 +56,12 @@ class MagicLoginController extends Controller
         'login-form',
         'register',
         'register-form',
-        'auth'
+        'auth',
     ];
 
     // Public Methods
     // =========================================================================
-
+    
     /**
      * Render the login form.
      *
@@ -72,7 +71,7 @@ class MagicLoginController extends Controller
     {
         // TODO: If already logged in maybe redirect somewhere?
 
-        return \Craft::$app->view->renderTemplate('magic-login/login-form');
+        return \Craft::$app->view->renderTemplate('magic-login/_login-form');
     }
 
     /**
@@ -107,78 +106,13 @@ class MagicLoginController extends Controller
      */
     public function actionRegisterForm()
     {
-        // TODO: If already logged in maybe redirect somewhere?
-
-        return \Craft::$app->view->renderTemplate('magic-login/login-form');
-    }
-
-    /**
-     * Triggers the rendering.
-     *
-     * @return void
-     */
-    public function actionRegister()
-    {
-        $this->requirePostRequest();
-
+        // TODO: Use config variable for user logged in?
         $userSession = Craft::$app->getUser();
-        $userSettings = Craft::$app->getProjectConfig()->get('users') ?? [];
-        $currentUser = $userSession->getIdentity();
-        $generalConfig = Craft::$app->getConfig()->getGeneral();
-
-        if ($currentUser) {
-            // TODO: What should I do if we are already logged in.
-            throw new \Exception('Already logged in...');
+        if ($userSession->getIdentity()) {
+            $this->redirect('user');
         }
 
-        $email = Craft::$app
-            ->getRequest()
-            ->getRequiredParam('email');
-
-        // Check public registration is allowed within Craft.
-        $allowPublicRegistration = $userSettings['allowPublicRegistration'] ?? false;
-        if (!$allowPublicRegistration) {
-            throw new ForbiddenHttpException('Public registration is not allowed');
-        }
-
-        // TODO: Check user doesn't already exist.
-
-        // Setup the new user.
-        $user = new User();
-        $user->suspended = true;
-        $user->pending = true;
-        $user->email = $email;
-
-        // If the user should be suspended by default then allow them to be.
-        if ($userSettings['suspendByDefault'] ?? false) {
-            $user->suspended = true;
-        }
-
-        // If we have a username body param then use it. If not use email.
-        $user->username = $this->request->getBodyParam(
-            'username',
-            ($user->username ?: $user->email)
-        );
-        
-        $generator = MagicLogin::$plugin
-            ->magicLoginRandomGeneratorService
-            ->getHighStrengthGenerator();
-
-        // TODO: Make the length configurable via options.
-        $user->password = $generator->generateString(16);
-
-        // Manually validate the user so we can pass $clearErrors=false
-        // TODO: Improve error handling here.
-        if (!$user->validate(null, false)
-            || !Craft::$app->getElements()->saveElement($user, false)
-        ) {
-            Craft::info('User not saved due to validation error.', __METHOD__);
-        }
-
-        // Assign them to the default user group.
-        Craft::$app->getUsers()->assignUserToDefaultGroup($user);
-        
-        // TODO: Assign them to the Magic Login group.
+        return \Craft::$app->view->renderTemplate('magic-login/_register-form');
     }
 
     /**

@@ -122,8 +122,9 @@ class MagicLogin extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['magic-login/auth/<publicKey:\w+>/<timestamp:\d+>/<signature:\w+>'] = 'magic-login/magic-login/auth';
                 $event->rules['magic-login/login'] = 'magic-login/magic-login/login-form';
+                $event->rules['magic-login/register'] = 'magic-login/magic-login/register-form';
+                $event->rules['magic-login/auth/<publicKey:\w+>/<timestamp:\d+>/<signature:\w+>'] = 'magic-login/magic-login/auth';
             }
         );
 

@@ -22,4 +22,5 @@
  */
 return [
     'Magic Login plugin loaded' => 'Magic Login plugin loaded',
+    'Please enter a valid email address.' => 'Please enter a valid email address.',
 ];
