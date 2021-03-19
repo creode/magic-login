@@ -1,9 +1,3 @@
-{% macro errorList(errors) %}
-  {% if errors %}
-    {{ ul(errors, {class: 'errors'}) }}
-  {% endif %}
-{% endmacro %}
-
 {% if craft.app.session.hasFlash('notice') %}
     <p class="message notice">{{ craft.app.session.getFlash('notice') }}</p>
 {% elseif craft.app.session.hasFlash('error') %}
@@ -15,15 +9,8 @@
     {{ csrfInput() }}
     {{ redirectInput('user') }}
 
-    {# {{ dump() }} #}
-
-     {% if user is defined %}
-      {{ _self.errorList(user.getErrors('email')) }}
-    {% endif %}
-
     <label for="email-or-username">Email or Username</label>
     <input id="email-or-username" name="email" value="" placeholder="Enter a valid username..." />
-    <p>My login form</p>
 
     <button type="submit">Submit</button>
 </form>
