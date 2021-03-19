@@ -4,8 +4,8 @@
  *
  * A plugin which sits on top of the existing 
  *
+ * @copyright 2021 Creode
  * @link      https://www.creode.co.uk
- * @copyright Copyright (c) 2021 Creode
  */
 
 namespace creode\magiclogin;
