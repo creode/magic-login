@@ -33,7 +33,9 @@ class PluginInitialisationTest extends Unit
     protected $tester;
 
     /**
-     *
+     * Ensure that the plugin is of the correct type.
+     * 
+     * @return void
      */
     public function testPluginInstance()
     {
@@ -44,7 +46,10 @@ class PluginInitialisationTest extends Unit
     }
 
     /**
-     *
+     * Ensure we are using Pro version of Craft since this the users
+     * features require it.
+     * 
+     * @return void
      */
     public function testCraftEdition()
     {
