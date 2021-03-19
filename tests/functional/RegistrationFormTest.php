@@ -94,4 +94,24 @@ class RegistrationFormTest extends Unit
         // TODO: This is likely going to editable in future.
         $this->tester->canSee('Please enter a valid email address.');
     }
+
+    /**
+     * Tests that when a validation error happens on registration
+     * a user is not created.
+     *
+     * @return void
+     */
+    public function testWhenRegistrationErrorOccursUserIsNotCreated()
+    {
+        $userCount = count(User::find()->all());
+
+        $this->tester->amOnPage('/magic-login/register');
+        $this->tester->submitForm(
+            '#register',
+            [],
+            'submitButton'
+        );
+
+        $this->assertEquals($userCount, count(User::find()->all()));
+    }
 }
