@@ -52,7 +52,7 @@ class RegistrationFormTest extends Unit
         // Test that we can see the registration form.
         $this->tester->amOnPage('/magic-login/register');
         $this->tester->seeResponseCodeIs(200);
-        $this->tester->canSee('email');
+        $this->tester->canSeeInSource('<input id="email" name="email"');
     }
 
     /**
