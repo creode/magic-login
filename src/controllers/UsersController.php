@@ -32,9 +32,9 @@ class UsersController extends CraftUsersController
      */
     public function actionSaveUser()
     {
-        // Require email.
         $this->requirePostRequest();
         
+        // Require email.
         $email = $this->request->getRequiredBodyParam('email');
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             // TODO: Set this to be configurable.
@@ -62,6 +62,19 @@ class UsersController extends CraftUsersController
             )
         );
 
-        return parent::actionSaveUser();
+        // If saving didn't work then redirect back since it
+        // should have set a flash error message.
+        $saveAction = parent::actionSaveUser();
+        if ($saveAction === null) {
+            return $saveAction;
+        }
+
+        // TODO: Find the user by provided email address.
+        
+        // TODO: Once I have the user add the Magic Login Group to them.
+
+        // TODO: Trigger event here with the user to allow you to add extra functionality providing the user.
+
+        return $saveAction;
     }
 }
