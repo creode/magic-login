@@ -8,7 +8,7 @@ use FunctionalTester;
 use \Codeception\Test\Unit;
 
 /**
- * Undocumented class
+ * Tests the functionality behind the custom registration form.
  */
 class RegistrationFormTest extends Unit
 {
@@ -44,6 +44,8 @@ class RegistrationFormTest extends Unit
 
     /**
      * Test to demonstrate the registration form for Magic Links can be returned.
+     * 
+     * @return void
      */
     public function testRegistrationFormGet()
     {
@@ -53,6 +55,12 @@ class RegistrationFormTest extends Unit
         $this->tester->canSee('email');
     }
 
+    /**
+     * Tests that with the correct parameters, users can register
+     * for an account with a magic link.
+     *
+     * @return void
+     */
     public function testUserCanRegister()
     {
         $this->tester->amOnPage('/magic-login/register');
@@ -68,6 +76,12 @@ class RegistrationFormTest extends Unit
         $this->tester->canSeeRecord(User::class, ['email' => 'test@example.com']);
     }
 
+    /**
+     * Tests that if we don't supply a valid email address
+     * a form error will be displayed back to the user.
+     *
+     * @return void
+     */
     public function testErrorsDisplayedOnForm()
     {
         $this->tester->amOnPage('/magic-login/register');
@@ -77,6 +91,7 @@ class RegistrationFormTest extends Unit
             'submitButton'
         );
 
+        // TODO: This is likely going to editable in future.
         $this->tester->canSee('Please enter a valid email address.');
     }
 }

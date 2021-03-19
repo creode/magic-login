@@ -34,6 +34,10 @@ To install the plugin, follow these instructions.
 
 -Insert text here-
 
+## Overwriting magic login templates
+
+-Insert text here-
+
 ## Running Magic Login Test Suite ##
 
 From the root of this plugin ensure to install the dependencies using composer:

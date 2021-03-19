@@ -34,14 +34,14 @@ use creode\magiclogin\services\MagicLoginRandomGeneratorService;
  *
  * https://docs.craftcms.com/v3/extend/
  *
- * @author    Creode
- * @package   MagicLogin
- * @since     1.0.0
+ * @package MagicLogin
+ * @author  Creode
+ * @since   1.0.0
  *
- * @property  MagicLoginAuthService $magicLoginAuthService
- * @property  MagicLoginRandomGeneratorService $magicLoginRandomGeneratorService
- * @property  Settings $settings
- * @method    Settings getSettings()
+ * @property MagicLoginAuthService $magicLoginAuthService
+ * @property MagicLoginRandomGeneratorService $magicLoginRandomGeneratorService
+ * @property Settings $settings
+ * @method   Settings getSettings()
  */
 class MagicLogin extends Plugin
 {
