@@ -27,7 +27,9 @@ modules:
     \craft\test\Craft:
       configFile: 'tests/_craft/config/test.php'
       entryUrl: 'https://test.craftcms.test/index.php'
-      projectConfig: {}
+      projectConfig: {
+        folder: 'test-config/project'
+      }
       migrations: []
       plugins:
         magic-login:

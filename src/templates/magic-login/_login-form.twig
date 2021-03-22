@@ -1,0 +1,10 @@
+<form method="post">
+    {{ actionInput('magic-login/magic-login/login') }}
+    {{ csrfInput() }}
+
+    <label for="email-or-username">Email or Username</label>
+    <input id="email-or-username" name="emailOrUsername" value="" placeholder="Enter a valid username..." />
+    <p>My login form</p>
+
+    <button type="submit" name="submit">Submit</button>
+</form>

@@ -1,0 +1,16 @@
+{% if craft.app.session.hasFlash('notice') %}
+    <p class="message notice">{{ craft.app.session.getFlash('notice') }}</p>
+{% elseif craft.app.session.hasFlash('error') %}
+    <p class="message error">{{ craft.app.session.getFlash('error') }}</p>
+{% endif %}
+
+<form method="post" id="register">
+    {{ actionInput('magic-login/users/save-user') }}
+    {{ csrfInput() }}
+    {{ redirectInput('user') }}
+
+    <label for="email">Email</label>
+    <input id="email" name="email" value="" placeholder="Enter a valid email..." />
+
+    <button type="submit">Submit</button>
+</form>

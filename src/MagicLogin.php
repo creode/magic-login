@@ -4,8 +4,8 @@
  *
  * A plugin which sits on top of the existing 
  *
+ * @copyright 2021 Creode
  * @link      https://www.creode.co.uk
- * @copyright Copyright (c) 2021 Creode
  */
 
 namespace creode\magiclogin;
@@ -34,14 +34,14 @@ use creode\magiclogin\services\MagicLoginRandomGeneratorService;
  *
  * https://docs.craftcms.com/v3/extend/
  *
- * @author    Creode
- * @package   MagicLogin
- * @since     1.0.0
+ * @package MagicLogin
+ * @author  Creode
+ * @since   1.0.0
  *
- * @property  MagicLoginAuthService $magicLoginAuthService
- * @property  MagicLoginRandomGeneratorService $magicLoginRandomGeneratorService
- * @property  Settings $settings
- * @method    Settings getSettings()
+ * @property MagicLoginAuthService $magicLoginAuthService
+ * @property MagicLoginRandomGeneratorService $magicLoginRandomGeneratorService
+ * @property Settings $settings
+ * @method   Settings getSettings()
  */
 class MagicLogin extends Plugin
 {
@@ -122,8 +122,9 @@ class MagicLogin extends Plugin
             UrlManager::class,
             UrlManager::EVENT_REGISTER_SITE_URL_RULES,
             function (RegisterUrlRulesEvent $event) {
-                $event->rules['magic-login/auth/<publicKey:\w+>/<timestamp:\d+>/<signature:\w+>'] = 'magic-login/magic-login/auth';
                 $event->rules['magic-login/login'] = 'magic-login/magic-login/login-form';
+                $event->rules['magic-login/register'] = 'magic-login/magic-login/register-form';
+                $event->rules['magic-login/auth/<publicKey:\w+>/<timestamp:\d+>/<signature:\w+>'] = 'magic-login/magic-login/auth';
             }
         );
 
