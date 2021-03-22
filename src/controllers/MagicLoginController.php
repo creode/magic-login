@@ -69,7 +69,11 @@ class MagicLoginController extends Controller
      */
     public function actionLoginForm()
     {
-        // TODO: If already logged in maybe redirect somewhere?
+        $userSession = Craft::$app->getUser();
+        if ($userSession->getIdentity()) {
+            $generalConfig = Craft::$app->getConfig()->getGeneral();
+            $this->redirect($generalConfig->postLoginRedirect);
+        }
 
         return \Craft::$app->view->renderTemplate('magic-login/_login-form');
     }
@@ -109,7 +113,8 @@ class MagicLoginController extends Controller
         // TODO: Use config variable for user logged in?
         $userSession = Craft::$app->getUser();
         if ($userSession->getIdentity()) {
-            $this->redirect('user');
+            $generalConfig = Craft::$app->getConfig()->getGeneral();
+            $this->redirect($generalConfig->postLoginRedirect);
         }
 
         return \Craft::$app->view->renderTemplate('magic-login/_register-form');
