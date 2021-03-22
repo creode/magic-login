@@ -18,9 +18,11 @@
 {% do view.registerAssetBundle("creode\\magiclogin\\assetbundles\\magiclogin\\MagicLoginAsset") %}
 
 {{ forms.textField({
-    label: 'Some Field',
-    instructions: 'Enter some setting here.',
-    id: 'someAttribute',
-    name: 'someAttribute',
-    value: settings['someAttribute']})
+    first: true,
+    label: 'Link Expiry',
+    instructions: 'How long (in minutes) until a Magic Link expires.',
+    id: 'linkExpiry',
+    name: 'linkExpiry',
+    min: 1,
+    value: settings['linkExpiry']})
 }}

@@ -37,9 +37,9 @@ class Settings extends Model
     /**
      * Some field model attribute
      *
-     * @var string
+     * @var int
      */
-    public $someAttribute = 'Some Default';
+    public $linkExpiry = 15;
 
     // Public Methods
     // =========================================================================
@@ -57,8 +57,7 @@ class Settings extends Model
     public function rules()
     {
         return [
-            ['someAttribute', 'string'],
-            ['someAttribute', 'default', 'value' => 'Some Default'],
+            ['linkExpiry', 'number'],
         ];
     }
 }

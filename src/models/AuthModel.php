@@ -55,11 +55,16 @@ class AuthModel extends Model
     public $privateKey;
 
     /**
-     * Timestamp used to determine if the link is still valid.
-     *
-     * @var int
+     * Redirection url when logged in.
      */
-    public $expriyDate;
+    public $redirectUrl;
+
+    /**
+     * Creation date of the record.
+     *
+     * @var string
+     */
+    public $dateCreated;
 
     // Public Methods
     // =========================================================================
@@ -77,9 +82,9 @@ class AuthModel extends Model
     public function rules()
     {
         $rules = parent::rules();
-        $rules[] = [['publicKey', 'privateKey'], 'string'];
+        $rules[] = [['publicKey', 'privateKey', 'redirectUrl'], 'string'];
         $rules[] = [['userId'], 'number'];
-        $rules[] = [['expiryDate'], DateTimeValidator::class];
+        $rules[] = [['dateCreated'], DateTimeValidator::class];
         
         return $rules;
     }

@@ -16,6 +16,7 @@ use craft\web\View;
 use craft\elements\User;
 use craft\web\Controller;
 use creode\magiclogin\MagicLogin;
+use DateTime;
 use yii\web\ForbiddenHttpException;
 
 /**
@@ -87,20 +88,40 @@ class MagicLoginController extends Controller
     {
         $this->requirePostRequest();
 
-        $emailOrUsername = Craft::$app
+        $email = Craft::$app
             ->getRequest()
-            ->getRequiredParam('emailOrUsername');
+            ->getRequiredParam('email');
     
-        $result = MagicLogin::$plugin
+        $link = MagicLogin::$plugin
             ->magicLoginAuthService
-            ->createMagicLogin($emailOrUsername);
+            ->createMagicLogin($email);
 
-        if (!$result) {
+        if (!$link) {
             // TODO: Trigger some kind of error or say if email exists then email has 
             // been sent (this is based on configuration).
         }
 
-        return $result;
+        $template_variables = [
+            'loginLink' => $link,
+        ];
+        $emailHtml = Craft::$app->getView()->renderTemplate(
+            'magic-login/emails/_login',
+            $template_variables
+        );
+
+        // TODO: Make this configurable.
+        $subject = '[' . Craft::$app->getRequest()->getHostInfo() . '] Login Link';
+
+        // Send an email out to the user.
+        Craft::$app
+            ->getMailer()
+            ->compose()
+            ->setTo($email)
+            ->setSubject($subject)
+            ->setHtmlBody($emailHtml)
+            ->send();
+
+        return $this->renderTemplate('magic-login/_login-link_sent');
     }
 
     /**
@@ -110,7 +131,6 @@ class MagicLoginController extends Controller
      */
     public function actionRegisterForm()
     {
-        // TODO: Use config variable for user logged in?
         $userSession = Craft::$app->getUser();
         if ($userSession->getIdentity()) {
             $generalConfig = Craft::$app->getConfig()->getGeneral();
@@ -132,13 +152,58 @@ class MagicLoginController extends Controller
      */
     public function actionAuth($publicKey, $timestamp, $signature)
     {
-        // TODO: Validate user login details.
+        // Get Authorization Record by Public Key.
+        $authRecord = MagicLogin::$plugin
+            ->magicLoginAuthService
+            ->getAuthorisationRecord($publicKey);
+        
+        // If we can't find record trigger a failure.
+        if (!$authRecord) {
+            // Throw an error.
+            $this->setFailFlash(Craft::t('magic-login', 'Invalid login link provided.'));
+            return $this->redirect('/magic-login/login');
+        }
+        
+        // TODO: For added security, only allow someone to login when they are in the Magic Login Group.
+            
+        // Check the signature.
+        $generatedSignature = MagicLogin::$plugin
+            ->magicLoginAuthService
+            ->generateSignature($authRecord->privateKey, $publicKey, $timestamp);
 
-        // TODO: Check the expiry
+        if ($generatedSignature !== $signature) {
+            // Signatures don't match. Throw an error.
+            $this->setFailFlash(Craft::t('magic-login', 'Invalid login link provided.'));
+            Craft::warning('User attempted to login with invalid signature.', __METHOD__);
+            return $this->redirect('/magic-login/login');
+        }
 
-        // TODO: Log the user in by their uid taken from database.
+        // Check if timestamp is within bounds set by plugin configuration
+        $linkExpiryAmount = MagicLogin::getInstance()->getSettings()->linkExpiry;
+        $dateCreatedObject = new DateTime($authRecord->dateCreated);
+        $expiryTimestamp = $dateCreatedObject->getTimestamp() + ($linkExpiryAmount * 60);
+        if (time() > $expiryTimestamp) {
+            // Link expired, throw an error.
+            $this->setFailFlash(Craft::t('magic-login', 'Login Link has expired, please login and try the link again.'));
+            return $this->redirect('/magic-login/login');
+        }
 
-        // TODO: Activate the user if not already.
-        // Craft::$app->getUsers()->activateUser($user);
+        // Attempt to login the user.
+        $generalConfig = Craft::$app->getConfig()->getGeneral();
+        $user     = User::findOne($authRecord->userId);
+        $loggedIn = Craft::$app->getUser()->login($user, $generalConfig->userSessionDuration);
+
+        // If we can't login there was an error in Craft.
+        if (!$loggedIn) {
+            Craft::warning('An error occured when trying to login user with user id: ' . $authRecord->userId, __METHOD__);
+            $this->setFailFlash(Craft::t('magic-login', 'Unable to log user in. Please try again later.'));
+            return $this->redirect('/magic-login/login');
+        }
+
+        // Remove the auth record since we are logged in now.
+        $authRecord->delete();
+
+        // Redirect user to the url provided by the login page.
+        return $this->redirect($authRecord->redirectUrl);
     }
 }

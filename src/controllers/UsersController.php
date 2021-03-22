@@ -42,9 +42,7 @@ class UsersController extends CraftUsersController
             return;
         }
 
-        // TODO: What do we do if already registered?
-
-        // TODO: Find a way to assign a magic link group to a user.
+        // TODO: What do we do if already registered. Do we throw an error?
 
         // Generate a random password.
         $generator = MagicLogin::$plugin
