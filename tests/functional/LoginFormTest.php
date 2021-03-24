@@ -2,7 +2,9 @@
 
 namespace creode\magiclogintests\acceptance;
 
+use Craft;
 use craft\elements\User;
+use craft\mail\Mailer;
 use creode\magiclogin\records\AuthRecord;
 
 class LoginFormTest extends \Codeception\Test\Unit
@@ -87,6 +89,44 @@ class LoginFormTest extends \Codeception\Test\Unit
 
         // As far as user is concerned, they should see a message about this.
         $this->tester->canSee('Login link has been sent to email address provided.');
+    }
+
+    /** 
+     * Tests that a message is returned to a user if a magic link 
+     * email cannot be sent. 
+     * 
+     * @return void
+     * */
+    public function testEmailNotSentMessage()
+    {
+        $mailerMock = $this->make(
+            Mailer::class, 
+            [
+                'send' => function () {
+                    return false;
+                }
+            ]
+        );
+
+        Craft::$app->setComponents(
+            [
+                'mailer' => $mailerMock,
+            ]
+        );
+
+        // Load up a valid user since they need to be registered to login.
+        $validUser = User::findOne();
+
+        $this->tester->amOnPage('/magic-login/login');
+        $this->tester->submitForm(
+            '#login-form',
+            [
+                'email' => $validUser->email,
+            ],
+            'submitButton'
+        );
+
+        $this->tester->see('Magic link could not be sent to the user.');       
     }
 
     /**
