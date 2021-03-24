@@ -35,11 +35,18 @@ class Settings extends Model
     // =========================================================================
 
     /**
-     * Some field model attribute
+     * Default value for how many minutes a magic link is valid.
      *
-     * @var int
+     * @var integer
      */
     public $linkExpiry = 15;
+
+    /**
+     * Default random password length generated with a user.
+     *
+     * @var integer
+     */
+    public $passwordLength = 16;
 
     // Public Methods
     // =========================================================================
@@ -57,7 +64,7 @@ class Settings extends Model
     public function rules()
     {
         return [
-            ['linkExpiry', 'number'],
+            [['linkExpiry', 'passwordLength'], 'number'],
         ];
     }
 }

@@ -26,3 +26,13 @@
     min: 1,
     value: settings['linkExpiry']})
 }}
+
+{{ forms.textField({
+    label: 'Password Length',
+    instructions: 'Users in Craft still need a password this plugin therefore generates one. You can set the length of this here.',
+    id: 'passwordLength',
+    name: 'passwordLength',
+    min: 16,
+    max: 50
+    value: settings['passwordLength']})
+}}

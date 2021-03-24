@@ -76,7 +76,7 @@ class MagicLoginController extends Controller
             $this->redirect($generalConfig->postLoginRedirect);
         }
 
-        return $this->renderTemplate('magic-login/_login-form');
+        return \Craft::$app->view->renderTemplate('magic-login/_login-form');
     }
 
     /**
@@ -118,7 +118,7 @@ class MagicLoginController extends Controller
         $template_variables = [
             'loginLink' => $link,
         ];
-        $emailHtml = $this->renderTemplate(
+        $emailHtml = Craft::$app->getView()->renderTemplate(
             'magic-login/emails/_login',
             $template_variables
         );
@@ -161,7 +161,7 @@ class MagicLoginController extends Controller
             $this->redirect($generalConfig->postLoginRedirect);
         }
 
-        return $this->renderTemplate('magic-login/_register-form');
+        return \Craft::$app->view->renderTemplate('magic-login/_register-form');
     }
 
     /**
