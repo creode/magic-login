@@ -23,4 +23,9 @@
 return [
     'Magic Login plugin loaded' => 'Magic Login plugin loaded',
     'Please enter a valid email address.' => 'Please enter a valid email address.',
+    'Invalid login link provided.' => 'Invalid login link provided.',
+    'Login Link Signature does not match.' => 'Login Link Signature does not match.',
+    'Login Link has expired, please login and try the link again.' => 'Login Link has expired, please login and try the link again.',
+    'Unable to log user in. Please try again later.' => 'Unable to log user in. Please try again later.',
+    'Magic link could not be sent to the user.' => 'Magic link could not be sent to the user.',
 ];

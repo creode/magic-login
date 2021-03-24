@@ -5,7 +5,7 @@
 {% endif %}
 
 <form method="post" id="register">
-    {{ actionInput('magic-login/users/save-user') }}
+    {{ actionInput('users/save-user') }}
     {{ csrfInput() }}
     {{ redirectInput('user') }}
 

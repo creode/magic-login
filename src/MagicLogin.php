@@ -16,8 +16,10 @@ use craft\web\View;
 use yii\base\Event;
 use craft\base\Plugin;
 use craft\web\UrlManager;
+use yii\base\ActionEvent;
 use craft\services\Plugins;
 use craft\events\PluginEvent;
+use craft\controllers\UsersController;
 use creode\magiclogin\models\Settings;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterTemplateRootsEvent;
@@ -112,6 +114,58 @@ class MagicLogin extends Plugin
                 $event->roots['magic-login'] = __DIR__ . '/templates/magic-login';
             }
         );
+
+        Event::on(
+            UsersController::class,
+            UsersController::EVENT_BEFORE_ACTION,
+            function (ActionEvent $event) {
+                if (!$event->sender->action->actionMethod == 'actionSaveUser') {
+                    return;
+                }
+
+                // If we are updating an existing user then skip this.
+                $userId = $this->request->getBodyParam('userId');
+                if ($userId) {
+                    return;
+                }
+
+                $event->sender->requirePostRequest();
+                
+                // Require email.
+                $email = $this->request->getRequiredBodyParam('email');
+                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    // TODO: Set this to be configurable.
+                    $event->sender->setFailFlash(\Craft::t('magic-login', 'Please enter a valid email address.'));
+                    $event->isValid = false;
+                    return;
+                }
+
+                // TODO: What do we do if already registered. Do we throw an error?
+
+                // Generate a random password.
+                $generator = $this->magicLoginRandomGeneratorService
+                    ->getMediumStrengthGenerator();
+
+                // TODO: Make the length configurable.
+                $password = $generator->generateString(16);
+                $this->request->setBodyParams(
+                    array_merge(
+                        $this->request->getBodyParams(),
+                        [
+                            'password' => $password,
+                        ]
+                    )
+                );
+            }
+        );
+
+        // TODO: Fire off an EVENT_AFTER_ACTION to trigger the functionality below.
+
+        // TODO: Find the user by provided email address.
+
+        // TODO: Once I have the user add the Magic Login Group to them.
+
+        // TODO: Trigger event here with the user to allow you to add extra functionality providing the user.
 
         // TODO: Setup a new "Magic Login" User group.
 

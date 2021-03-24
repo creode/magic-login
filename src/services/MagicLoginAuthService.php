@@ -48,10 +48,13 @@ class MagicLoginAuthService extends Component
     {
         // Look up user
         $user = Craft::$app->users->getUserByUsernameOrEmail($userNameOrEmail);
-
         if ($user === null || $user->status != 'active') {
             return false;
         }
+
+        // TODO: Does the user already have a magic login record?
+        // If so, is it still valid and can we return that instead?
+        // If not we should remove it in favour of creating this one.
 
         $generator = MagicLogin::$plugin
             ->magicLoginRandomGeneratorService
@@ -66,47 +69,26 @@ class MagicLoginAuthService extends Component
             'abcdefghjkmnpqrstuvwxyz23456789'
         );
 
+        $generalConfig = Craft::$app->getConfig()->getGeneral();
+
         // Populate Record
         $record = new AuthRecord();
-        $expiryDate = new \DateTime;
         $record->userId = $user->id;
         $record->publicKey = $publicKey;
         $record->privateKey = $privateKey;
-        $record->expiryDate = $expiryDate;
+        $record->redirectUrl = Craft::$app
+            ->getRequest()
+            ->getValidatedBodyParam('redirect') ?? $generalConfig->postLoginRedirect;
         $record->save();
 
-        $timestamp = $expiryDate->getTimestamp();
+        $createdDate = new \DateTime($record->dateCreated);
+
+        $timestamp = $createdDate->getTimestamp();
         $signature = $this->generateSignature($privateKey, $publicKey, $timestamp);
 
         $baseUrl = Craft::$app->getRequest()->getHostInfo();
 
         return $baseUrl . "/magic-login/auth/$publicKey/$timestamp/$signature";
-
-        // TODO: Craft::$app->getUsers()->activateUser($user); - Activate the user if they aren't already.
-    }
-
-    /**
-     * Takes in someones username or email address and registers
-     * them as a craft user.
-     *
-     * @param string $userNameOrEmail Username or email address 
-     * @return void
-     */
-    public function registerMagicLinkUser(string $email)
-    {
-        // Look up user
-        $user = Craft::$app->users->getUserByUsernameOrEmail($email);
-
-        // User already exists so we can't register them. Create a link instead.
-        if ($user != null) {
-            return $this->createMagicLogin($email);
-        }
-
-        // TODO: Attach random password to user.
-
-        // TODO: Follow user registration flow.
-
-        // TODO: Send out magic link?
     }
 
     /**
@@ -131,20 +113,16 @@ class MagicLoginAuthService extends Component
      * Uses the public key to lookup the authorisation record in the database.
      *
      * @param string $publicKey
-     * @return \creode\magiclogin\models\AuthModel
+     * @return \creode\magiclogin\records\AuthRecord
      */
-    public function getAuthorisationRecord($publicKey) : AuthModel
+    public function getAuthorisationRecord($publicKey) : ?AuthRecord
     {
-        $model = new AuthModel();
         $record = AuthRecord::findOne(['publicKey' => $publicKey]);
 
         if ($record) {
-            $attributes = $record->getAttributes();
-
-            // We do this to make a static model with only public parameters exposed.
-            $model->setAttributes($attributes, false);
+            return $record;
         }
 
-        return $model;
+        return null;
     }
 }

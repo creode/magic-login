@@ -110,7 +110,7 @@ class Install extends Migration
                     'userId' => $this->integer()->notNull(),
                     'publicKey' => $this->string()->notNull(),
                     'privateKey' => $this->string()->notNull(),
-                    'expiryDate' => $this->dateTime()->notNull(),
+                    'redirectUrl' => $this->string()->null(),
                     'dateCreated' => $this->dateTime()->notNull(),
                     'dateUpdated' => $this->dateTime()->notNull(),
                     // 'siteId' => $this->integer()->notNull(), - I don't think this is required right now but may be in future.
