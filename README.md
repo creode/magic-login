@@ -38,6 +38,14 @@ To install the plugin, follow these instructions.
 
 -Insert text here-
 
+## Include Asset Bundle
+
+`{% do view.registerAssetBundle("creode\\magiclogin\\assetbundles\\magiclogin\\MagicLoginAsset") %}`
+
+## Include Template
+
+`{% include 'magic-login/_login-form' %}`
+
 ## Running Magic Login Test Suite ##
 
 From the root of this plugin ensure to install the dependencies using composer:
