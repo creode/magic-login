@@ -32,46 +32,12 @@ class UsersController extends CraftUsersController
      */
     public function actionSaveUser()
     {
-        $this->requirePostRequest();
-        
-        // Require email.
-        $email = $this->request->getRequiredBodyParam('email');
-        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            // TODO: Set this to be configurable.
-            $this->setFailFlash(\Craft::t('magic-login', 'Please enter a valid email address.'));
-            return;
-        }
-
-        // TODO: What do we do if already registered. Do we throw an error?
-
-        // Generate a random password.
-        $generator = MagicLogin::$plugin
-            ->magicLoginRandomGeneratorService
-            ->getMediumStrengthGenerator();
-
-        // TODO: Make the length configurable.
-        $password = $generator->generateString(16);
-        $this->request->setBodyParams(
-            array_merge(
-                $this->request->getBodyParams(),
-                [
-                    'password' => $password,
-                ]
-            )
-        );
-
         // If saving didn't work then redirect back since it
         // should have set a flash error message.
         $saveAction = parent::actionSaveUser();
         if ($saveAction === null) {
             return $saveAction;
         }
-
-        // TODO: Find the user by provided email address.
-        
-        // TODO: Once I have the user add the Magic Login Group to them.
-
-        // TODO: Trigger event here with the user to allow you to add extra functionality providing the user.
 
         return $saveAction;
     }
