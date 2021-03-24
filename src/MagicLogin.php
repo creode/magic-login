@@ -119,7 +119,7 @@ class MagicLogin extends Plugin
             UsersController::class,
             UsersController::EVENT_BEFORE_ACTION,
             function (ActionEvent $event) {
-                if (!$event->sender->action->actionMethod == 'actionSaveUser') {
+                if ($event->sender->action->actionMethod !== 'actionSaveUser') {
                     return;
                 }
 
