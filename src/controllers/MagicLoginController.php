@@ -91,16 +91,30 @@ class MagicLoginController extends Controller
         $email = Craft::$app
             ->getRequest()
             ->getRequiredParam('email');
-    
+
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            // TODO: Set this to be configurable.
+            $this->setFailFlash(\Craft::t('magic-login', 'Please enter a valid email address.'));
+            return;
+        }
+        
         $link = MagicLogin::$plugin
             ->magicLoginAuthService
             ->createMagicLogin($email);
 
         if (!$link) {
-            // TODO: Trigger some kind of error or say if email exists then email has 
-            // been sent (this is based on configuration).
-        }
+            // Although this looks to be successful in reality we don't
+            // send an email to the user. This is for security reasons
+            // to prevent exposing email address' to the system.
 
+            // TODO: To assist the user in the process we could alternatively 
+            // send off an email to tell that they need to register first. 
+            // Although this might be considered spam since we could email 
+            // random people without consent. Perhaps add this as a 
+            // configurable option for the system.
+            return $this->renderTemplate('magic-login/_login-link_sent');
+        }
+        
         $template_variables = [
             'loginLink' => $link,
         ];
@@ -113,13 +127,23 @@ class MagicLoginController extends Controller
         $subject = '[' . Craft::$app->getRequest()->getHostInfo() . '] Login Link';
 
         // Send an email out to the user.
-        Craft::$app
+        $email_sent = Craft::$app
             ->getMailer()
             ->compose()
             ->setTo($email)
             ->setSubject($subject)
             ->setHtmlBody($emailHtml)
             ->send();
+
+        if (!$email_sent) {
+            $this->setFailFlash(
+                \Craft::t(
+                    'magic-login',
+                    'Magic link could not be sent to the user.'
+                )
+            );
+            return $this->redirect('/magic-login/login');
+        }
 
         return $this->renderTemplate('magic-login/_login-link_sent');
     }
