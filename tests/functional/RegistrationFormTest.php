@@ -4,6 +4,7 @@ namespace creode\magiclogintests\acceptance;
 
 use Craft;
 use craft\records\User;
+use craft\elements\User as UserElement;
 use FunctionalTester;
 use \Codeception\Test\Unit;
 
@@ -27,15 +28,6 @@ class RegistrationFormTest extends Unit
         Craft::$app->setEdition(Craft::Pro);
     }
 
-    /**
-     * Undocumented function
-     *
-     * @return void
-     */
-    protected function _after()
-    {
-    }
-
     // Public methods
     // =========================================================================
 
@@ -53,6 +45,21 @@ class RegistrationFormTest extends Unit
         $this->tester->amOnPage('/magic-login/register');
         $this->tester->seeResponseCodeIs(200);
         $this->tester->canSeeInSource('<input id="email" name="email"');
+    }
+
+        /**
+     * Tests that the user is redirected to the postLoginRedirect config value.
+     * 
+     * @return void
+     */
+    public function testGetRegistrationFormRedirectIfLoggedIn()
+    {
+        $generalConfig = Craft::$app->getConfig()->getGeneral();
+        $validUser = UserElement::findOne();
+
+        $this->tester->amLoggedInAs($validUser);
+        $this->tester->amOnPage('/magic-login/register');
+        $this->tester->seeCurrentUrlEquals($generalConfig->postLoginRedirect);
     }
 
     /**

@@ -13,23 +13,32 @@ class LoginFormTest extends \Codeception\Test\Unit
      * @var \FunctionalTester
      */
     protected $tester;
-    
-    protected function _before()
-    {
-    }
-
-    protected function _after()
-    {
-    }
 
     /**
      * Tests that the login form appears.
+     * 
+     * @return void
      */
     public function testGetLoginForm()
     {
         $this->tester->amOnPage('/magic-login/login');
         $this->tester->seeResponseCodeIs(200);
         $this->tester->canSeeInSource('<input id="email" name="email"');
+    }
+
+    /**
+     * Tests that the user is redirected to the postLoginRedirect config value.
+     * 
+     * @return void
+     */
+    public function testGetLoginFormRedirectIfLoggedIn()
+    {
+        $generalConfig = Craft::$app->getConfig()->getGeneral();
+        $validUser = User::findOne();
+
+        $this->tester->amLoggedInAs($validUser);
+        $this->tester->amOnPage('/magic-login/login');
+        $this->tester->seeCurrentUrlEquals($generalConfig->postLoginRedirect);
     }
 
     /**

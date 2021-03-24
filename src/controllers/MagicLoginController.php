@@ -176,6 +176,8 @@ class MagicLoginController extends Controller
      */
     public function actionAuth($publicKey, $timestamp, $signature)
     {
+        // TODO: What if you are already logged in?
+
         // Get Authorization Record by Public Key.
         $authRecord = MagicLogin::$plugin
             ->magicLoginAuthService

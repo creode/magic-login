@@ -34,7 +34,8 @@
     },
     "autoload": {
         "psr-4": {
-          "creode\\magiclogin\\": "src/"
+          "creode\\magiclogin\\": "src/",
+          "creode\\magiclogintests\\fixtures\\": "tests/fixtures/"
         }
     },
     "extra": {

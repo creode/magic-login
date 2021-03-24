@@ -9,8 +9,9 @@ bootstrap: _bootstrap.php
 coverage:
   enabled: true
   include:
-    - src/*
+    - src/*.php
   exclude:
+    - src/assetbundles/*
     - src/etc/*
     - src/migrations/*
     - src/templates/*
@@ -20,6 +21,8 @@ coverage:
     - templates/*
     - tests/*
     - vendor/*
+    - /*.svg
+    - src/config.php
 params:
   - tests/.env
 modules:
