@@ -129,7 +129,6 @@ class MagicLogin extends Plugin
                     return;
                 }
 
-                // TODO: This might work by calling EVENT_BEFORE_ACTION on the UsersController.
                 $event->sender->requirePostRequest();
                 
                 // Require email.
