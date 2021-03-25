@@ -120,7 +120,7 @@ class MagicLoginController extends Controller
             // random people without consent. Perhaps add this as a
             // configurable option for the system.
             return $this->renderTemplate('magic-login/_login-link_sent', [
-                'loginLinkSentMessage' => Craft::t('Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.'),
+                'loginLinkSentMessage' => Craft::t('magic-login', 'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.'),
             ]);
         }
         
@@ -155,7 +155,7 @@ class MagicLoginController extends Controller
         }
 
         return $this->renderTemplate('magic-login/_login-link_sent', [
-            'loginLinkSentMessage' => Craft::t('Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.'),
+            'loginLinkSentMessage' => Craft::t('magic-login', 'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.'),
         ]);
     }
 
