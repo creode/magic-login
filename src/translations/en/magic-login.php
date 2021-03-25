@@ -37,4 +37,6 @@ return [
     'This plugin requires features from Craft Pro before in order to be installed.' => 'This plugin requires features from Craft Pro before in order to be installed.',
     'Magic Login group doesn\'t appear to exist. Cannot assign user to it.' => 'Magic Login group doesn\'t appear to exist. Cannot assign user to it.',
     'Couldn\'t add user to Magic Login group.' => 'Couldn\'t add user to Magic Login group.',
+    'Enter a valid email address...' => 'Enter a valid email address...',
+    'Submit' => 'Submit',
 ];

@@ -79,7 +79,8 @@ class MagicLoginController extends Controller
         return $this->renderTemplate(
             'magic-login/_login-form',
             [
-                'emailPlaceholder' => Craft::t('magic-login', 'Enter a valid email...'),
+                'emailPlaceholder' => Craft::t('magic-login', 'Enter a valid email address...'),
+                'submitButtonText' => Craft::t('magic-login', 'Submit'),
             ]
         );
     }
