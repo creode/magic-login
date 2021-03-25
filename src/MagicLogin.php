@@ -200,7 +200,7 @@ class MagicLogin extends Plugin
                     $magicLoginUserGroup = new UserGroup();
                     $magicLoginUserGroup->name = 'Magic Login';
                     $magicLoginUserGroup->handle = self::MAGIC_LOGIN_USER_GROUP_HANDLE;
-                    $magicLoginUserGroup->description = 'Users within this group were registered with magic login capabilities.';
+                    $magicLoginUserGroup->description = Craft::t('magic-login', 'Users within this group were registered with magic login capabilities.');
 
                     $groupSaved = Craft::$app
                         ->getUserGroups()
@@ -210,7 +210,7 @@ class MagicLogin extends Plugin
                         Craft::error(Craft::t('magic-login', 'Could not create Magic Login User group.'), __METHOD__);
                     }
 
-                    Craft::info(Craft::t('magic-login', 'Registered Magic Login User Group.'), __METHOD__);
+                    Craft::info(Craft::t('magic-login', 'Created Magic Login User Group.'), __METHOD__);
                 }
             }
         );
@@ -239,7 +239,7 @@ class MagicLogin extends Plugin
                     return;
                 }
 
-                Craft::info(Craft::t('magic-login', 'Registered Magic Login User Group.'), __METHOD__);
+                Craft::info(Craft::t('magic-login', 'Deleted Magic Login User Group.'), __METHOD__);
             }
         );
 

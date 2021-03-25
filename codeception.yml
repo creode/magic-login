@@ -42,3 +42,4 @@ modules:
       transaction: true
       dbSetup: {clean: true, setupCraft: true}
       fullMock: false
+      edition: 1

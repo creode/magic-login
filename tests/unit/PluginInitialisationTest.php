@@ -53,8 +53,6 @@ class PluginInitialisationTest extends Unit
      */
     public function testCraftEdition()
     {
-        Craft::$app->setEdition(Craft::Pro);
-
         $this->assertSame(
             Craft::Pro,
             Craft::$app->getEdition()
