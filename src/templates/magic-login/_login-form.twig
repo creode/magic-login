@@ -4,7 +4,7 @@
     <p class="message error">{{ craft.app.session.getFlash('error') }}</p>
 {% endif %}
 
-<form method="post" id="login-form">
+<form method="post" id="magic-login-form">
     {{ actionInput('magic-login/magic-login/login') }}
     {{ csrfInput() }}
 

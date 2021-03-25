@@ -54,7 +54,7 @@ class LoginFormTest extends \Codeception\Test\Unit
 
         $this->tester->amOnPage('/magic-login/login');
         $this->tester->submitForm(
-            '#login-form',
+            '#magic-login-form',
             [
                 'email' => '',
             ],
@@ -82,7 +82,7 @@ class LoginFormTest extends \Codeception\Test\Unit
 
         $this->tester->amOnPage('/magic-login/login');
         $this->tester->submitForm(
-            '#login-form',
+            '#magic-login-form',
             [
                 'email' => 'test@example.com',
             ],
@@ -128,7 +128,7 @@ class LoginFormTest extends \Codeception\Test\Unit
 
         $this->tester->amOnPage('/magic-login/login');
         $this->tester->submitForm(
-            '#login-form',
+            '#magic-login-form',
             [
                 'email' => $validUser->email,
             ],
@@ -153,7 +153,7 @@ class LoginFormTest extends \Codeception\Test\Unit
 
         $this->tester->amOnPage('/magic-login/login');
         $this->tester->submitForm(
-            '#login-form',
+            '#magic-login-form',
             [
                 'email' => $validUser->email,
             ],
