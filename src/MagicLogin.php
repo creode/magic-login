@@ -23,6 +23,7 @@ use craft\controllers\UsersController;
 use creode\magiclogin\models\Settings;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterTemplateRootsEvent;
+use craft\models\UserGroup;
 use creode\magiclogin\services\MagicLoginAuthService;
 use creode\magiclogin\services\MagicLoginRandomGeneratorService;
 
@@ -81,6 +82,8 @@ class MagicLogin extends Plugin
      * @var bool
      */
     public $hasCpSection = false;
+    
+    public const MAGIC_LOGIN_USER_GROUP_HANDLE = 'magicLogin';
 
     // Public Methods
     // =========================================================================
@@ -187,15 +190,6 @@ class MagicLogin extends Plugin
             }
         );
 
-        // Register our CP routes
-        Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_CP_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
-                // $event->rules['cpActionTrigger1'] = 'magic-login/magic-login/do-something';
-            }
-        );
-
         // Do something after we're installed
         Event::on(
             Plugins::class,
@@ -203,9 +197,53 @@ class MagicLogin extends Plugin
             function (PluginEvent $event) {
                 if ($event->plugin === $this) {
                     // We were just installed
+                    $magicLoginUserGroup = new UserGroup();
+                    $magicLoginUserGroup->name = 'Magic Login';
+                    $magicLoginUserGroup->handle = self::MAGIC_LOGIN_USER_GROUP_HANDLE;
+                    $magicLoginUserGroup->description = 'Users within this group were registered with magic login capabilities.';
+
+                    $groupSaved = Craft::$app
+                        ->getUserGroups()
+                        ->saveGroup($magicLoginUserGroup);
+
+                    if (!$groupSaved) {
+                        Craft::error(Craft::t('magic-login', 'Could not create Magic Login User group.'), __METHOD__);
+                    }
+
+                    Craft::info(Craft::t('magic-login', 'Registered Magic Login User Group.'), __METHOD__);
                 }
             }
         );
+
+        // Do something after we're installed
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_UNINSTALL_PLUGIN,
+            function (PluginEvent $event) {
+                $magicLoginGroup = Craft::$app
+                    ->getUserGroups()
+                    ->getGroupByHandle(self::MAGIC_LOGIN_USER_GROUP_HANDLE);
+
+                if (!$magicLoginGroup) {
+                    Craft::info(Craft::t('magic-login', 'User Group already appears to have been deleted.'), __METHOD__);
+                    return;
+                }
+
+                $groupDeleted = Craft::$app
+                    ->getUserGroups()
+                    ->deleteGroup($magicLoginGroup);
+
+                if (!$groupDeleted) {
+                    // Log error.
+                    Craft::error(Craft::t('magic-login', 'Could not delete Magic Login User group.'), __METHOD__);
+                    return;
+                }
+
+                Craft::info(Craft::t('magic-login', 'Registered Magic Login User Group.'), __METHOD__);
+            }
+        );
+
+        // EVENT_AFTER_UNINSTALL_PLUGIN
 
         /**
          * Logging in Craft involves using one of the following methods:
