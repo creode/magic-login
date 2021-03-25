@@ -22,15 +22,14 @@
         }
     ],
     "require": {
+        "craftcms/cms": "^3.5",
         "paragonie/random-lib": "^2.0"
     },
-    "replace": {
-        "paragonie/random_compat": ">=1"
-    },
     "require-dev": {
-      "craftcms/cms": "~3.5",
-      "codeception/codeception": "^3.0",
-      "vlucas/phpdotenv": "^3.0"
+        "codeception/codeception": "^4.0",
+        "vlucas/phpdotenv": "^3.4.0",
+        "codeception/module-yii2": "^1.1",
+        "codeception/module-asserts": "^1.3"
     },
     "autoload": {
         "psr-4": {

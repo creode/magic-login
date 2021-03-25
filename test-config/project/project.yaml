@@ -12,7 +12,7 @@ system:
   edition: pro
   live: true
   name: 'Craft test site'
-  schemaVersion: 3.6.0
+  schemaVersion: 3.6.6
   timeZone: America/Los_Angeles
 users:
   allowPublicRegistration: false
