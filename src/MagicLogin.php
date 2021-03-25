@@ -124,35 +124,37 @@ class MagicLogin extends Plugin
         parent::init();
         self::$plugin = $this;
 
+        // Trigger something after installation.
+        Event::on(
+            Plugins::class,
+            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
+            [$this, 'handleAfterPluginInstall']
+        );
+
         $this->registerComponents();
         $this->setTemplateRoots();
-
-        // Register our site routes
-        Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
-            [$this, 'handleRegisterSiteRoutes']
-        );
+        $this->registerSiteRoutes();
 
         // Runs function before a UserController action is executed.
         Event::on(
             UsersController::class,
             UsersController::EVENT_BEFORE_ACTION,
-            [$this, 'handleUserControllerBeforeAction']
+            function (ActionEvent $event) {
+                if ($event->sender->action->actionMethod === 'actionSaveUser') {
+                    $this->handleMagicLoginBeforeUserSave($event);
+                }
+            }
         );
 
         // Runs function after a UserController action is executed.
         Event::on(
             UsersController::class,
             UsersController::EVENT_AFTER_ACTION,
-            [$this, 'handleUserControllerAfterAction']
-        );
-
-        // Trigger something after installation.
-        Event::on(
-            Plugins::class,
-            Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            [$this, 'handleAfterPluginInstall']
+            function (ActionEvent $event) {
+                if ($event->sender->action->actionMethod === 'actionSaveUser') {
+                    $this->handleMagicLoginAfterUserSave($event);
+                }
+            }
         );
 
         // Trigger something after uninstallation.
@@ -191,30 +193,13 @@ class MagicLogin extends Plugin
     }
 
     /**
-     * Registers any routes site level routes.
-     *
-     * @param RegisterUrlRulesEvent $event
-     * @return void
-     */
-    public function handleRegisterSiteRoutes(RegisterUrlRulesEvent $event)
-    {
-        $event->rules['magic-login/login'] = 'magic-login/magic-login/login-form';
-        $event->rules['magic-login/register'] = 'magic-login/magic-login/register-form';
-        $event->rules['magic-login/auth/<publicKey:\w+>/<timestamp:\d+>/<signature:\w+>'] = 'magic-login/magic-login/auth';
-    }
-
-    /**
-     * Ran before a user controller action.
+     * Handles any magic login functionality that is triggered before a user is saved.
      *
      * @param ActionEvent $event
      * @return void
      */
-    public function handleUserControllerBeforeAction(ActionEvent $event)
+    public function handleMagicLoginBeforeUserSave(ActionEvent $event)
     {
-        if ($event->sender->action->actionMethod !== 'actionSaveUser') {
-            return;
-        }
-
         $event->sender->requirePostRequest();
 
         // If we are updating an existing user then skip this.
@@ -222,6 +207,8 @@ class MagicLogin extends Plugin
         if ($userId) {
             return;
         }
+
+        // TODO: Ensure we are not creating in admin area.
 
         // Require email.
         $email = $this->request->getRequiredBodyParam('email');
@@ -261,12 +248,8 @@ class MagicLogin extends Plugin
      * @param ActionEvent $event
      * @return void
      */
-    public function handleUserControllerAfterAction(ActionEvent $event)
+    public function handleMagicLoginAfterUserSave(ActionEvent $event)
     {
-        if ($event->sender->action->actionMethod !== 'actionSaveUser') {
-            return;
-        }
-
         $event->sender->requirePostRequest();
 
         // If we are updating an existing user then skip this.
@@ -274,6 +257,8 @@ class MagicLogin extends Plugin
         if ($userId) {
             return;
         }
+
+        // TODO: Ensure we are not creating in admin area.
 
         // Require email.
         $email = $this->request->getRequiredBodyParam('email');
@@ -417,6 +402,41 @@ class MagicLogin extends Plugin
         );
     }
 
+    /**
+     * Registers any routes the plugin might need.
+     *
+     * @return void
+     */
+    protected function registerSiteRoutes()
+    {
+        // Register our site routes
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
+            function (RegisterUrlRulesEvent $event) {
+                $event->rules['magic-login/login'] = 'magic-login/magic-login/login-form';
+                $event->rules['magic-login/register'] = 'magic-login/magic-login/register-form';
+                $event->rules['magic-login/auth/<publicKey:\w+>/<timestamp:\d+>/<signature:\w+>'] = 'magic-login/magic-login/auth';
+            }
+        );
+    }
+
+    /**
+     * Sets up any template roots required for the application.
+     *
+     * @return void
+     */
+    protected function setTemplateRoots()
+    {
+        Event::on(
+            View::class,
+            View::EVENT_REGISTER_SITE_TEMPLATE_ROOTS,
+            function (RegisterTemplateRootsEvent $event) {
+                $event->roots['magic-login'] = __DIR__ . '/templates/magic-login';
+            }
+        );
+    }
+
     // Private Methods
     // =========================================================================
 
@@ -432,22 +452,6 @@ class MagicLogin extends Plugin
                 'magicLoginRandomGeneratorService' => MagicLoginRandomGeneratorService::class,
                 'magicLoginAuthService' => MagicLoginAuthService::class,
             ]
-        );
-    }
-
-    /**
-     * Sets up any template roots required for the application.
-     *
-     * @return void
-     */
-    private function setTemplateRoots()
-    {
-        Event::on(
-            View::class,
-            View::EVENT_REGISTER_SITE_TEMPLATE_ROOTS,
-            function (RegisterTemplateRootsEvent $event) {
-                $event->roots['magic-login'] = __DIR__ . '/templates/magic-login';
-            }
         );
     }
 }
