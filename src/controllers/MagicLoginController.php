@@ -119,7 +119,9 @@ class MagicLoginController extends Controller
             // Although this might be considered spam since we could email
             // random people without consent. Perhaps add this as a
             // configurable option for the system.
-            return $this->renderTemplate('magic-login/_login-link_sent');
+            return $this->renderTemplate('magic-login/_login-link_sent', [
+                'loginLinkSentMessage' => Craft::t('Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.'),
+            ]);
         }
         
         $template_variables = [
@@ -152,7 +154,9 @@ class MagicLoginController extends Controller
             return $this->redirect('/magic-login/login');
         }
 
-        return $this->renderTemplate('magic-login/_login-link_sent');
+        return $this->renderTemplate('magic-login/_login-link_sent', [
+            'loginLinkSentMessage' => Craft::t('Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.'),
+        ]);
     }
 
     /**

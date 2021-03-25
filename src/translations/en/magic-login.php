@@ -39,4 +39,5 @@ return [
     'Couldn\'t add user to Magic Login group.' => 'Couldn\'t add user to Magic Login group.',
     'Enter a valid email address...' => 'Enter a valid email address...',
     'Submit' => 'Submit',
+    'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.' => 'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.',
 ];
