@@ -119,7 +119,7 @@ class MagicLogin extends Plugin
             UsersController::class,
             UsersController::EVENT_BEFORE_ACTION,
             function (ActionEvent $event) {
-                if (!$event->sender->action->actionMethod == 'actionSaveUser') {
+                if ($event->sender->action->actionMethod !== 'actionSaveUser') {
                     return;
                 }
 
@@ -146,8 +146,13 @@ class MagicLogin extends Plugin
                 $generator = $this->magicLoginRandomGeneratorService
                     ->getMediumStrengthGenerator();
 
-                // TODO: Make the length configurable.
-                $password = $generator->generateString(16);
+                // Set a random password when registering a user with magic links.
+                $password = $generator->generateString(
+                    $this->getSettings()->passwordLength
+                );
+
+                // Add password into the request body so that it can be set during 
+                // user registration action.
                 $this->request->setBodyParams(
                     array_merge(
                         $this->request->getBodyParams(),
