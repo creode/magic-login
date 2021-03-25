@@ -196,6 +196,11 @@ class MagicLogin extends Plugin
             Plugins::EVENT_AFTER_INSTALL_PLUGIN,
             function (PluginEvent $event) {
                 if ($event->plugin === $this) {
+                    // Need Craft Pro here.
+                    if (Craft::$app->getEdition() !== Craft::Pro) {
+                        return;
+                    }
+
                     // We were just installed
                     $magicLoginUserGroup = new UserGroup();
                     $magicLoginUserGroup->name = 'Magic Login';
