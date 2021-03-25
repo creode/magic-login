@@ -140,7 +140,7 @@ class MagicLoginController extends Controller
             $this->setFailFlash(
                 \Craft::t(
                     'magic-login',
-                    'Magic link could not be sent to the user.'
+                    'Magic link could not be sent.'
                 )
             );
             return $this->redirect('/magic-login/login');

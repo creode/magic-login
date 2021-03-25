@@ -27,7 +27,7 @@ return [
     'Login Link Signature does not match.' => 'Login Link Signature does not match.',
     'Login Link has expired, please login and try the link again.' => 'Login Link has expired, please login and try the link again.',
     'Unable to log user in. Please try again later.' => 'Unable to log user in. Please try again later.',
-    'Magic link could not be sent to the user.' => 'Magic link could not be sent to the user.',
+    'Magic link could not be sent.' => 'Magic link could not be sent.',
     'Deleted Magic Login User Group.' => 'Deleted Magic Login User Group.',
     'Could not delete Magic Login User group.' => 'Could not delete Magic Login User group.',
     'User Group already appears to have been deleted.' => 'User Group already appears to have been deleted.',
