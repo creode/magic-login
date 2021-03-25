@@ -103,14 +103,15 @@ class MagicLoginController extends Controller
             ->createMagicLogin($email);
 
         if (!$link) {
-            // Although this looks to be successful in reality we don't
-            // send an email to the user. This is for security reasons
-            // to prevent exposing email address' to the system.
+            // If we couldn't generate a link (likely because a user doesn't exist).
+            // This request is actually unsuccessful however to a user on the frontend
+            // we are making it look successful to prevent someone validating if email
+            // address' exist on the website.
 
-            // TODO: To assist the user in the process we could alternatively 
-            // send off an email to tell that they need to register first. 
-            // Although this might be considered spam since we could email 
-            // random people without consent. Perhaps add this as a 
+            // TODO: To assist the user in the process we could alternatively
+            // send off an email to tell that they need to register first.
+            // Although this might be considered spam since we could email
+            // random people without consent. Perhaps add this as a
             // configurable option for the system.
             return $this->renderTemplate('magic-login/_login-link_sent');
         }
