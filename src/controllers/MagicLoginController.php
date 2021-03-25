@@ -76,7 +76,12 @@ class MagicLoginController extends Controller
             $this->redirect($generalConfig->postLoginRedirect);
         }
 
-        return $this->renderTemplate('magic-login/_login-form');
+        return $this->renderTemplate(
+            'magic-login/_login-form',
+            [
+                'emailPlaceholder' => Craft::t('magic-login', 'Enter a valid email...'),
+            ]
+        );
     }
 
     /**
