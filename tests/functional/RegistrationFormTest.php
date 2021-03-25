@@ -121,4 +121,33 @@ class RegistrationFormTest extends Unit
 
         $this->assertEquals($userCount, count(User::find()->all()));
     }
+
+    /**
+     * Tests that when a user is successfully registered the magic 
+     * login group is attached.
+     * 
+     * This test has been commented out due to the attached bug:
+     * https://github.com/craftcms/cms/issues/7724
+     * 
+     * This should be uncommented out once the bug has been resolved.
+     *
+     * @return void
+     */
+    // public function testMagicLoginGroupIsAttachedToAUserWhenRegistering()
+    // {
+    //     Craft::$app->setEdition(Craft::Pro);
+
+    //     $userEmail = 'test-attached-group@example.com';
+    //     $this->tester->amOnPage('/magic-login/register');
+    //     $this->tester->submitForm(
+    //         '#register',
+    //         [
+    //             'email' => $userEmail,
+    //         ],
+    //         'submitButton'
+    //     );
+
+    //     $user = UserElement::findOne(['email' => $userEmail]);
+    //     $this->assertContains('Magic Login', $user->getGroups());
+    // }
 }
