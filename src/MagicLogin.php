@@ -261,7 +261,7 @@ class MagicLogin extends Plugin
             }
         );
 
-        // Do something after we're installed
+        // Trigger something after installation.
         Event::on(
             Plugins::class,
             Plugins::EVENT_AFTER_INSTALL_PLUGIN,
@@ -291,7 +291,7 @@ class MagicLogin extends Plugin
             }
         );
 
-        // Do something after we're installed
+        // Trigger something after uninstallation.
         Event::on(
             Plugins::class,
             Plugins::EVENT_AFTER_UNINSTALL_PLUGIN,
