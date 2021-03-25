@@ -34,4 +34,7 @@ return [
     'Users within this group were registered with magic login capabilities.' => 'Users within this group were registered with magic login capabilities.',
     'Could not create Magic Login User group.' => 'Could not create Magic Login User group.',
     'Created Magic Login User Group.' => 'Created Magic Login User Group.',
+    'This plugin requires features from Craft Pro before in order to be installed.' => 'This plugin requires features from Craft Pro before in order to be installed.',
+    'Magic Login group doesn\'t appear to exist. Cannot assign user to it.' => 'Magic Login group doesn\'t appear to exist. Cannot assign user to it.',
+    'Couldn\'t add user to Magic Login group.' => 'Couldn\'t add user to Magic Login group.',
 ];
