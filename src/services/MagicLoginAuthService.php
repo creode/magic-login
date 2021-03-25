@@ -117,12 +117,6 @@ class MagicLoginAuthService extends Component
      */
     public function getAuthorisationRecord($publicKey) : ?AuthRecord
     {
-        $record = AuthRecord::findOne(['publicKey' => $publicKey]);
-
-        if ($record) {
-            return $record;
-        }
-
-        return null;
+        return AuthRecord::findOne(['publicKey' => $publicKey]) ?? null;
     }
 }
