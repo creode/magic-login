@@ -223,7 +223,7 @@ class MagicLoginController extends Controller
         // If we can't login there was an error in Craft.
         if (!$loggedIn) {
             Craft::warning('An error occured when trying to login user with user id: ' . $authRecord->userId, __METHOD__);
-            $this->setFailFlash(Craft::t('magic-login', 'Unable to log user in. Please try again later.'));
+            $this->setFailFlash(Craft::t('magic-login', 'Unable to login. Please try again later.'));
             return $this->redirect('/magic-login/login');
         }
 

@@ -100,10 +100,10 @@ class LoginFormTest extends \Codeception\Test\Unit
         $this->tester->canSee('Login link has been sent to email address provided.');
     }
 
-    /** 
-     * Tests that a message is returned to a user if a magic link 
-     * email cannot be sent. 
-     * 
+    /**
+     * Tests that a message is returned to a user if a magic link
+     * email cannot be sent.
+     *
      * @return void
      * */
     public function testEmailNotSentMessage()
@@ -135,7 +135,7 @@ class LoginFormTest extends \Codeception\Test\Unit
             'submitButton'
         );
 
-        $this->tester->see('Magic link could not be sent to the user.');       
+        $this->tester->see('Magic link could not be sent.');
     }
 
     /**
