@@ -108,6 +108,11 @@ class MagicLoginController extends Controller
             ->magicLoginAuthService
             ->createMagicLogin($email);
 
+        $linkSentMessage = Craft::t(
+            'magic-login',
+            'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.'
+        );
+
         if (!$link) {
             // If we couldn't generate a link (likely because a user doesn't exist).
             // This request is actually unsuccessful however to a user on the frontend
@@ -120,7 +125,7 @@ class MagicLoginController extends Controller
             // random people without consent. Perhaps add this as a
             // configurable option for the system.
             return $this->renderTemplate('magic-login/_login-link_sent', [
-                'loginLinkSentMessage' => Craft::t('magic-login', 'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.'),
+                'loginLinkSentMessage' => $linkSentMessage,
             ]);
         }
         
@@ -155,7 +160,7 @@ class MagicLoginController extends Controller
         }
 
         return $this->renderTemplate('magic-login/_login-link_sent', [
-            'loginLinkSentMessage' => Craft::t('magic-login', 'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.'),
+            'loginLinkSentMessage' => $linkSentMessage,
         ]);
     }
 
