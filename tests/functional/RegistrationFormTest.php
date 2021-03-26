@@ -72,6 +72,7 @@ class RegistrationFormTest extends Unit
      */
     public function testUsersCanRegisterWithoutAPasswordToGetARandomOne()
     {
+        $registrationEmail = 'test@example.com';
         $password = 'something-random';
 
         $generatorMock = $this->make(
@@ -102,7 +103,7 @@ class RegistrationFormTest extends Unit
         $this->tester->submitForm(
             '#register',
             [
-                'email' => 'test@example.com',
+                'email' => $registrationEmail,
             ],
             'submitButton'
         );
@@ -110,7 +111,7 @@ class RegistrationFormTest extends Unit
         // Load in a user and get the password explicitly so we can validate it.
         $user = UserElement::find()
             ->addSelect(['users.password'])
-            ->email('test@example.com')
+            ->email($registrationEmail)
             ->anyStatus()
             ->one();
 
