@@ -108,7 +108,7 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
             User::class,
             [
                 'login' => function () {
-                    return false; 
+                    return false;
                 }
             ]
         );

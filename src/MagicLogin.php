@@ -221,11 +221,14 @@ class MagicLogin extends Plugin
 
         // TODO: What do we do if already registered. Do we throw an error?
 
+        // If we already have a password set then we should stop function here.
+        if ($this->request->getBodyParam('password')) {
+            return;
+        }
+
         // Generate a random password.
         $generator = $this->magicLoginRandomGeneratorService
             ->getMediumStrengthGenerator();
-
-        // Set a random password when registering a user with magic links.
         $password = $generator->generateString(
             $this->getSettings()->passwordLength
         );

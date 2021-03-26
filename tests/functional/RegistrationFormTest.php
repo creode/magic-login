@@ -3,10 +3,13 @@
 namespace creode\magiclogintests\acceptance;
 
 use Craft;
-use craft\records\User;
-use craft\elements\User as UserElement;
 use FunctionalTester;
+use craft\records\User;
+use RandomLib\Generator;
 use \Codeception\Test\Unit;
+use creode\magiclogin\MagicLogin;
+use craft\elements\User as UserElement;
+use creode\magiclogin\services\MagicLoginRandomGeneratorService;
 
 /**
  * Tests the functionality behind the custom registration form.
@@ -63,24 +66,86 @@ class RegistrationFormTest extends Unit
     }
 
     /**
-     * Tests that with the correct parameters, users can register
-     * for an account with a magic link.
+     * Tests that if a user doesn't provide a password a working one will be created for them.
      *
      * @return void
      */
-    public function testUserCanRegister()
+    public function testUsersCanRegisterWithoutAPasswordToGetARandomOne()
     {
+        $password = 'something-random';
+
+        $generatorMock = $this->make(
+            Generator::class,
+            [
+                'generateString' => function () use ($password) {
+                    return $password;
+                }
+            ]
+        );
+
+        $magicLoginGeneratorServiceMock = $this->make(
+            MagicLoginRandomGeneratorService::class,
+            [
+                'getMediumStrengthGenerator' => $generatorMock,
+            ]
+        );
+
+        MagicLogin::$plugin->setComponents(
+            [
+                'magicLoginRandomGeneratorService' => function () use ($magicLoginGeneratorServiceMock) {
+                    return $magicLoginGeneratorServiceMock;
+                }
+            ]
+        );
+
         $this->tester->amOnPage('/magic-login/register');
         $this->tester->submitForm(
             '#register',
             [
                 'email' => 'test@example.com',
-                'password' => 'something'
             ],
             'submitButton'
         );
 
-        $this->tester->canSeeRecord(User::class, ['email' => 'test@example.com']);
+        // Load in a user and get the password explicitly so we can validate it.
+        $user = UserElement::find()
+            ->addSelect(['users.password'])
+            ->email('test@example.com')
+            ->anyStatus()
+            ->one();
+
+        $this->assertTrue($user->authenticate($password));
+    }
+
+    /**
+     * Tests that with the correct parameters, users can register
+     * for an account with a magic link.
+     *
+     * @return void
+     */
+    public function testUserCanRegisterAndLoginWithAProvidedPassword()
+    {
+        $registrationEmail = 'test2@example.com';
+        $password = 'something';
+
+        $this->tester->amOnPage('/magic-login/register');
+        $this->tester->submitForm(
+            '#register',
+            [
+                'email' => $registrationEmail,
+                'password' => $password
+            ],
+            'submitButton'
+        );
+
+        // Load in a user and get the password explicitly so we can validate it.
+        $user = UserElement::find()
+            ->addSelect(['users.password'])
+            ->email($registrationEmail)
+            ->anyStatus()
+            ->one();
+
+        $this->assertTrue($user->authenticate($password));
     }
 
     /**
