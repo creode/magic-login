@@ -108,7 +108,7 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
             User::class,
             [
                 'login' => function () {
-                    return false; 
+                    return false;
                 }
             ]
         );
@@ -123,7 +123,7 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
 
         $this->tester->amOnPage($link);
         $this->tester->seeCurrentUrlEquals('/magic-login/login');
-        $this->tester->see('Unable to log user in. Please try again later.');
+        $this->tester->see('Unable to login. Please try again later.');
     }
 
     /**

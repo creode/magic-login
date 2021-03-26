@@ -26,8 +26,8 @@ return [
     'Invalid login link provided.' => 'Invalid login link provided.',
     'Login Link Signature does not match.' => 'Login Link Signature does not match.',
     'Login Link has expired, please login and try the link again.' => 'Login Link has expired, please login and try the link again.',
-    'Unable to log user in. Please try again later.' => 'Unable to log user in. Please try again later.',
-    'Magic link could not be sent to the user.' => 'Magic link could not be sent to the user.',
+    'Unable to login. Please try again later.' => 'Unable to login. Please try again later.',
+    'Magic link could not be sent.' => 'Magic link could not be sent.',
     'Deleted Magic Login User Group.' => 'Deleted Magic Login User Group.',
     'Could not delete Magic Login User group.' => 'Could not delete Magic Login User group.',
     'User Group already appears to have been deleted.' => 'User Group already appears to have been deleted.',
@@ -37,4 +37,7 @@ return [
     'This plugin requires features from Craft Pro before in order to be installed.' => 'This plugin requires features from Craft Pro before in order to be installed.',
     'Magic Login group doesn\'t appear to exist. Cannot assign user to it.' => 'Magic Login group doesn\'t appear to exist. Cannot assign user to it.',
     'Couldn\'t add user to Magic Login group.' => 'Couldn\'t add user to Magic Login group.',
+    'Enter a valid email address...' => 'Enter a valid email address...',
+    'Submit' => 'Submit',
+    'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.' => 'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.',
 ];

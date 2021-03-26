@@ -76,7 +76,13 @@ class MagicLoginController extends Controller
             $this->redirect($generalConfig->postLoginRedirect);
         }
 
-        return $this->renderTemplate('magic-login/_login-form');
+        return $this->renderTemplate(
+            'magic-login/_login-form',
+            [
+                'emailPlaceholder' => Craft::t('magic-login', 'Enter a valid email address...'),
+                'submitButtonText' => Craft::t('magic-login', 'Submit'),
+            ]
+        );
     }
 
     /**
@@ -102,17 +108,25 @@ class MagicLoginController extends Controller
             ->magicLoginAuthService
             ->createMagicLogin($email);
 
-        if (!$link) {
-            // Although this looks to be successful in reality we don't
-            // send an email to the user. This is for security reasons
-            // to prevent exposing email address' to the system.
+        $linkSentMessage = Craft::t(
+            'magic-login',
+            'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.'
+        );
 
-            // TODO: To assist the user in the process we could alternatively 
-            // send off an email to tell that they need to register first. 
-            // Although this might be considered spam since we could email 
-            // random people without consent. Perhaps add this as a 
+        if (!$link) {
+            // If we couldn't generate a link (likely because a user doesn't exist).
+            // This request is actually unsuccessful however to a user on the frontend
+            // we are making it look successful to prevent someone validating if email
+            // address' exist on the website.
+
+            // TODO: To assist the user in the process we could alternatively
+            // send off an email to tell that they need to register first.
+            // Although this might be considered spam since we could email
+            // random people without consent. Perhaps add this as a
             // configurable option for the system.
-            return $this->renderTemplate('magic-login/_login-link_sent');
+            return $this->renderTemplate('magic-login/_login-link_sent', [
+                'loginLinkSentMessage' => $linkSentMessage,
+            ]);
         }
         
         $template_variables = [
@@ -139,13 +153,15 @@ class MagicLoginController extends Controller
             $this->setFailFlash(
                 \Craft::t(
                     'magic-login',
-                    'Magic link could not be sent to the user.'
+                    'Magic link could not be sent.'
                 )
             );
             return $this->redirect('/magic-login/login');
         }
 
-        return $this->renderTemplate('magic-login/_login-link_sent');
+        return $this->renderTemplate('magic-login/_login-link_sent', [
+            'loginLinkSentMessage' => $linkSentMessage,
+        ]);
     }
 
     /**
@@ -222,7 +238,7 @@ class MagicLoginController extends Controller
         // If we can't login there was an error in Craft.
         if (!$loggedIn) {
             Craft::warning('An error occured when trying to login user with user id: ' . $authRecord->userId, __METHOD__);
-            $this->setFailFlash(Craft::t('magic-login', 'Unable to log user in. Please try again later.'));
+            $this->setFailFlash(Craft::t('magic-login', 'Unable to login. Please try again later.'));
             return $this->redirect('/magic-login/login');
         }
 

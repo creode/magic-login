@@ -124,169 +124,35 @@ class MagicLogin extends Plugin
         parent::init();
         self::$plugin = $this;
 
-        $this->setComponents(
-            [
-                'magicLoginRandomGeneratorService' => MagicLoginRandomGeneratorService::class,
-                'magicLoginAuthService' => MagicLoginAuthService::class,
-            ]
-        );
-
-        Event::on(
-            View::class,
-            View::EVENT_REGISTER_SITE_TEMPLATE_ROOTS,
-            function (RegisterTemplateRootsEvent $event) {
-                $event->roots['magic-login'] = __DIR__ . '/templates/magic-login';
-            }
-        );
-
-        Event::on(
-            UsersController::class,
-            UsersController::EVENT_BEFORE_ACTION,
-            function (ActionEvent $event) {
-                if ($event->sender->action->actionMethod !== 'actionSaveUser') {
-                    return;
-                }
-
-                $event->sender->requirePostRequest();
-
-                // If we are updating an existing user then skip this.
-                $userId = $this->request->getBodyParam('userId');
-                if ($userId) {
-                    return;
-                }
-
-                // Require email.
-                $email = $this->request->getRequiredBodyParam('email');
-                if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-                    // TODO: Set this to be configurable.
-                    $event->sender->setFailFlash(\Craft::t('magic-login', 'Please enter a valid email address.'));
-                    $event->isValid = false;
-                    return;
-                }
-
-                // TODO: What do we do if already registered. Do we throw an error?
-
-                // Generate a random password.
-                $generator = $this->magicLoginRandomGeneratorService
-                    ->getMediumStrengthGenerator();
-
-                // Set a random password when registering a user with magic links.
-                $password = $generator->generateString(
-                    $this->getSettings()->passwordLength
-                );
-
-                // Add password into the request body so that it can be set during 
-                // user registration action.
-                $this->request->setBodyParams(
-                    array_merge(
-                        $this->request->getBodyParams(),
-                        [
-                            'password' => $password,
-                        ]
-                    )
-                );
-            }
-        );
-
-        Event::on(
-            UsersController::class,
-            UsersController::EVENT_AFTER_ACTION,
-            function (ActionEvent $event) {
-                if ($event->sender->action->actionMethod !== 'actionSaveUser') {
-                    return;
-                }
-
-                $event->sender->requirePostRequest();
-
-                // If we are updating an existing user then skip this.
-                $userId = $this->request->getBodyParam('userId');
-                if ($userId) {
-                    return;
-                }
-
-                // Require email.
-                $email = $this->request->getRequiredBodyParam('email');
-                $user = User::findOne(['email' => $email]);
-
-                // If we can't find user something must have happened.
-                // We will stop here and allow things to run it's course.
-                if (!$user) {
-                    return;
-                }
-
-                $magicLoginGroup = Craft::$app
-                    ->getUserGroups()
-                    ->getGroupByHandle(self::MAGIC_LOGIN_USER_GROUP_HANDLE);
-
-                // Throw a warning but continue with request.
-                if (!$magicLoginGroup) {
-                    Craft::warning(
-                        Craft::t(
-                            'magic-login',
-                            'Magic Login group doesn\'t appear to exist. Cannot assign user to it.'
-                        ),
-                        __METHOD__
-                    );
-                    return;
-                }
-
-                // Add Magic Login group to user.
-                $addedToGroup = Craft::$app->getUsers()->assignUserToGroups(
-                    $user->id,
-                    [$magicLoginGroup->id]
-                );
-
-                // Throw a warning but continue with request.
-                if (!$addedToGroup) {
-                    Craft::warning(
-                        Craft::t(
-                            'magic-login',
-                            'Couldn\'t add user to Magic Login group.'
-                        ),
-                        __METHOD__
-                    );
-                    return;
-                }
-            }
-        );
-
-        // Register our site routes
-        Event::on(
-            UrlManager::class,
-            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
-            function (RegisterUrlRulesEvent $event) {
-                $event->rules['magic-login/login'] = 'magic-login/magic-login/login-form';
-                $event->rules['magic-login/register'] = 'magic-login/magic-login/register-form';
-                $event->rules['magic-login/auth/<publicKey:\w+>/<timestamp:\d+>/<signature:\w+>'] = 'magic-login/magic-login/auth';
-            }
-        );
-
         // Trigger something after installation.
         Event::on(
             Plugins::class,
             Plugins::EVENT_AFTER_INSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                if ($event->plugin === $this) {
-                    // TODO: This will need removing once the check for beforeInstall can pass.
-                    if (Craft::$app->getEdition() !== Craft::Pro) {
-                        return;
-                    }
+            [$this, 'handleAfterPluginInstall']
+        );
 
-                    // We were just installed
-                    $magicLoginUserGroup = new UserGroup();
-                    $magicLoginUserGroup->name = 'Magic Login';
-                    $magicLoginUserGroup->handle = self::MAGIC_LOGIN_USER_GROUP_HANDLE;
-                    $magicLoginUserGroup->description = Craft::t('magic-login', 'Users within this group were registered with magic login capabilities.');
+        $this->registerComponents();
+        $this->setTemplateRoots();
+        $this->registerSiteRoutes();
 
-                    $groupSaved = Craft::$app
-                        ->getUserGroups()
-                        ->saveGroup($magicLoginUserGroup);
+        // Runs function before a UserController action is executed.
+        Event::on(
+            UsersController::class,
+            UsersController::EVENT_BEFORE_ACTION,
+            function (ActionEvent $event) {
+                if ($event->sender->action->actionMethod === 'actionSaveUser') {
+                    $this->handleMagicLoginBeforeUserSave($event);
+                }
+            }
+        );
 
-                    if (!$groupSaved) {
-                        Craft::warning(Craft::t('magic-login', 'Could not create Magic Login User group.'), __METHOD__);
-                    }
-
-                    Craft::info(Craft::t('magic-login', 'Created Magic Login User Group.'), __METHOD__);
+        // Runs function after a UserController action is executed.
+        Event::on(
+            UsersController::class,
+            UsersController::EVENT_AFTER_ACTION,
+            function (ActionEvent $event) {
+                if ($event->sender->action->actionMethod === 'actionSaveUser') {
+                    $this->handleMagicLoginAfterUserSave($event);
                 }
             }
         );
@@ -295,31 +161,8 @@ class MagicLogin extends Plugin
         Event::on(
             Plugins::class,
             Plugins::EVENT_AFTER_UNINSTALL_PLUGIN,
-            function (PluginEvent $event) {
-                $magicLoginGroup = Craft::$app
-                    ->getUserGroups()
-                    ->getGroupByHandle(self::MAGIC_LOGIN_USER_GROUP_HANDLE);
-
-                if (!$magicLoginGroup) {
-                    Craft::info(Craft::t('magic-login', 'User Group already appears to have been deleted.'), __METHOD__);
-                    return;
-                }
-
-                $groupDeleted = Craft::$app
-                    ->getUserGroups()
-                    ->deleteGroup($magicLoginGroup);
-
-                if (!$groupDeleted) {
-                    // Log error.
-                    Craft::warning(Craft::t('magic-login', 'Could not delete Magic Login User group.'), __METHOD__);
-                    return;
-                }
-
-                Craft::info(Craft::t('magic-login', 'Deleted Magic Login User Group.'), __METHOD__);
-            }
+            [$this, 'handleAfterPluginUninstall']
         );
-
-        // EVENT_AFTER_UNINSTALL_PLUGIN
 
         /**
          * Logging in Craft involves using one of the following methods:
@@ -349,6 +192,190 @@ class MagicLogin extends Plugin
         );
     }
 
+    /**
+     * Handles any magic login functionality that is triggered before a user is saved.
+     *
+     * @param ActionEvent $event
+     * @return void
+     */
+    public function handleMagicLoginBeforeUserSave(ActionEvent $event)
+    {
+        $event->sender->requirePostRequest();
+
+        // If we are updating an existing user then skip this.
+        $userId = $this->request->getBodyParam('userId');
+        if ($userId) {
+            return;
+        }
+
+        // TODO: Ensure we are not creating in admin area.
+
+        // Require email.
+        $email = $this->request->getRequiredBodyParam('email');
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            // TODO: Set this to be configurable.
+            $event->sender->setFailFlash(\Craft::t('magic-login', 'Please enter a valid email address.'));
+            $event->isValid = false;
+            return;
+        }
+
+        // TODO: What do we do if already registered. Do we throw an error?
+
+        // If we already have a password set then we should stop function here.
+        if ($this->request->getBodyParam('password')) {
+            return;
+        }
+
+        // Generate a random password.
+        $generator = $this->magicLoginRandomGeneratorService
+            ->getMediumStrengthGenerator();
+        $password = $generator->generateString(
+            $this->getSettings()->passwordLength
+        );
+
+        // Add password into the request body so that it can be set during 
+        // user registration action.
+        $this->request->setBodyParams(
+            array_merge(
+                $this->request->getBodyParams(),
+                [
+                    'password' => $password,
+                ]
+            )
+        );
+    }
+
+    /**
+     * Runs some functionality after an action runs on the UserController.
+     *
+     * @param ActionEvent $event
+     * @return void
+     */
+    public function handleMagicLoginAfterUserSave(ActionEvent $event)
+    {
+        $event->sender->requirePostRequest();
+
+        // If we are updating an existing user then skip this.
+        $userId = $this->request->getBodyParam('userId');
+        if ($userId) {
+            return;
+        }
+
+        // TODO: Ensure we are not creating in admin area.
+
+        // Require email.
+        $email = $this->request->getRequiredBodyParam('email');
+        $user = User::findOne(['email' => $email]);
+
+        // If we can't find user something must have happened.
+        // We will stop here and allow things to run it's course.
+        if (!$user) {
+            return;
+        }
+
+        $magicLoginGroup = Craft::$app
+            ->getUserGroups()
+            ->getGroupByHandle(self::MAGIC_LOGIN_USER_GROUP_HANDLE);
+
+        // Throw a warning but continue with request.
+        if (!$magicLoginGroup) {
+            Craft::warning(
+                Craft::t(
+                    'magic-login',
+                    'Magic Login group doesn\'t appear to exist. Cannot assign user to it.'
+                ),
+                __METHOD__
+            );
+            return;
+        }
+
+        // Add Magic Login group to user.
+        $addedToGroup = Craft::$app->getUsers()->assignUserToGroups(
+            $user->id,
+            [$magicLoginGroup->id]
+        );
+
+        // Throw a warning but continue with request.
+        if (!$addedToGroup) {
+            Craft::warning(
+                Craft::t(
+                    'magic-login',
+                    'Couldn\'t add user to Magic Login group.'
+                ),
+                __METHOD__
+            );
+            return;
+        }
+    }
+
+    /**
+     * Handles functionality after a plugin is installed.
+     *
+     * @param PluginEvent $event
+     * @return void
+     */
+    public function handleAfterPluginInstall(PluginEvent $event)
+    {
+        if ($event->plugin !== $this) {
+            return;
+        }
+
+        // TODO: This will need removing once the check for beforeInstall can pass.
+        if (Craft::$app->getEdition() !== Craft::Pro) {
+            return;
+        }
+
+        // We were just installed
+        $magicLoginUserGroup = new UserGroup();
+        $magicLoginUserGroup->name = 'Magic Login';
+        $magicLoginUserGroup->handle = self::MAGIC_LOGIN_USER_GROUP_HANDLE;
+        $magicLoginUserGroup->description = Craft::t('magic-login', 'Users within this group were registered with magic login capabilities.');
+
+        $groupSaved = Craft::$app
+            ->getUserGroups()
+            ->saveGroup($magicLoginUserGroup);
+
+        if (!$groupSaved) {
+            Craft::warning(Craft::t('magic-login', 'Could not create Magic Login User group.'), __METHOD__);
+        }
+
+        Craft::info(Craft::t('magic-login', 'Created Magic Login User Group.'), __METHOD__);
+    }
+
+    /**
+     * Runs functionality after a plugin is uninstalled.
+     *
+     * @param PluginEvent $event
+     * @return void
+     */
+    public function handleAfterPluginUninstall(PluginEvent $event)
+    {
+        if ($event->plugin !== $this) {
+            return;
+        }
+
+        $magicLoginGroup = Craft::$app
+            ->getUserGroups()
+            ->getGroupByHandle(self::MAGIC_LOGIN_USER_GROUP_HANDLE);
+
+        if (!$magicLoginGroup) {
+            Craft::info(Craft::t('magic-login', 'User Group already appears to have been deleted.'), __METHOD__);
+            return;
+        }
+
+        $groupDeleted = Craft::$app
+            ->getUserGroups()
+            ->deleteGroup($magicLoginGroup);
+
+        if (!$groupDeleted) {
+            // Log error.
+            Craft::warning(Craft::t('magic-login', 'Could not delete Magic Login User group.'), __METHOD__);
+            return;
+        }
+
+        Craft::info(Craft::t('magic-login', 'Deleted Magic Login User Group.'), __METHOD__);
+    }
+
     // Protected Methods
     // =========================================================================
 
@@ -374,6 +401,59 @@ class MagicLogin extends Plugin
             'magic-login/settings',
             [
                 'settings' => $this->getSettings()
+            ]
+        );
+    }
+
+    /**
+     * Registers any routes the plugin might need.
+     *
+     * @return void
+     */
+    protected function registerSiteRoutes()
+    {
+        // Register our site routes
+        Event::on(
+            UrlManager::class,
+            UrlManager::EVENT_REGISTER_SITE_URL_RULES,
+            function (RegisterUrlRulesEvent $event) {
+                $event->rules['magic-login/login'] = 'magic-login/magic-login/login-form';
+                $event->rules['magic-login/register'] = 'magic-login/magic-login/register-form';
+                $event->rules['magic-login/auth/<publicKey:\w+>/<timestamp:\d+>/<signature:\w+>'] = 'magic-login/magic-login/auth';
+            }
+        );
+    }
+
+    /**
+     * Sets up any template roots required for the application.
+     *
+     * @return void
+     */
+    protected function setTemplateRoots()
+    {
+        Event::on(
+            View::class,
+            View::EVENT_REGISTER_SITE_TEMPLATE_ROOTS,
+            function (RegisterTemplateRootsEvent $event) {
+                $event->roots['magic-login'] = __DIR__ . '/templates/magic-login';
+            }
+        );
+    }
+
+    // Private Methods
+    // =========================================================================
+
+     /**
+     * Set any components for this plugin.
+     *
+     * @return void
+     */
+    private function registerComponents()
+    {
+        $this->setComponents(
+            [
+                'magicLoginRandomGeneratorService' => MagicLoginRandomGeneratorService::class,
+                'magicLoginAuthService' => MagicLoginAuthService::class,
             ]
         );
     }

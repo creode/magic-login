@@ -4,12 +4,12 @@
     <p class="message error">{{ craft.app.session.getFlash('error') }}</p>
 {% endif %}
 
-<form method="post" id="login-form">
+<form method="post" id="magic-login-form">
     {{ actionInput('magic-login/magic-login/login') }}
     {{ csrfInput() }}
 
     <label for="email">Email</label>
-    <input id="email" name="email" value="" placeholder="Enter a valid email..." />
+    <input id="email" name="email" value="" placeholder="{{ emailPlaceholder }}" />
 
-    <button type="submit" name="submitButton">Submit</button>
+    <button type="submit" name="submitButton">{{ submitButtonText }}</button>
 </form>
