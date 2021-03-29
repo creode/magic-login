@@ -40,4 +40,5 @@ return [
     'Enter a valid email address...' => 'Enter a valid email address...',
     'Submit' => 'Submit',
     'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.' => 'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.',
+    'Magic login is disabled, please contact an admin if you feel this is in error.' => 'Magic login is disabled, please contact an admin if you feel this is in error.',
 ];

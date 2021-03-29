@@ -3,7 +3,10 @@
 namespace creode\magiclogintests\acceptance;
 
 use Craft;
+use craft\records\UserGroup;
 use craft\web\User;
+use Craft\elements\User as UserElement;
+use craft\records\User as RecordsUser;
 use creode\magiclogin\MagicLogin;
 use creode\magiclogin\records\AuthRecord;
 use creode\magiclogintests\fixtures\AuthRecordFixture;
@@ -15,8 +18,34 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
      */
     protected $tester;
 
+    const ADMIN_USER = 1;
+
     /**
-     * Undocumented function
+     * @var \craft\records\UserGroup
+     */
+    protected $magicLinkGroup;
+
+    /**
+     * @inheritdoc
+     */
+    public function _before()
+    {
+        // Assign default user to Magic Login group.
+        $group = $this->_getMagicLoginGroup();
+        Craft::$app->getUsers()->assignUserToGroups(self::ADMIN_USER, [$group->id]);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function _after()
+    {
+        // Reassign user back to the default user group (unassign from magic login).
+        Craft::$app->getUsers()->assignUserToGroups(self::ADMIN_USER, []);
+    }
+
+    /**
+     * Sets up any fixtures used in this class.
      *
      * @return array
      */
@@ -25,7 +54,7 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
         return [
             'auth_records' => [
                 'class' => AuthRecordFixture::class,
-                // fixture data located in tests/_data/user.php
+                // fixture data located in tests/_data/magiclogin_authrecord.php
                 'dataFile' => codecept_data_dir() . 'magiclogin_authrecord.php'
             ],
         ];
@@ -94,6 +123,27 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
     }
 
     /**
+     * Tests that the correct error message comes back when a user outside of the
+     * magic link group tries to authenticate.
+     *
+     * @return void
+     */
+    public function testErrorWhenUserIsNotInMagicLinkGroup()
+    {
+        /** @var \creode\magiclogin\records\AuthRecord $authRecord */
+        $validRecord = $this->tester->grabFixture('auth_records', 'valid_auth_record');
+
+        // Unassign from magic login group to validate test case.
+        Craft::$app->getUsers()->assignUserToGroups($validRecord->userId, []);
+
+        $link = $this->_generateValidLink($validRecord);
+        $this->tester->amOnPage($link);
+
+        $this->tester->seeCurrentUrlEquals('/magic-login/login');
+        $this->tester->see('Magic login is disabled, please contact an admin if you feel this is in error.');
+    }
+
+    /**
      * Test that a fallback error occurs if we are unable to log a user in.
      *
      * @return void
@@ -142,7 +192,7 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
             User::class,
             [
                 'login' => function () {
-                    return true; 
+                    return true;
                 }
             ]
         );
@@ -226,5 +276,30 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
         );
 
         return compact(['privateKey', 'publicKey']);
+    }
+
+    /**
+     * Gets a magic login group object if exists, creates one if not.
+     *
+     * @return craft\records\UserGroup
+     */
+    private function _getMagicLoginGroup()
+    {
+        $magicLoginGroup = Craft::$app
+            ->getUserGroups()
+            ->getGroupByHandle(MagicLogin::MAGIC_LOGIN_USER_GROUP_HANDLE);
+
+        if (!$magicLoginGroup) {
+            // Make the magic login group. (Ideally we should have this already with plugin
+            // install but due to a craft issue we need to manually create it in order for 
+            // tests to pass.
+            $magicLoginGroup = new UserGroup();
+            $magicLoginGroup->name = 'Magic Login';
+            $magicLoginGroup->handle = MagicLogin::MAGIC_LOGIN_USER_GROUP_HANDLE;
+            $magicLoginGroup->description = 'Allows a user to login via magic link';
+            $magicLoginGroup->save();
+        }
+
+        return $magicLoginGroup;
     }
 }
