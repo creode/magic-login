@@ -205,8 +205,17 @@ class MagicLoginController extends Controller
             $this->setFailFlash(Craft::t('magic-login', 'Invalid login link provided.'));
             return $this->redirect('/magic-login/login');
         }
-        
-        // TODO: For added security, only allow someone to login when they are in the Magic Login Group.
+
+        $user = User::findOne($authRecord->userId);
+        $magicLoginGroup = Craft::$app
+            ->getUserGroups()
+            ->getGroupByHandle(MagicLogin::MAGIC_LOGIN_USER_GROUP_HANDLE);
+
+        if ($magicLoginGroup && !$user->isInGroup($magicLoginGroup)) {
+            // Throw an error.
+            $this->setFailFlash(Craft::t('magic-login', 'Magic login is disabled, please contact an admin if you feel this is in error.'));
+            return $this->redirect('/magic-login/login');
+        }
             
         // Check the signature.
         $generatedSignature = MagicLogin::$plugin
@@ -232,7 +241,6 @@ class MagicLoginController extends Controller
 
         // Attempt to login the user.
         $generalConfig = Craft::$app->getConfig()->getGeneral();
-        $user     = User::findOne($authRecord->userId);
         $loggedIn = Craft::$app->getUser()->login($user, $generalConfig->userSessionDuration);
 
         // If we can't login there was an error in Craft.

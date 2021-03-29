@@ -13,5 +13,5 @@ class AuthRecordFixture extends ActiveFixture
     public $modelClass = AuthRecord::class;
     // public $depends = [
     //     UserFixture::class
-    // ]
+    // ];
 }
