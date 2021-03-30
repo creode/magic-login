@@ -14,6 +14,7 @@ use creode\magiclogin\MagicLogin;
 
 use Craft;
 use craft\base\Model;
+use creode\magiclogin\helpers\TokenHelper;
 
 /**
  * MagicLogin Settings Model
@@ -73,5 +74,15 @@ class Settings extends Model
         return [
             [['linkExpiry', 'passwordLength'], 'number'],
         ];
+    }
+
+    /**
+     * Undocumented function
+     *
+     * @return void
+     */
+    public function getTokenisedEmailSubject()
+    {
+        return TokenHelper::replaceTokens($this->authenticationEmailSubject);
     }
 }

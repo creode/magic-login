@@ -15,17 +15,20 @@ use craft\web\View;
 
 use yii\base\Event;
 use craft\base\Plugin;
+use craft\elements\User;
 use craft\web\UrlManager;
 use yii\base\ActionEvent;
+use craft\models\UserGroup;
 use craft\services\Plugins;
 use craft\events\PluginEvent;
 use craft\controllers\UsersController;
-use craft\elements\User;
 use creode\magiclogin\models\Settings;
 use craft\events\RegisterUrlRulesEvent;
+use creode\magiclogin\tokens\HostnameToken;
 use craft\events\RegisterTemplateRootsEvent;
-use craft\models\UserGroup;
+use creode\magiclogin\events\RegisterTokensEvent;
 use creode\magiclogin\services\MagicLoginAuthService;
+use creode\magiclogin\services\MagicLoginTokenService;
 use creode\magiclogin\services\MagicLoginRandomGeneratorService;
 
 /**
@@ -44,6 +47,7 @@ use creode\magiclogin\services\MagicLoginRandomGeneratorService;
  *
  * @property MagicLoginAuthService $magicLoginAuthService
  * @property MagicLoginRandomGeneratorService $magicLoginRandomGeneratorService
+ * @property MagicLoginTokenService $magicLoginTokenService
  * @property Settings $settings
  * @method   Settings getSettings()
  */
@@ -56,7 +60,7 @@ class MagicLogin extends Plugin
      * Static property that is an instance of this plugin class so that it can be accessed via
      * MagicLogin::$plugin
      *
-     * @var MagicLogin
+     * @var \creode\magiclogin\MagicLogin
      */
     public static $plugin;
 
@@ -134,6 +138,7 @@ class MagicLogin extends Plugin
         $this->registerComponents();
         $this->setTemplateRoots();
         $this->registerSiteRoutes();
+        $this->registerTokens();
 
         // Runs function before a UserController action is executed.
         Event::on(
@@ -459,7 +464,24 @@ class MagicLogin extends Plugin
             [
                 'magicLoginRandomGeneratorService' => MagicLoginRandomGeneratorService::class,
                 'magicLoginAuthService' => MagicLoginAuthService::class,
+                'magicLoginTokenService' => MagicLoginTokenService::class,
             ]
+        );
+    }
+
+    /**
+     * Register any required tokens for use in replacements.
+     *
+     * @return void
+     */
+    private function registerTokens()
+    {
+        Event::on(
+            MagicLoginTokenService::class,
+            MagicLoginTokenService::EVENT_REGISTER_TOKENS,
+            function (RegisterTokensEvent $event) {
+                $event->tokens[] = HostnameToken::class;
+            }
         );
     }
 }
