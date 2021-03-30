@@ -13,26 +13,55 @@
  */
 #}
 
-{% import "_includes/forms" as forms %}
+{% extends 'settings/plugins/_settings' %}
 
 {% do view.registerAssetBundle("creode\\magiclogin\\assetbundles\\magiclogin\\MagicLoginAsset") %}
 
-{{ forms.textField({
-    first: true,
-    label: 'Link Expiry',
-    instructions: 'How long (in minutes) until a Magic Link expires.',
-    id: 'linkExpiry',
-    name: 'linkExpiry',
-    min: 1,
-    value: settings['linkExpiry']})
-}}
+{% set tabs = {
+    general: { label: 'General'|t('magic-login'), url: '#settings-general' },
+    emails: { label: 'Emails'|t('magic-login'), url: '#settings-emails' },
+} %}
 
-{{ forms.textField({
-    label: 'Password Length',
-    instructions: 'Users in Craft still need a password this plugin therefore generates one. You can set the length of this here.',
-    id: 'passwordLength',
-    name: 'passwordLength',
-    min: 16,
-    max: 50,
-    value: settings['passwordLength']})
-}}
+{% import "_includes/forms" as forms %}
+
+{% block content %}
+
+    {{ actionInput('plugins/save-plugin-settings') }}
+    {{ hiddenInput('pluginHandle', plugin.handle) }}
+    {{ redirectInput('settings') }}
+
+    {% namespace 'settings' %}
+        <div id="general">
+            {{ forms.textField({
+                first: true,
+                label: 'Link Expiry',
+                instructions: 'How long (in minutes) until a Magic Link expires.',
+                id: 'linkExpiry',
+                name: 'linkExpiry',
+                min: 1,
+                value: settings.linkExpiry})
+            }}
+
+            {{ forms.textField({
+                label: 'Password Length',
+                instructions: 'Users in Craft still need a password this plugin therefore generates one. You can set the length of this here.',
+                id: 'passwordLength',
+                name: 'passwordLength',
+                min: 16,
+                max: 50,
+                value: settings.passwordLength})
+            }}
+        </div>
+
+        <div id="emails" class="hidden">
+            {{ forms.textField({
+                first: true,
+                label: 'Email Subject',
+                instructions: 'What to display on the subject line for Magic Link emails.',
+                id: 'authenticationEmailSubject',
+                name: 'authenticationEmailSubject',
+                value: settings.authenticationEmailSubject})
+            }}
+        </div>
+    {% endnamespace %}
+{% endblock %}

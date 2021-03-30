@@ -48,6 +48,13 @@ class Settings extends Model
      */
     public $passwordLength = 16;
 
+    /**
+     * Subject line on the Magic Login authentication email.
+     *
+     * @var string
+     */
+    public $authenticationEmailSubject = '';
+
     // Public Methods
     // =========================================================================
 

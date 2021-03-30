@@ -390,19 +390,24 @@ class MagicLogin extends Plugin
     }
 
     /**
-     * Returns the rendered settings HTML, which will be inserted into the content
-     * block on the settings page.
-     *
-     * @return string The rendered settings HTML
+     * @inheritdoc
      */
-    protected function settingsHtml(): string
+    public function getSettingsResponse()
     {
-        return Craft::$app->view->renderTemplate(
-            'magic-login/settings',
-            [
-                'settings' => $this->getSettings()
-            ]
-        );
+        $view = Craft::$app->getView();
+        $namespace = $view->getNamespace();
+        $view->setNamespace('settings');
+        $settingsHtml = $this->settingsHtml();
+        $view->setNamespace($namespace);
+
+        /** @var Controller $controller */
+        $controller = Craft::$app->controller;
+
+        return $controller->renderTemplate('magic-login/settings', [
+            'plugin' => $this,
+            'settingsHtml' => $settingsHtml,
+            'settings' => $this->getSettings(),
+        ]);
     }
 
     /**

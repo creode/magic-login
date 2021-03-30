@@ -10,12 +10,8 @@
 
 namespace creode\magiclogin\services;
 
-use Craft;
-
 use RandomLib\Factory as RandomLibFactory;
 use craft\base\Component;
-use creode\magiclogin\models\AuthModel;
-use creode\magiclogin\records\AuthRecord;
 
 /**
  * MagicLoginAuthService Service
