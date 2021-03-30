@@ -5,6 +5,7 @@ namespace creode\magiclogintests\acceptance;
 use Craft;
 use craft\elements\User;
 use craft\mail\Mailer;
+use creode\magiclogin\MagicLogin;
 use creode\magiclogin\records\AuthRecord;
 
 class LoginFormTest extends \Codeception\Test\Unit
@@ -148,6 +149,9 @@ class LoginFormTest extends \Codeception\Test\Unit
         // Load up a valid user since they need to be registered to login.
         $validUser = User::findOne();
 
+        // See test/_craft/config/magic-login.php for reference.
+        $emailSubject = 'Here is your magic login link';
+
         // Get all Auth Records.
         $authRecords = AuthRecord::find()->all();
 
@@ -167,5 +171,11 @@ class LoginFormTest extends \Codeception\Test\Unit
 
         // We should have a new AuthRecord added to the database.
         $this->assertEquals(count($updatedAuthRecords), count($authRecords) + 1);
+
+        $this->tester->seeEmailIsSent();
+
+        // Validate that the subject is configured via the settings.
+        $magicLoginEmail = $this->tester->grabLastSentEmail();
+        $this->assertEquals($emailSubject, $magicLoginEmail->getSubject());
     }
 }
