@@ -137,8 +137,7 @@ class MagicLoginController extends Controller
             $template_variables
         );
 
-        // TODO: Make this configurable.
-        $subject = '[' . Craft::$app->getRequest()->getHostInfo() . '] Login Link';
+        $subject = MagicLogin::getInstance()->getSettings()->authenticationEmailSubject;
 
         // Send an email out to the user.
         $email_sent = Craft::$app

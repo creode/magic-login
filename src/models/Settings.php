@@ -53,7 +53,7 @@ class Settings extends Model
      *
      * @var string
      */
-    public $authenticationEmailSubject = '';
+    public $authenticationEmailSubject = 'Magic Login Link';
 
     // Public Methods
     // =========================================================================
