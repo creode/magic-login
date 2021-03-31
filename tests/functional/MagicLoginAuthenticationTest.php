@@ -96,6 +96,8 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
 
         $this->assertStringContainsString($authRecord->publicKey, $link);
         $this->assertStringContainsString($dateObject->getTimestamp(), $link);
+
+        $this->tester->seeRecord(AuthRecord::class, $authRecord->getAttributes());
     }
 
     /**
@@ -109,7 +111,8 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
         /** @var \creode\magiclogin\records\AuthRecord $authRecord */
         $authRecord = $this->tester->grabFixture('auth_records', 'expired_auth_record');
 
-        // Fixtures 
+        // Delete everything except the expired record since we only expect there to
+        // ever be one AuthRecord per user in the database.
         AuthRecord::deleteAll('id != ' . $authRecord->id);
 
         $user = UserElement::findOne(1);

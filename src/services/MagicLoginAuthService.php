@@ -56,18 +56,16 @@ class MagicLoginAuthService extends Component
         // If the link has not expired for this user then just issue it again.
         $existingAuthRecord = AuthRecord::findOne(['userId' => $user->id]);
         if (!$this->linkHasExpired($existingAuthRecord)) {
-            $dateCreatedObject = new DateTime($existingAuthRecord->dateCreated);
-            $timestamp = $dateCreatedObject->getTimestamp();
+            $dateTimeCreatedObject = new DateTime($existingAuthRecord->dateCreated);
+            $dateCreatedTimestamp = $dateTimeCreatedObject->getTimestamp();
 
             $signature = $this->generateSignature(
                 $existingAuthRecord->privateKey,
                 $existingAuthRecord->publicKey,
-                $timestamp
+                $dateCreatedTimestamp
             );
 
-            $existingAuthRecord->delete();
-
-            return $this->createMagicLoginUrl($existingAuthRecord->publicKey, $timestamp, $signature);
+            return $this->createMagicLoginUrl($existingAuthRecord->publicKey, $dateCreatedTimestamp, $signature);
         }
 
         // If we have an existing auth record but got to this point then it has expired and needs removing.
@@ -101,12 +99,12 @@ class MagicLoginAuthService extends Component
         $record->save();
 
         // Generate Datetime for current dateCreated and use it's timestamp.
-        $createdDate = new DateTime($record->dateCreated);
-        $timestamp = $createdDate->getTimestamp();
+        $dateTimeCreatedObject = new DateTime($record->dateCreated);
+        $dateCreatedTimestamp = $dateTimeCreatedObject->getTimestamp();
 
         // Build up a signature for validation and sent the link back to the user.
-        $signature = $this->generateSignature($privateKey, $publicKey, $timestamp);
-        return $this->createMagicLoginUrl($publicKey, $timestamp, $signature);
+        $signature = $this->generateSignature($privateKey, $publicKey, $dateCreatedTimestamp);
+        return $this->createMagicLoginUrl($publicKey, $dateCreatedTimestamp, $signature);
     }
 
     /**
@@ -172,10 +170,6 @@ class MagicLoginAuthService extends Component
 
         $authModel->dateCreated = new DateTime($authRecord->dateCreated);
 
-        if ($authModel->isExpired()) {
-            return true;
-        }
-
-        return false;
+        return $authModel->isExpired();
     }
 }
