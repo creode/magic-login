@@ -56,7 +56,7 @@ class MagicLoginAuthService extends Component
         // If the link has not expired for this user then just issue it again.
         $existingAuthRecord = AuthRecord::findOne(['userId' => $user->id]);
         if (!$this->linkHasExpired($existingAuthRecord)) {
-            $dateCreatedObject = new \DateTime($existingAuthRecord->dateCreated);
+            $dateCreatedObject = new DateTime($existingAuthRecord->dateCreated);
             $timestamp = $dateCreatedObject->getTimestamp();
 
             $signature = $this->generateSignature(
@@ -101,7 +101,7 @@ class MagicLoginAuthService extends Component
         $record->save();
 
         // Generate Datetime for current dateCreated and use it's timestamp.
-        $createdDate = new \DateTime($record->dateCreated);
+        $createdDate = new DateTime($record->dateCreated);
         $timestamp = $createdDate->getTimestamp();
 
         // Build up a signature for validation and sent the link back to the user.
