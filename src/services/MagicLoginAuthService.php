@@ -16,6 +16,7 @@ use craft\base\Component;
 use creode\magiclogin\MagicLogin;
 use creode\magiclogin\models\AuthModel;
 use creode\magiclogin\records\AuthRecord;
+use DateTime;
 
 /**
  * MagicLoginAuthService Service
@@ -52,9 +53,27 @@ class MagicLoginAuthService extends Component
             return false;
         }
 
-        // TODO: Does the user already have a magic login record?
-        // If so, is it still valid and can we return that instead?
-        // If not we should remove it in favour of creating this one.
+        // If the link has not expired for this user then just issue it again.
+        $existingAuthRecord = AuthRecord::findOne(['userId' => $user->id]);
+        if (!$this->linkHasExpired($existingAuthRecord)) {
+            $dateCreatedObject = new \DateTime($existingAuthRecord->dateCreated);
+            $timestamp = $dateCreatedObject->getTimestamp();
+
+            $signature = $this->generateSignature(
+                $existingAuthRecord->privateKey,
+                $existingAuthRecord->publicKey,
+                $timestamp
+            );
+
+            $existingAuthRecord->delete();
+
+            return $this->createMagicLoginUrl($existingAuthRecord->publicKey, $timestamp, $signature);
+        }
+
+        // If we have an existing auth record but got to this point then it has expired and needs removing.
+        if ($existingAuthRecord) {
+            $existingAuthRecord->delete();
+        }
 
         $generator = MagicLogin::$plugin
             ->magicLoginRandomGeneratorService
@@ -81,14 +100,13 @@ class MagicLoginAuthService extends Component
             ->getValidatedBodyParam('redirect') ?? $generalConfig->postLoginRedirect;
         $record->save();
 
+        // Generate Datetime for current dateCreated and use it's timestamp.
         $createdDate = new \DateTime($record->dateCreated);
-
         $timestamp = $createdDate->getTimestamp();
+
+        // Build up a signature for validation and sent the link back to the user.
         $signature = $this->generateSignature($privateKey, $publicKey, $timestamp);
-
-        $baseUrl = Craft::$app->getRequest()->getHostInfo();
-
-        return $baseUrl . "/magic-login/auth/$publicKey/$timestamp/$signature";
+        return $this->createMagicLoginUrl($publicKey, $timestamp, $signature);
     }
 
     /**
@@ -118,5 +136,46 @@ class MagicLoginAuthService extends Component
     public function getAuthorisationRecord($publicKey) : ?AuthRecord
     {
         return AuthRecord::findOne(['publicKey' => $publicKey]) ?? null;
+    }
+
+    /**
+     * Generate a full magic login link with the base url.
+     *
+     * @param string $publicKey
+     * @param integer $timestamp
+     * @param string $signature
+     * @return string
+     */
+    private function createMagicLoginUrl(string $publicKey, int $timestamp, string $signature)
+    {
+        $baseUrl = Craft::$app->getRequest()->getHostInfo();
+
+        return $baseUrl . "/magic-login/auth/$publicKey/$timestamp/$signature";
+    }
+
+    /**
+     * Quick check to determine if a magic link has expired.
+     *
+     * @param AuthRecord $authRecord
+     * @return boolean
+     */
+    private function linkHasExpired(?AuthRecord $authRecord)
+    {
+        if (!$authRecord) {
+            return true;
+        }
+
+        $authModel = new AuthModel($authRecord->getAttributes([
+            'publicKey',
+            'privateKey',
+        ]));
+
+        $authModel->dateCreated = new DateTime($authRecord->dateCreated);
+
+        if ($authModel->isExpired()) {
+            return true;
+        }
+
+        return false;
     }
 }

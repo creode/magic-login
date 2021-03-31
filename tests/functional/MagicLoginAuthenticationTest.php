@@ -80,6 +80,50 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
     }
 
     /**
+     * When a user already has a valid magic link we should provide that in the email.
+     *
+     * @return void
+     */
+    public function testWhenAUserAlreadyHasAValidLinkThatLinkShouldBeReused()
+    {
+        /** @var \creode\magiclogin\records\AuthRecord $authRecord */
+        $authRecord = $this->tester->grabFixture('auth_records', 'valid_auth_record');
+
+        $user = UserElement::findOne(1);
+        $link = MagicLogin::$plugin->magicLoginAuthService->createMagicLogin($user->email);
+
+        $dateObject = new \DateTime($authRecord->dateCreated);
+
+        $this->assertStringContainsString($authRecord->publicKey, $link);
+        $this->assertStringContainsString($dateObject->getTimestamp(), $link);
+    }
+
+    /**
+     * If a user has an expired link in the system and we attempted to create
+     * a new one the old one should be removed and a new one should be created.
+     *
+     * @return void
+     */
+    public function testWhenAUserHasAnExpiredLinkANewOneIsGenerated()
+    {
+        /** @var \creode\magiclogin\records\AuthRecord $authRecord */
+        $authRecord = $this->tester->grabFixture('auth_records', 'expired_auth_record');
+
+        // Fixtures 
+        AuthRecord::deleteAll('id != ' . $authRecord->id);
+
+        $user = UserElement::findOne(1);
+        $link = MagicLogin::$plugin->magicLoginAuthService->createMagicLogin($user->email);
+
+        $dateObject = new \DateTime($authRecord->dateCreated);
+
+        $this->assertStringNotContainsString($authRecord->publicKey, $link);
+        $this->assertStringNotContainsString($dateObject->getTimestamp(), $link);
+
+        $this->tester->dontSeeRecord(AuthRecord::class, $authRecord->getAttributes());
+    }
+
+    /**
      * Tests that providing an invalid key will not
      * log a user in.
      *

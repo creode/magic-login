@@ -152,6 +152,9 @@ class LoginFormTest extends \Codeception\Test\Unit
         // See test/_craft/config/magic-login.php for reference.
         $emailSubject = 'Here is your magic login link';
 
+        // Remove all existing auth records to give the opportunity for a proper test.
+        AuthRecord::deleteAll();
+
         // Get all Auth Records.
         $authRecords = AuthRecord::find()->all();
 
@@ -177,5 +180,5 @@ class LoginFormTest extends \Codeception\Test\Unit
         // Validate that the subject is configured via the settings.
         $magicLoginEmail = $this->tester->grabLastSentEmail();
         $this->assertEquals($emailSubject, $magicLoginEmail->getSubject());
-    }
+    }   
 }
