@@ -70,8 +70,7 @@ class MagicLoginController extends Controller
      */
     public function actionLoginForm()
     {
-        $userSession = Craft::$app->getUser();
-        if ($userSession->getIdentity()) {
+        if (Craft::$app->getUser()->getIdentity()) {
             $generalConfig = Craft::$app->getConfig()->getGeneral();
             $this->redirect($generalConfig->postLoginRedirect);
         }
@@ -170,8 +169,7 @@ class MagicLoginController extends Controller
      */
     public function actionRegisterForm()
     {
-        $userSession = Craft::$app->getUser();
-        if ($userSession->getIdentity()) {
+        if (Craft::$app->getUser()->getIdentity()) {
             $generalConfig = Craft::$app->getConfig()->getGeneral();
             $this->redirect($generalConfig->postLoginRedirect);
         }
@@ -191,8 +189,6 @@ class MagicLoginController extends Controller
      */
     public function actionAuth($publicKey, $timestamp, $signature)
     {
-        // TODO: What if you are already logged in?
-
         // Get Authorization Record by Public Key.
         $authRecord = MagicLogin::$plugin
             ->magicLoginAuthService
@@ -205,13 +201,21 @@ class MagicLoginController extends Controller
             return $this->redirect('/magic-login/login');
         }
 
+        // If we are logged in then redirect and delete the record.
+        if (Craft::$app->getUser()->getIdentity()) {
+            Craft::$app->session->setNotice(Craft::t('magic-login', 'You are already logged in.'));
+            $authRecord->delete();
+            return $this->redirect($authRecord->redirectUrl);
+        }
+
+        // Get the user and magic link group.
         $user = User::findOne($authRecord->userId);
         $magicLoginGroup = Craft::$app
             ->getUserGroups()
             ->getGroupByHandle(MagicLogin::MAGIC_LOGIN_USER_GROUP_HANDLE);
 
+        // If we have the magic login group and a user isn't in it then mark it as disabled.
         if ($magicLoginGroup && !$user->isInGroup($magicLoginGroup)) {
-            // Throw an error.
             $this->setFailFlash(Craft::t('magic-login', 'Magic login is disabled, please contact an admin if you feel this is in error.'));
             return $this->redirect('/magic-login/login');
         }

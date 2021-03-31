@@ -61,6 +61,25 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
     }
 
     /**
+     * If a logged in user clicks on a magic link then they should just be redirected
+     * and the link should be removed.
+     *
+     * @return void
+     */
+    public function testMagicLinkClickedWhenLoggedInWillRedirectYouToRedirectPage()
+    {
+        /** @var \creode\magiclogin\records\AuthRecord $authRecord */
+        $authRecord = $this->tester->grabFixture('auth_records', 'valid_auth_record');
+        $link = $this->_generateValidLink($authRecord);
+
+        $this->tester->amLoggedInAs(1);
+        $this->tester->amOnPage($link);
+        $this->tester->seeCurrentUrlEquals($authRecord->redirectUrl);
+
+        $this->tester->dontSeeRecord(AuthRecord::class, $authRecord->getAttributes());
+    }
+
+    /**
      * Tests that providing an invalid key will not
      * log a user in.
      *
