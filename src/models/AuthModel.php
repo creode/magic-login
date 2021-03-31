@@ -56,18 +56,33 @@ class AuthModel extends Model
 
     /**
      * Redirection url when logged in.
+     * 
+     * @var string
      */
     public $redirectUrl;
 
     /**
      * Creation date of the record.
      *
-     * @var string
+     * @var \DateTime
      */
     public $dateCreated;
 
     // Public Methods
     // =========================================================================
+
+    /**
+     * Checks the expiry date of the model to see if it has expired.
+     *
+     * @return boolean
+     */
+    public function isExpired()
+    {
+        // Check if timestamp is within bounds set by plugin configuration
+        $linkExpiryAmount = MagicLogin::getInstance()->getSettings()->linkExpiry;
+        $expiryTimestamp = $this->dateCreated->getTimestamp() + ($linkExpiryAmount * 60);
+        return $expiryTimestamp < time();
+    }
 
     /**
      * Returns the validation rules for attributes.

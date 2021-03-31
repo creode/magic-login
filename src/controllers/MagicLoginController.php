@@ -75,13 +75,7 @@ class MagicLoginController extends Controller
             $this->redirect($generalConfig->postLoginRedirect);
         }
 
-        return $this->renderTemplate(
-            'magic-login/_login-form',
-            [
-                'emailPlaceholder' => Craft::t('magic-login', 'Enter a valid email address...'),
-                'submitButtonText' => Craft::t('magic-login', 'Submit'),
-            ]
-        );
+        return $this->renderTemplate('magic-login/_login-form');
     }
 
     /**
@@ -107,11 +101,6 @@ class MagicLoginController extends Controller
             ->magicLoginAuthService
             ->createMagicLogin($email);
 
-        $linkSentMessage = Craft::t(
-            'magic-login',
-            'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.'
-        );
-
         if (!$link) {
             // If we couldn't generate a link (likely because a user doesn't exist).
             // This request is actually unsuccessful however to a user on the frontend
@@ -123,9 +112,7 @@ class MagicLoginController extends Controller
             // Although this might be considered spam since we could email
             // random people without consent. Perhaps add this as a
             // configurable option for the system.
-            return $this->renderTemplate('magic-login/_login-link_sent', [
-                'loginLinkSentMessage' => $linkSentMessage,
-            ]);
+            return $this->renderTemplate('magic-login/_login-link_sent');
         }
         
         $template_variables = [
@@ -157,9 +144,7 @@ class MagicLoginController extends Controller
             return $this->redirect('/magic-login/login');
         }
 
-        return $this->renderTemplate('magic-login/_login-link_sent', [
-            'loginLinkSentMessage' => $linkSentMessage,
-        ]);
+        return $this->renderTemplate('magic-login/_login-link_sent');
     }
 
     /**
