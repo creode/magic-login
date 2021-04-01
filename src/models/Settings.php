@@ -10,9 +10,6 @@
 
 namespace creode\magiclogin\models;
 
-use creode\magiclogin\MagicLogin;
-
-use Craft;
 use craft\base\Model;
 
 /**
@@ -54,6 +51,13 @@ class Settings extends Model
      * @var string
      */
     public $authenticationEmailSubject = 'Magic Login Link';
+
+    /**
+     * Error message displayed when an email address could not be found.
+     *
+     * @var string
+     */
+    public $emailNotFoundErrorMessage = '';
 
     // Public Methods
     // =========================================================================

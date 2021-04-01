@@ -184,18 +184,23 @@ class MagicLogin extends Plugin
     {
         $event->sender->requirePostRequest();
 
+        // If user is logged in already then don't proceed.
+        $userSession = Craft::$app->getUser();
+        $currentUser = $userSession->getIdentity();
+        if ($currentUser) {
+            return;
+        }
+
         // If we are updating an existing user then skip this.
         $userId = $this->request->getBodyParam('userId');
         if ($userId) {
             return;
         }
 
-        // TODO: Ensure we are not creating in admin area.
-
         // Require email.
         $email = $this->request->getRequiredBodyParam('email');
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            // TODO: Set this to be configurable.
+            // TODO: Maybe set this to be configurable in future.
             $event->sender->setFailFlash(\Craft::t('magic-login', 'Please enter a valid email address.'));
             $event->isValid = false;
             return;
@@ -243,7 +248,12 @@ class MagicLogin extends Plugin
             return;
         }
 
-        // TODO: Ensure we are not creating in admin area.
+        // If user is logged in already then don't proceed.
+        $userSession = Craft::$app->getUser();
+        $currentUser = $userSession->getIdentity();
+        if ($currentUser) {
+            return;
+        }
 
         // Require email.
         $email = $this->request->getRequiredBodyParam('email');
@@ -304,6 +314,12 @@ class MagicLogin extends Plugin
 
         // TODO: This will need removing once the check for beforeInstall can pass.
         if (Craft::$app->getEdition() !== Craft::Pro) {
+            Craft::$app->session->setError(
+                Craft::t(
+                    'magic-login', 
+                    'For this plugin to function correctly, you must have a pro license for Craft.'
+                )
+            );
             return;
         }
 

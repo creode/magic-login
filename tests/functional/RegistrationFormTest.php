@@ -50,7 +50,7 @@ class RegistrationFormTest extends Unit
         $this->tester->canSeeInSource('<input id="email" name="email"');
     }
 
-        /**
+    /**
      * Tests that the user is redirected to the postLoginRedirect config value.
      * 
      * @return void
