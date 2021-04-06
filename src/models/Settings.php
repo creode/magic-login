@@ -52,13 +52,6 @@ class Settings extends Model
      */
     public $authenticationEmailSubject = 'Magic Login Link';
 
-    /**
-     * Error message displayed when an email address could not be found.
-     *
-     * @var string
-     */
-    public $emailNotFoundErrorMessage = '';
-
     // Public Methods
     // =========================================================================
 
@@ -76,6 +69,7 @@ class Settings extends Model
     {
         return [
             [['linkExpiry', 'passwordLength'], 'number'],
+            [['authenticationEmailSubject'], 'string'],
         ];
     }
 }
