@@ -266,6 +266,7 @@ class MagicLogin extends Plugin
             return;
         }
 
+        // Load in the Magic User Group By Handle.
         $magicLoginGroup = Craft::$app
             ->getUserGroups()
             ->getGroupByHandle(self::MAGIC_LOGIN_USER_GROUP_HANDLE);
@@ -282,10 +283,22 @@ class MagicLogin extends Plugin
             return;
         }
 
+        // Load in existing user groups and push them into array.
+        // This is in the event a default group is set.
+        $userGroupsToAssign = array_map(
+            function ($group) {
+                return $group->id;
+            },
+            $user->groups
+        );
+
+        // Make sure that we add the magic login group to this.
+        $userGroupsToAssign[] = $magicLoginGroup->id;
+
         // Add Magic Login group to user.
         $addedToGroup = Craft::$app->getUsers()->assignUserToGroups(
             $user->id,
-            [$magicLoginGroup->id]
+            $userGroupsToAssign
         );
 
         // Throw a warning but continue with request.
