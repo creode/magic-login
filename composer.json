@@ -21,9 +21,23 @@
             "homepage": "https://www.creode.co.uk"
         }
     ],
+    "config": {
+        "platform": {
+            "php": "7.0"
+        }
+    },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/Shamunr/RandomLib"
+        }
+    ],
     "require": {
         "craftcms/cms": "^3.5",
         "paragonie/random-lib": "^2.0"
+    },
+    "replace": {
+        "paragonie/random_compat": "^2"
     },
     "require-dev": {
         "codeception/codeception": "^4.0",
