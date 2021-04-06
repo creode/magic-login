@@ -241,22 +241,23 @@ class MagicLogin extends Plugin
     public function handleMagicLoginAfterUserSave(ActionEvent $event)
     {
         $event->sender->requirePostRequest();
-
+        
         // If we are updating an existing user then skip this.
         $userId = $this->request->getBodyParam('userId');
         if ($userId) {
             return;
         }
 
-        // If user is logged in already then don't proceed.
-        $userSession = Craft::$app->getUser();
-        $currentUser = $userSession->getIdentity();
-        if ($currentUser) {
-            return;
-        }
-
         // Require email.
         $email = $this->request->getRequiredBodyParam('email');
+
+        // If we have not edited the existing user then we don't want to proceed.
+        $userSession = Craft::$app->getUser();
+        $currentUser = $userSession->getIdentity();
+        if ($currentUser && $currentUser->email !== $email) {
+            return;
+        }
+        
         $user = User::findOne(['email' => $email]);
 
         // If we can't find user something must have happened.
