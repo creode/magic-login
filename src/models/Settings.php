@@ -10,9 +10,6 @@
 
 namespace creode\magiclogin\models;
 
-use creode\magiclogin\MagicLogin;
-
-use Craft;
 use craft\base\Model;
 
 /**
@@ -72,6 +69,7 @@ class Settings extends Model
     {
         return [
             [['linkExpiry', 'passwordLength'], 'number'],
+            [['authenticationEmailSubject'], 'string'],
         ];
     }
 }

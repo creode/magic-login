@@ -184,18 +184,23 @@ class MagicLogin extends Plugin
     {
         $event->sender->requirePostRequest();
 
+        // If user is logged in already then don't proceed.
+        $userSession = Craft::$app->getUser();
+        $currentUser = $userSession->getIdentity();
+        if ($currentUser) {
+            return;
+        }
+
         // If we are updating an existing user then skip this.
         $userId = $this->request->getBodyParam('userId');
         if ($userId) {
             return;
         }
 
-        // TODO: Ensure we are not creating in admin area.
-
         // Require email.
         $email = $this->request->getRequiredBodyParam('email');
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            // TODO: Set this to be configurable.
+            // TODO: Maybe set this to be configurable in future.
             $event->sender->setFailFlash(\Craft::t('magic-login', 'Please enter a valid email address.'));
             $event->isValid = false;
             return;
@@ -236,17 +241,23 @@ class MagicLogin extends Plugin
     public function handleMagicLoginAfterUserSave(ActionEvent $event)
     {
         $event->sender->requirePostRequest();
-
+        
         // If we are updating an existing user then skip this.
         $userId = $this->request->getBodyParam('userId');
         if ($userId) {
             return;
         }
 
-        // TODO: Ensure we are not creating in admin area.
-
         // Require email.
         $email = $this->request->getRequiredBodyParam('email');
+
+        // If we have not edited the existing user then we don't want to proceed.
+        $userSession = Craft::$app->getUser();
+        $currentUser = $userSession->getIdentity();
+        if ($currentUser && $currentUser->email !== $email) {
+            return;
+        }
+        
         $user = User::findOne(['email' => $email]);
 
         // If we can't find user something must have happened.
@@ -255,6 +266,7 @@ class MagicLogin extends Plugin
             return;
         }
 
+        // Load in the Magic User Group By Handle.
         $magicLoginGroup = Craft::$app
             ->getUserGroups()
             ->getGroupByHandle(self::MAGIC_LOGIN_USER_GROUP_HANDLE);
@@ -271,10 +283,22 @@ class MagicLogin extends Plugin
             return;
         }
 
+        // Load in existing user groups and push them into array.
+        // This is in the event a default group is set.
+        $userGroupsToAssign = array_map(
+            function ($group) {
+                return $group->id;
+            },
+            $user->groups
+        );
+
+        // Make sure that we add the magic login group to this.
+        $userGroupsToAssign[] = $magicLoginGroup->id;
+
         // Add Magic Login group to user.
         $addedToGroup = Craft::$app->getUsers()->assignUserToGroups(
             $user->id,
-            [$magicLoginGroup->id]
+            $userGroupsToAssign
         );
 
         // Throw a warning but continue with request.
@@ -304,6 +328,12 @@ class MagicLogin extends Plugin
 
         // TODO: This will need removing once the check for beforeInstall can pass.
         if (Craft::$app->getEdition() !== Craft::Pro) {
+            Craft::$app->session->setError(
+                Craft::t(
+                    'magic-login', 
+                    'For this plugin to function correctly, you must have a pro license for Craft.'
+                )
+            );
             return;
         }
 

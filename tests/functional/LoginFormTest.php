@@ -110,7 +110,7 @@ class LoginFormTest extends \Codeception\Test\Unit
     public function testEmailNotSentMessage()
     {
         $mailerMock = $this->make(
-            Mailer::class, 
+            Mailer::class,
             [
                 'send' => function () {
                     return false;

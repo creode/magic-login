@@ -87,12 +87,18 @@ class MagicLoginController extends Controller
     {
         $this->requirePostRequest();
 
+        if (Craft::$app->getUser()->getIdentity()) {
+            $generalConfig = Craft::$app->getConfig()->getGeneral();
+            $this->setSuccessFlash(\Craft::t('magic-login', 'You are already logged in.'));
+            return $this->redirect($generalConfig->postLoginRedirect);
+        }
+
         $email = Craft::$app
             ->getRequest()
             ->getRequiredParam('email');
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-            // TODO: Set this to be configurable.
+            // TODO: Maybe set this to be configurable in future.
             $this->setFailFlash(\Craft::t('magic-login', 'Please enter a valid email address.'));
             return;
         }
@@ -131,7 +137,7 @@ class MagicLoginController extends Controller
             ->compose()
             ->setTo($email)
             ->setSubject($subject)
-            ->setHtmlBody($emailHtml)
+            ->setHtmlBody($emailHtml->data)
             ->send();
 
         if (!$email_sent) {
@@ -165,7 +171,7 @@ class MagicLoginController extends Controller
     /**
      * Handle any authentication check needed within the application.
      * e.g.: actions/magic-login/magic-login/auth
-     * 
+     *
      * @param $publicKey Public key associated with the request.
      * @param $timestamp Timestamp when the request was created.
      * @param $signature Signature of the keys.
