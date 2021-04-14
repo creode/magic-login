@@ -26,7 +26,7 @@ To install the plugin, follow these instructions.
 
 ## Magic Login Overview
 
-The Magic Login plugin is a simple plugin that sits on top of the existing user login journey. The plugin provides a way for users to register and login using a login link that is sent out to the provided email address to verify the identity of a user.
+The Magic Login plugin is a simple plugin that sits on top of the existing user login journey. The plugin provides a way for users to register and login using a unqiue one time url that is sent out to the provided email address, to verify the identity of a user.
 
 The main aim of this plugin is to add simple, extendible functionality utilising as much of the existing login and registration journey as possible. The plugin was built with customisation in mind, allowing all frontend templates to be customised to the users liking. For those people who just want this functioning, simple styled templates have been provided as default to get you up and running fast.
 
@@ -40,29 +40,20 @@ The Magic Login plugin comes with a few different configuration options as stand
 
 ## Using Magic Login
 
-In order to get started with the existing magic login plugin within your site, please look at the templates outlined here:
+Documented in the sections below are tips on using the magic login plugin within your existing project. This covers overwriting their templates, the list of routes provided by this plugin, using the existing stylesheets with your overwritten templates and how to include existing templates as partials in your project.
 
- - [Login Form](https://github.com/creode/magic-login/blob/main/src/templates/magic-login/_login-form.twig)
- - [Register Form](https://github.com/creode/magic-login/blob/main/src/templates/magic-login/_register-form.twig)
- - [Login Link Sent Page](https://github.com/creode/magic-login/blob/main/src/templates/magic-login/_login-link_sent.twig)
- - [Login Email](https://github.com/creode/magic-login/blob/main/src/templates/magic-login/emails/_login.twig)
-
-Each of these plugins should give a base for how the form is used. You are free to customise the styling and layout of these templates using the Template Roots functionality described below.
-
-There is also a small amount of configuration options in the settings panel which are discussed above.
-
-## Overwriting magic login templates
+### Overwriting magic login templates
 
 All of the templates on this plugin are overwritable using the [Template Roots](https://craftcms.com/docs/3.x/extend/template-roots.html#plugin-control-panel-templates) feature of Craft. The templates you can overwrite are listed below:
 
- - magic-login/_login-form.twig - Main Login form rendered at /magic-login/login
- - magic-login/_login-link_sent.twig - Shows link sent form once a user attempts to login
- - magic-login/_register-form.twig - Main Registration form rendered at /magic-login/register
- - magic-login/emails/_login.twig - Email template sent out to a user which contains the Magic Login Link
+ - [magic-login/_login-form.twig](https://github.com/creode/magic-login/blob/1.x/src/templates/magic-login/_login-form.twig) - Main Login form rendered at /magic-login/login
+ - [magic-login/_login-link_sent.twig](https://github.com/creode/magic-login/blob/1.x/src/templates/magic-login/_login-link_sent.twig) - Shows link sent form once a user attempts to login
+ - [magic-login/_register-form.twig](https://github.com/creode/magic-login/blob/1.x/src/templates/magic-login/_register-form.twig) - Main Registration form rendered at /magic-login/register
+ - [magic-login/emails/_login.twig](https://github.com/creode/magic-login/blob/1.x/src/templates/magic-login/emails/_login.twig) - Email template sent out to a user which contains the Magic Login Link
 
 If you follow that folder structure inside your sites /templates file any of the above templates can be completely re-written in order to be configured or styled however you would like.
 
-## Plugin Routes
+### Plugin Routes
 
 A few routes are defined as part of this plugin:
 
@@ -72,11 +63,9 @@ A few routes are defined as part of this plugin:
 
 Whilst we have the following routes this plugin aims to also implement functionality on top of the existing user registration routes so a number of the form submission places are the same as if you were trying to register a user normally.
 
-## Include Asset Bundle
+### Include Asset Bundle
 
-As part of this plugin we have a basic set of styling applied. This is meant as a boilerplate to get a user started and have some kind of basic styling. We are fully aware that this may not suit every user which is why all of this is overridable via the template roots functionality provided by craft.
-
-In the event you would like to include the default styling in your own template you can include the asset bundle in your template with the following:
+As part of this plugin we use asset bundles for styling the default templates. If you are overriding these templates but plan on including our existing styling you can do so by adding the following asset bundle into your own templates.
 
 `{% do view.registerAssetBundle("creode\\magiclogin\\assetbundles\\magiclogin\\MagicLoginAsset") %}`
 
