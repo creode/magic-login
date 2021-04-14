@@ -15,7 +15,7 @@ use craft\web\AssetBundle;
 use craft\web\assets\cp\CpAsset;
 
 /**
- * MagicLoginAsset AssetBundle
+ * MagicLoginAdminAsset AssetBundle
  *
  * AssetBundle represents a collection of asset files, such as CSS, JS, images.
  *
@@ -32,7 +32,7 @@ use craft\web\assets\cp\CpAsset;
  * @package   MagicLogin
  * @since     1.0.0
  */
-class MagicLoginAsset extends AssetBundle
+class MagicLoginAdminAsset extends AssetBundle
 {
     // Public Methods
     // =========================================================================
@@ -47,17 +47,17 @@ class MagicLoginAsset extends AssetBundle
 
         // define the dependencies
         $this->depends = [
-
+            CpAsset::class,
         ];
 
         // define the relative path to CSS/JS files that should be registered with the page
         // when this asset bundle is registered
         $this->js = [
-            'js/MagicLogin.js',
+            'js/MagicLoginAdmin.js',
         ];
 
         $this->css = [
-            'css/MagicLogin.css',
+            'css/MagicLoginAdmin.css',
         ];
 
         parent::init();

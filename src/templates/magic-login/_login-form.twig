@@ -4,6 +4,8 @@
     <p class="message error">{{ craft.app.session.getFlash('error') }}</p>
 {% endif %}
 
+{% do view.registerAssetBundle("creode\\magiclogin\\assetbundles\\magiclogin\\MagicLoginAsset") %}
+
 <form method="post" id="magic-login-form">
     {{ actionInput('magic-login/magic-login/login') }}
     {{ csrfInput() }}

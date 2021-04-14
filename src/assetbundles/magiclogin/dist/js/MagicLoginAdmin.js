@@ -1,7 +1,7 @@
 /**
  * Magic Login plugin for Craft CMS
  *
- * Magic Login CSS
+ * Magic Login Admin JS
  *
  * @author    Creode
  * @copyright Copyright (c) 2021 Creode
