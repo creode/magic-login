@@ -69,7 +69,7 @@ As part of this plugin we use asset bundles for styling the default templates. I
 
 `{% do view.registerAssetBundle("creode\\magiclogin\\assetbundles\\magiclogin\\MagicLoginAsset") %}`
 
-## Include Template
+### Include Template
 
 We are also aware with this plugin that sometimes you may want to inject the existing templates into your own template code. Craft and twig comes with a way of doing this by adding the following to your template:
 
