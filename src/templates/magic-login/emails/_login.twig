@@ -1,3 +1,17 @@
-<p>Click the link to login</p>
+<div class="ml-wrap">
+	
+	<div class="ml-header">
+		<img width="150" src="{{ craft.app.assetManager.publishedUrl('@creode/magiclogin/assetbundles/magiclogin/dist/img/logo.svg', true) }}" />
+	</div>
 
-<a href="{{ loginLink }}">{{ loginLink }}</p>
+	<div class="ml-content">
+
+		<h1>Your Magic Login Link is Here</h1>
+
+		<p>Click the button below to login.</p>
+
+		<a href="{{ loginLink }}" class="ml-button">{{ loginLink }}</a>
+
+	</div>
+
+</div>

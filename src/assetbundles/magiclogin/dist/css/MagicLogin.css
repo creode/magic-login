@@ -9,3 +9,57 @@
  * @package   MagicLogin
  * @since     1.0.0
  */
+
+.ml-wrap {
+    max-width: 1200px;
+    padding: 30px 20px;
+    padding-bottom: 60px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.ml-header {
+    margin-bottom: 30px;
+}
+
+.ml-content h1 {
+    margin-bottom: 60px;
+}
+
+.ml-content p {
+    margin-bottom: 60px;
+}
+
+.ml-button {
+    background-color: #CCC;
+    color: #000;
+    text-decoration: none;
+    font-size: 18px;
+    line-height: 21px;
+    padding: 10px 30px;
+    border: 0;
+    border-radius: 0;
+
+}
+
+.ml-instructions {
+    text-align: left;
+}
+
+.ml-form {
+    text-align: left;
+}
+
+.ml-form label {
+    display: block;
+}
+
+.ml-form input[type="email"],
+.ml-form input[type="text"],
+.ml-form input[type="password"] {
+    padding: 15px 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border: 1px solid #000;
+    border-radius: 0;
+}
