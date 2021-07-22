@@ -1,5 +1,10 @@
 # Set in accordance to your environment
 
+DB_DRIVER="mysql"
+DB_SERVER=$DB_SERVER
+DB_USER=$DB_USER
+DB_PASSWORD=$DB_PASSWORD
+DB_DATABASE="craft-test"
 DB_SCHEMA=""
 DB_TABLE_PREFIX="craft"
 DB_PORT="3306"

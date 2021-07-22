@@ -13,6 +13,10 @@ cache:
     - vendor/
 
 before_script:
+  - echo $DB_USER
+  - echo $DB_DATABASE
+  - echo $DB_PASS
+  - echo $DB_SERVER
   - cp tests/example-env-ci tests/.env
   - composer install
 
