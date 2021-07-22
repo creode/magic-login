@@ -13,14 +13,6 @@ cache:
     - vendor/
 
 before_script:
-  - php -r "ini_set('xdebug.var_display_max_depth', 10);"
-  - php -r "ini_set('xdebug.var_display_max_children', 256);"
-  - php -r "ini_set('xdebug.var_display_max_data', 1024);"
-  - export DB_USERNAME=$DATABASE_USER
-  - export DB_PASSWORD=$DATABASE_PASSWORD
-  - export DB_DATABASE=$DATABASE_NAME
-  - php -r 'var_dump($_ENV);'
-  - export
   - cp tests/example-env-ci tests/.env
   - composer install
 
@@ -32,12 +24,12 @@ services:
 # Set any variables we need
 variables:
   # Configure mysql environment variables (https://hub.docker.com/r/_/mysql/)
-  DB_USERNAME: $DATABASE_USER
+  DB_USER: $DATABASE_USER
   DB_HOST: mysql
   DB_SERVER: mysql
   DB_DRIVER: mysql
   DB_DATABASE: $DATABASE_NAME
-  DB_PASS: $DATABASE_PASSWORD
+  DB_PASSWORD: $DATABASE_PASSWORD
   MYSQL_DATABASE: $DATABASE_NAME
   MYSQL_ROOT_PASSWORD: $DATABASE_PASSWORD
   IMAGE: "gitlab.creode.co.uk:5050/john.cook/docker-test"
