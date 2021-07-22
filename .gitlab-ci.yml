@@ -13,6 +13,12 @@ cache:
     - vendor/
 
 before_script:
+  - php -r "ini_set('xdebug.var_display_max_depth', 10);"
+  - php -r "ini_set('xdebug.var_display_max_children', 256);"
+  - php -r "ini_set('xdebug.var_display_max_data', 1024);"
+  - export DB_USERNAME=$DATABASE_USER
+  - export DB_PASSWORD=$DATABASE_PASSWORD
+  - export DB_DATABASE=$DATABASE_NAME
   - php -r 'var_dump($_ENV);'
   - cp tests/example-env-ci tests/.env
   - composer install
