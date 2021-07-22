@@ -1,0 +1,5 @@
+# Set in accordance to your environment
+
+DB_SCHEMA=""
+DB_TABLE_PREFIX="craft"
+DB_PORT="3306"
