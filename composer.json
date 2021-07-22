@@ -29,7 +29,7 @@
     "repositories": [
         {
             "type": "vcs",
-            "url": "https://github.com/Shamunr/RandomLib"
+            "url": "git@github.com:Shamunr/RandomLib.git"
         }
     ],
     "require": {
