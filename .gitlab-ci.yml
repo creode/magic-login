@@ -13,6 +13,7 @@ cache:
     - vendor/
 
 before_script:
+  - ssh-keyscan -H github.com >> ~/.ssh/known_hosts
   - cp tests/example-env-ci tests/.env
   - composer install
 
