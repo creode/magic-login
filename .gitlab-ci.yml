@@ -20,6 +20,7 @@ before_script:
   - export DB_PASSWORD=$DATABASE_PASSWORD
   - export DB_DATABASE=$DATABASE_NAME
   - php -r 'var_dump($_ENV);'
+  - export
   - cp tests/example-env-ci tests/.env
   - composer install
 
