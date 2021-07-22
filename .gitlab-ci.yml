@@ -13,7 +13,7 @@ cache:
     - vendor/
 
 before_script:
-  - cp tests/example-env-ci .env
+  - cp tests/example-env-ci tests/.env
   - composer install
 
 # Bring in any services we need http://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-a-service
