@@ -13,6 +13,7 @@ cache:
     - vendor/
 
 before_script:
+  - php -r 'var_dump($_ENV);'
   - cp tests/example-env-ci tests/.env
   - composer install
 
