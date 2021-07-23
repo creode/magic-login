@@ -1,16 +1,21 @@
-{% if craft.app.session.hasFlash('notice') %}
-    <p class="message notice">{{ craft.app.session.getFlash('notice') }}</p>
-{% elseif craft.app.session.hasFlash('error') %}
-    <p class="message error">{{ craft.app.session.getFlash('error') }}</p>
-{% endif %}
+<div class="ml-wrap">
 
-<form method="post" id="register">
-    {{ actionInput('users/save-user') }}
-    {{ csrfInput() }}
-    {{ redirectInput('user') }}
+    {% if craft.app.session.hasFlash('notice') %}
+        <p class="message notice">{{ craft.app.session.getFlash('notice') }}</p>
+    {% elseif craft.app.session.hasFlash('error') %}
+        <p class="message error">{{ craft.app.session.getFlash('error') }}</p>
+    {% endif %}
 
-    <label for="email">Email</label>
-    <input id="email" name="email" value="" placeholder="{{ 'Enter a valid email...'|t('magic-login') }}" />
+    <p class="ml-instructions">{{ 'Please enter your email below in order to register.'|t('magic-login') }}</p>
 
-    <button type="submit">{{ 'Submit'|t('magic-login') }}</button>
-</form>
+    <form method="post" class="ml-form" id="register">
+        {{ actionInput('users/save-user') }}
+        {{ csrfInput() }}
+        {{ redirectInput('user') }}
+
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" value="" placeholder="{{ 'Enter a valid email...'|t('magic-login') }}" /><br/>
+
+        <button class="ml-button" type="submit">{{ 'Submit'|t('magic-login') }}</button>
+    </form>
+</div>
