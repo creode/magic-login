@@ -6,7 +6,7 @@
         <p class="message error">{{ craft.app.session.getFlash('error') }}</p>
     {% endif %}
 
-    <p class="ml-instructions">Please enter your email below in order to register.</p>
+    <p class="ml-instructions">{{ 'Please enter your email below in order to register.'|t('magic-login') }}</p>
 
     <form method="post" class="ml-form" id="register">
         {{ actionInput('users/save-user') }}

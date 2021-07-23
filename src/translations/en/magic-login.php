@@ -41,4 +41,8 @@ return [
     'Submit' => 'Submit',
     'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.' => 'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.',
     'Magic login is disabled, please contact an admin if you feel this is in error.' => 'Magic login is disabled, please contact an admin if you feel this is in error.',
+    'Please enter your email below in order to register.' => 'Please enter your email below in order to register.',
+    'Please enter your email below in order to log in.' => 'Please enter your email below in order to log in.',
+    'Your Magic Login Link is Here' => 'Your Magic Login Link is Here',
+    'Click the button below to login.' => 'Click the button below to login.'
 ];

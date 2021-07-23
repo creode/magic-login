@@ -8,7 +8,7 @@
 
     {% do view.registerAssetBundle("creode\\magiclogin\\assetbundles\\magiclogin\\MagicLoginAsset") %}
 
-    <p class="ml-instructions">Please enter your email below in order to log in.</p>
+    <p class="ml-instructions">{{ 'Please enter your email below in order to log in.'|t('magic-login') }}</p>
 
     <form method="post" class="ml-form" id="magic-login-form">
         {{ actionInput('magic-login/magic-login/login') }}
