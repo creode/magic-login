@@ -1,6 +1,6 @@
 {
     "name": "creode/magic-login",
-    "description": "A plugin which sits on top of the existing ",
+    "description": "A Magic Link plugin which sits on top of the existing user sign in and registration process.",
     "type": "craft-plugin",
     "version": "1.0.0",
     "keywords": [
