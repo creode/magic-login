@@ -11,13 +11,14 @@ image: $IMAGE:$PHP_VERSION
 cache:
   paths:
     - vendor/
+    - composer-cache/
 
 before_script:
   - mkdir -p ~/.ssh
   - touch ~/.ssh/known_hosts
   - ssh-keyscan -H github.com >> ~/.ssh/known_hosts
   - cp tests/example-env-ci tests/.env
-  - composer install
+  - COMPOSER_CACHE_DIR=composer-cache composer install
 
 # Bring in any services we need http://docs.gitlab.com/ee/ci/docker/using_docker_images.html#what-is-a-service
 # See http://docs.gitlab.com/ee/ci/services/README.html for examples.
