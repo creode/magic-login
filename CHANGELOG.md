@@ -4,6 +4,15 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## [1.0.3](https://github.com/creode/magic-login/compare/v1.0.2...v1.0.3) (2021-07-26)
+
+
+### Bug Fixes
+
+* Fixes changelog formatting ([fd1667](https://github.com/creode/magic-login/commit/fd16673682a133abb3d15ed11b5795cf7cff119b))
+
+---
+
 ## [1.0.2](https://github.com/creode/magic-login/compare/v1.0.1...v1.0.2) (2021-07-26)
 
 
