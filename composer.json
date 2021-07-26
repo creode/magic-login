@@ -2,7 +2,7 @@
     "name": "creode/magic-login",
     "description": "A plugin which sits on top of the existing ",
     "type": "craft-plugin",
-    "version": "1.0.0",
+    "version": "",
     "keywords": [
         "craft",
         "cms",
@@ -48,11 +48,11 @@
     },
     "autoload": {
         "psr-4": {
-          "creode\\magiclogin\\": "src/",
-          "creode\\magiclogintests\\fixtures\\": "tests/fixtures/"
+            "creode\\magiclogin\\": "src/",
+            "creode\\magiclogintests\\fixtures\\": "tests/fixtures/"
         }
     },
-    "scripts":{
+    "scripts": {
         "test": "php vendor/bin/codecept run",
         "changelog": "php vendor/bin/conventional-changelog",
         "release": "php vendor/bin/conventional-changelog --commit",

@@ -1,3 +1,14 @@
+<!--- BEGIN HEADER -->
+# Changelog
+
+All notable changes to this project will be documented in this file.
+<!--- END HEADER -->
+
+## [](https://github.com/creode/magic-login/compare/...v) (2021-07-26)
+
+
+---
+
 # Changelog
 All notable changes to this project will be documented in this file.
 
