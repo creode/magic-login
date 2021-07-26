@@ -3,6 +3,7 @@
 namespace creode\magiclogintests\acceptance;
 
 use Craft;
+use craft\web\View;
 use FunctionalTester;
 use craft\records\User;
 use RandomLib\Generator;
@@ -47,7 +48,14 @@ class RegistrationFormTest extends Unit
         // Test that we can see the registration form.
         $this->tester->amOnPage('/magic-login/register');
         $this->tester->seeResponseCodeIs(200);
-        $this->tester->canSeeInSource('<input id="email" name="email"');
+        $this->tester->canSeeInSource('name="email"');
+        $this->tester->canSeeInSource('<form');
+
+        $view = new View();
+        $registrationActionInputMarkup = $view->renderString(
+            '{{ actionInput(\'users/save-user\') }}'
+        );
+        $this->tester->canSeeInSource($registrationActionInputMarkup);
     }
 
     /**

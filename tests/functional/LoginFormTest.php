@@ -3,8 +3,9 @@
 namespace creode\magiclogintests\acceptance;
 
 use Craft;
-use craft\elements\User;
+use craft\web\View;
 use craft\mail\Mailer;
+use craft\elements\User;
 use creode\magiclogin\MagicLogin;
 use creode\magiclogin\records\AuthRecord;
 
@@ -24,7 +25,15 @@ class LoginFormTest extends \Codeception\Test\Unit
     {
         $this->tester->amOnPage('/magic-login/login');
         $this->tester->seeResponseCodeIs(200);
-        $this->tester->canSeeInSource('<input id="email" name="email"');
+        $this->tester->canSeeInSource('name="email"');
+        $this->tester->canSeeInSource('<form');
+
+        $view = new View();
+        $loginFormActionMarkup = $view->renderString(
+            '{{ actionInput(\'magic-login/magic-login/login\') }}'
+        );
+        $this->tester->canSeeInSource($loginFormActionMarkup);
+        $this->tester->canSeeInSource('<input type="hidden" name="action" value="magic-login/magic-login/login">');
     }
 
     /**
