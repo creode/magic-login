@@ -1,0 +1,61 @@
+name: Run Automated Tests
+
+on:
+  push:
+    branches: [ 1.x ]
+  pull_request:
+    branches: [ 1.x ]
+
+jobs:
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        php: [7.3, 7.4, 8.0]
+        dependency-version: [prefer-stable]
+        os: [ubuntu-latest]
+
+    name: P${{ matrix.php }} - ${{ matrix.dependency-version }} - ${{ matrix.os }}
+
+    # Service containers to run with `container-job`
+    services:
+      # Label used to access the service container
+      mysql:
+        # Docker Hub image
+        image: mysql:5.7
+        # Provide the password for postgres
+        env:
+          MYSQL_DATABASE: craft_tests
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+        ports: 
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: Setup PHP
+      uses: shivammathur/setup-php@v2
+      with:
+          php-version: ${{ matrix.php }}
+          extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, mysql, mysqli, pdo_mysql, bcmath, soap, intl, gd, exif, iconv, imagick
+          coverage: none
+
+    - name: Install dependencies
+      run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
+
+    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
+    # Docs: https://getcomposer.org/doc/articles/scripts.md
+
+    - name: Setup Tests
+      run: cp tests/example-env-ci tests/.env
+
+    - name: Run test suite
+      run: composer run-script test
+      env:
+        DB_USER: root
+        DB_SERVER: 127.0.0.1
+        DB_DRIVER: mysql
+        DB_DATABASE: craft_tests
+        DB_PORT: ${{ job.services.mysql.ports[3306] }}
