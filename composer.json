@@ -2,7 +2,6 @@
     "name": "creode/magic-login",
     "description": "A plugin which sits on top of the existing ",
     "type": "craft-plugin",
-    "version": "",
     "keywords": [
         "craft",
         "cms",
