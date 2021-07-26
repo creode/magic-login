@@ -33,7 +33,7 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^3.5",
+        "craftcms/cms": "^3.6",
         "paragonie/random-lib": "^2.0"
     },
     "replace": {
