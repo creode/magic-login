@@ -1,3 +1,18 @@
+<!--- BEGIN HEADER -->
+# Changelog
+
+All notable changes to this project will be documented in this file.
+<!--- END HEADER -->
+
+## [1.0.2](https://github.com/creode/magic-login/compare/v1.0.1...v1.0.2) (2021-07-26)
+
+
+### Bug Fixes
+
+* Remove version from composer file as it caused tests to fail. ([89c491](https://github.com/creode/magic-login/commit/89c4915accc77d9164a370417883b6c87d651545))
+
+---
+
 # Changelog
 All notable changes to this project will be documented in this file.
 

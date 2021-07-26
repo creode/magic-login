@@ -71,5 +71,6 @@
             "MagicLoginRandomGeneratorService": "creode\\magiclogin\\services\\MagicLoginRandomGeneratorService"
         },
         "class": "creode\\magiclogin\\MagicLogin"
-    }
+    },
+    "version": "1.0.2"
 }
