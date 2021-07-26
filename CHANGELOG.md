@@ -13,11 +13,7 @@ All notable changes to this project will be documented in this file.
 
 ---
 
-# Changelog
-All notable changes to this project will be documented in this file.
-
-
-## [1.0.1](git@github.com:creode/magic-login/compare/v1.0.0...v1.0.1) (2021-07-26)
+## [1.0.1](https://github.com/creode/magic-login/compare/v1.0.0...v1.0.1) (2021-07-26)
 
 
 ### Fixes
@@ -28,4 +24,3 @@ All notable changes to this project will be documented in this file.
 * Makes test suite more more dynamic and removed markup dependency. ([cf72f4](git@github.com:creode/magic-login/commit/cf72f42038f55a111ce4651365a15dab067506ac))
 
 ---
-
