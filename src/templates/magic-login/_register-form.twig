@@ -1,29 +1,23 @@
-{% extends '_layouts/base' %}
+<div class="ml-wrap">
 
-{% block content %}
+    {% if craft.app.session.hasFlash('notice') %}
+        <p class="message notice">{{ craft.app.session.getFlash('notice') }}</p>
+    {% elseif craft.app.session.hasFlash('error') %}
+        <p class="message error">{{ craft.app.session.getFlash('error') }}</p>
+    {% endif %}
 
-    <div class="ml-wrap">
+    {% do view.registerAssetBundle("creode\\magiclogin\\assetbundles\\magiclogin\\MagicLoginAsset") %}
 
-        {% if craft.app.session.hasFlash('notice') %}
-            <p class="message notice">{{ craft.app.session.getFlash('notice') }}</p>
-        {% elseif craft.app.session.hasFlash('error') %}
-            <p class="message error">{{ craft.app.session.getFlash('error') }}</p>
-        {% endif %}
+    <p class="ml-instructions">{{ 'Please enter your email below in order to register.'|t('magic-login') }}</p>
 
-        {% do view.registerAssetBundle("creode\\magiclogin\\assetbundles\\magiclogin\\MagicLoginAsset") %}
+    <form method="post" class="ml-form" id="register">
+        {{ actionInput('users/save-user') }}
+        {{ csrfInput() }}
+        {{ redirectInput('user') }}
 
-        <p class="ml-instructions">{{ 'Please enter your email below in order to register.'|t('magic-login') }}</p>
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" value="" placeholder="{{ 'Enter a valid email...'|t('magic-login') }}" /><br/>
 
-        <form method="post" class="ml-form" id="register">
-            {{ actionInput('users/save-user') }}
-            {{ csrfInput() }}
-            {{ redirectInput('user') }}
-
-            <label for="email">Email</label>
-            <input id="email" type="email" name="email" value="" placeholder="{{ 'Enter a valid email...'|t('magic-login') }}" /><br/>
-
-            <button class="ml-button" type="submit">{{ 'Submit'|t('magic-login') }}</button>
-        </form>
-    </div>
-
-{% endblock %}
+        <button class="ml-button" type="submit">{{ 'Submit'|t('magic-login') }}</button>
+    </form>
+</div>
