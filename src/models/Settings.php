@@ -2,7 +2,7 @@
 /**
  * Magic Login plugin for Craft CMS 3.x
  *
- * A plugin which sits on top of the existing 
+ * A Magic Link plugin which sits on top of the existing user sign in and registration process.
  *
  * @link      https://www.creode.co.uk
  * @copyright Copyright (c) 2021 Creode
@@ -28,48 +28,48 @@ use craft\base\Model;
  */
 class Settings extends Model
 {
-    // Public Properties
-    // =========================================================================
+	// Public Properties
+	// =========================================================================
 
-    /**
-     * Default value for how many minutes a magic link is valid.
-     *
-     * @var integer
-     */
-    public $linkExpiry = 15;
+	/**
+	 * Default value for how many minutes a magic link is valid.
+	 *
+	 * @var integer
+	 */
+	public $linkExpiry = 15;
 
-    /**
-     * Default random password length generated with a user.
-     *
-     * @var integer
-     */
-    public $passwordLength = 16;
+	/**
+	 * Default random password length generated with a user.
+	 *
+	 * @var integer
+	 */
+	public $passwordLength = 16;
 
-    /**
-     * Subject line on the Magic Login authentication email.
-     *
-     * @var string
-     */
-    public $authenticationEmailSubject = 'Magic Login Link';
+	/**
+	 * Subject line on the Magic Login authentication email.
+	 *
+	 * @var string
+	 */
+	public $authenticationEmailSubject = 'Magic Login Link';
 
-    // Public Methods
-    // =========================================================================
+	// Public Methods
+	// =========================================================================
 
-    /**
-     * Returns the validation rules for attributes.
-     *
-     * Validation rules are used by [[validate()]] to check if attribute values are valid.
-     * Child classes may override this method to declare different validation rules.
-     *
-     * More info: http://www.yiiframework.com/doc-2.0/guide-input-validation.html
-     *
-     * @return array
-     */
-    public function rules()
-    {
-        return [
-            [['linkExpiry', 'passwordLength'], 'number'],
-            [['authenticationEmailSubject'], 'string'],
-        ];
-    }
+	/**
+	 * Returns the validation rules for attributes.
+	 *
+	 * Validation rules are used by [[validate()]] to check if attribute values are valid.
+	 * Child classes may override this method to declare different validation rules.
+	 *
+	 * More info: http://www.yiiframework.com/doc-2.0/guide-input-validation.html
+	 *
+	 * @return array
+	 */
+	public function rules()
+	{
+		return [
+			[['linkExpiry', 'passwordLength'], 'number'],
+			[['authenticationEmailSubject'], 'string'],
+		];
+	}
 }
