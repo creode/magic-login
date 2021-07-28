@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 1.0.4 (2021-07-28)
+
+
+### Bug Fixes
+
+* Fixes changelog to match correct format (29e395)
+* Patches in extra changelog functionality to conform to craft (38319c)
+
+---
+
 ## 1.0.3 - 2021-07-26
 
 

@@ -74,9 +74,9 @@
         "class": "creode\\magiclogin\\MagicLogin",
         "patches": {
             "marcocesarato/php-conventional-changelog": {
-              "Add startup configuration for PHP server": "./patches/changelog-version-reformat.diff"
+                "Add startup configuration for PHP server": "./patches/changelog-version-reformat.diff"
             }
-          }
+        }
     },
-    "version": "1.0.3"
+    "version": "1.0.4"
 }
