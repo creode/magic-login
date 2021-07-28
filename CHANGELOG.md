@@ -4,6 +4,13 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 1.0.5 - 2021-07-28
+### Bug Fixes
+
+* Broken release script issue (8ea570)
+
+---
+
 ## 1.0.4 - 2021-07-28
 
 
