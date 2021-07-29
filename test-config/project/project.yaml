@@ -12,11 +12,11 @@ system:
   edition: pro
   live: true
   name: 'Craft test site'
-  schemaVersion: 3.6.11.1
+  schemaVersion: 3.7.7
   timeZone: America/Los_Angeles
 users:
-  allowPublicRegistration: false
+  allowPublicRegistration: true
   defaultGroup: null
   photoSubpath: null
   photoVolumeUid: null
-  requireEmailVerification: true
+  requireEmailVerification: false
