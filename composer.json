@@ -33,8 +33,7 @@
     ],
     "require": {
         "craftcms/cms": "^3.6",
-        "paragonie/random-lib": "^2.0",
-        "cweagans/composer-patches": "^1.7"
+        "paragonie/random-lib": "^2.0"
     },
     "replace": {
         "paragonie/random_compat": "^2"
@@ -71,12 +70,7 @@
             "MagicLoginAuthService": "creode\\magiclogin\\services\\MagicLoginAuthService",
             "MagicLoginRandomGeneratorService": "creode\\magiclogin\\services\\MagicLoginRandomGeneratorService"
         },
-        "class": "creode\\magiclogin\\MagicLogin",
-        "patches": {
-            "marcocesarato/php-conventional-changelog": {
-                "Add startup configuration for PHP server": "./patches/changelog-version-reformat.diff"
-            }
-        }
+        "class": "creode\\magiclogin\\MagicLogin"
     },
     "version": "1.0.5"
 }
