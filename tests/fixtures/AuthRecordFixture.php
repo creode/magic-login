@@ -10,5 +10,5 @@ use yii\test\ActiveFixture;
  */
 class AuthRecordFixture extends ActiveFixture
 {
-    public $modelClass = AuthRecord::class;
+	public $modelClass = AuthRecord::class;
 }

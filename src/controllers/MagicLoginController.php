@@ -11,13 +11,10 @@
 namespace creode\magiclogin\controllers;
 
 use Craft;
-use craft\controllers\UsersController;
-use craft\web\View;
 use craft\elements\User;
 use craft\web\Controller;
 use creode\magiclogin\MagicLogin;
 use DateTime;
-use yii\web\ForbiddenHttpException;
 
 /**
  * MagicLogin Controller
@@ -58,6 +55,9 @@ class MagicLoginController extends Controller
 		'register',
 		'register-form',
 		'auth',
+		'login-register-form',
+		'login-or-register',
+		'login-link-sent',
 	];
 
 	// Public Methods
@@ -76,6 +76,87 @@ class MagicLoginController extends Controller
 		}
 
 		return $this->renderTemplate('magic-login/_login-form');
+	}
+
+	/**
+	 * Render the form which allows to a user to either login or register.
+	 *
+	 * @return string
+	 */
+	public function actionLoginRegisterForm()
+	{
+		if (Craft::$app->getUser()->getIdentity()) {
+			$generalConfig = Craft::$app->getConfig()->getGeneral();
+			$this->redirect($generalConfig->postLoginRedirect);
+		}
+
+		return $this->renderTemplate('magic-login/_login-register-form');
+	}
+
+	public function actionLoginLinkSent()
+	{
+		if (Craft::$app->getUser()->getIdentity()) {
+			$generalConfig = Craft::$app->getConfig()->getGeneral();
+			$this->redirect($generalConfig->postLoginRedirect);
+		}
+
+		return $this->renderTemplate('magic-login/_login-link-sent');
+	}
+
+	/**
+	 * Handles registering or logging in a user.
+	 *
+	 * @return string
+	 */
+	public function actionLoginOrRegister()
+	{
+		$this->requirePostRequest();
+
+		if (Craft::$app->getUser()->getIdentity()) {
+			$generalConfig = Craft::$app->getConfig()->getGeneral();
+			$this->setSuccessFlash(\Craft::t('magic-login', 'You are already logged in.'));
+			return $this->redirect($generalConfig->postLoginRedirect);
+		}
+
+		$email = Craft::$app
+			->getRequest()
+			->getRequiredParam('email');
+
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			// TODO: Maybe set this to be configurable in future.
+			$this->setFailFlash(\Craft::t('magic-login', 'Please enter a valid email address.'));
+			return;
+		}
+
+		// Lookup email address - do we have a user?
+		$user = User::findOne(['email' => $email]);
+		if ($user === null) {
+			// Save the user
+			Craft::$app->runAction('users/save-user');
+
+			// Send the new user a magic login link email.
+			Craft::$app->runAction('magic-login/magic-login/login');
+
+			// Render the login_link_sent template.
+			return $this->redirectToPostedUrl(null, 'magic-login/login-link-sent');
+		}
+
+		$magicLoginGroup = Craft::$app
+			->getUserGroups()
+			->getGroupByHandle(MagicLogin::MAGIC_LOGIN_USER_GROUP_HANDLE);
+
+		// If we have the magic login group and a user isn't in it then mark it as disabled.
+		if ($magicLoginGroup && !$user->isInGroup($magicLoginGroup)) {
+			$this->setFailFlash(
+				Craft::t(
+					'magic-login',
+					'Magic login is disabled, please contact an admin if you feel this is in error.'
+				)
+			);
+			return;
+		}
+
+		return Craft::$app->runAction('magic-login/magic-login/login');
 	}
 
 	/**
@@ -118,7 +199,7 @@ class MagicLoginController extends Controller
 			// Although this might be considered spam since we could email
 			// random people without consent. Perhaps add this as a
 			// configurable option for the system.
-			return $this->renderTemplate('magic-login/_login-link_sent');
+			return $this->renderTemplate('magic-login/_login-link-sent');
 		}
 		
 		$template_variables = [
@@ -150,7 +231,7 @@ class MagicLoginController extends Controller
 			return $this->redirect('/magic-login/login');
 		}
 
-		return $this->renderTemplate('magic-login/_login-link_sent');
+		return $this->renderTemplate('magic-login/_login-link-sent');
 	}
 
 	/**
@@ -166,6 +247,42 @@ class MagicLoginController extends Controller
 		}
 
 		return $this->renderTemplate('magic-login/_register-form');
+	}
+
+	public function actionRegister()
+	{
+		$this->requirePostRequest();
+
+		if (Craft::$app->getUser()->getIdentity()) {
+			$generalConfig = Craft::$app->getConfig()->getGeneral();
+			$this->setSuccessFlash(\Craft::t('magic-login', 'You are already logged in.'));
+			return $this->redirect($generalConfig->postLoginRedirect);
+		}
+
+		$email = Craft::$app
+			->getRequest()
+			->getRequiredParam('email');
+
+		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+			// TODO: Maybe set this to be configurable in future.
+			$this->setFailFlash(\Craft::t('magic-login', 'Please enter a valid email address.'));
+			return;
+		}
+
+		// Lookup email address - do we have a user?
+		$user = User::findOne(['email' => $email]);
+		if ($user) {
+			return Craft::$app->runAction('magic-login/magic-login/login');
+		}
+
+		// Save the user
+		Craft::$app->runAction('users/save-user');
+
+		// Send the new user a magic login link email.
+		Craft::$app->runAction('magic-login/magic-login/login');
+
+		// Render the login_link_sent template.
+		return $this->redirectToPostedUrl(null, 'magic-login/login-link-sent');
 	}
 
 	/**
@@ -200,17 +317,22 @@ class MagicLoginController extends Controller
 		}
 
 		// Get the user and magic link group.
-		$user = User::findOne($authRecord->userId);
+		$user = User::find()->anyStatus()->id($authRecord->userId)->one();
 		$magicLoginGroup = Craft::$app
 			->getUserGroups()
 			->getGroupByHandle(MagicLogin::MAGIC_LOGIN_USER_GROUP_HANDLE);
 
 		// If we have the magic login group and a user isn't in it then mark it as disabled.
 		if ($magicLoginGroup && !$user->isInGroup($magicLoginGroup)) {
-			$this->setFailFlash(Craft::t('magic-login', 'Magic login is disabled, please contact an admin if you feel this is in error.'));
+			$this->setFailFlash(
+				Craft::t(
+					'magic-login',
+					'Magic login is disabled, please contact an admin if you feel this is in error.'
+				)
+			);
 			return $this->redirect('/magic-login/login');
 		}
-			
+
 		// Check the signature.
 		$generatedSignature = MagicLogin::$plugin
 			->magicLoginAuthService
@@ -229,17 +351,33 @@ class MagicLoginController extends Controller
 		$expiryTimestamp = $dateCreatedObject->getTimestamp() + ($linkExpiryAmount * 60);
 		if (time() > $expiryTimestamp) {
 			// Link expired, throw an error.
-			$this->setFailFlash(Craft::t('magic-login', 'Login Link has expired, please login and try the link again.'));
+			$this->setFailFlash(
+				Craft::t(
+					'magic-login',
+					'Login Link has expired, please login and try the link again.'
+				)
+			);
 			return $this->redirect('/magic-login/login');
 		}
 
+		$userSettings = Craft::$app->getProjectConfig()->get('users') ?? [];
+		$requireEmailVerification = $userSettings['requireEmailVerification'] ?? true;
+
+		// TODO: If we require verification and user is not verified, then verify them.
+		if ($requireEmailVerification && !$user->suspended) {
+			$userService = Craft::$app->users;
+			$userService->activateUser($user);
+		}
+
 		// Attempt to login the user.
-		$generalConfig = Craft::$app->getConfig()->getGeneral();
-		$loggedIn = Craft::$app->getUser()->login($user, $generalConfig->userSessionDuration);
+		$loggedIn = Craft::$app->getUser()->loginByUserId($user->id);
 
 		// If we can't login there was an error in Craft.
 		if (!$loggedIn) {
-			Craft::warning('An error occured when trying to login user with user id: ' . $authRecord->userId, __METHOD__);
+			Craft::warning(
+				'An error occured when trying to login user with user id: ' . $authRecord->userId,
+				__METHOD__
+			);
 			$this->setFailFlash(Craft::t('magic-login', 'Unable to login. Please try again later.'));
 			return $this->redirect('/magic-login/login');
 		}

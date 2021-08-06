@@ -3,15 +3,13 @@
 namespace creode\magiclogintests\acceptance;
 
 use Craft;
-use craft\records\UserGroup;
 use craft\web\User;
 use Craft\elements\User as UserElement;
-use craft\records\User as RecordsUser;
 use creode\magiclogin\MagicLogin;
 use creode\magiclogin\records\AuthRecord;
 use creode\magiclogintests\fixtures\AuthRecordFixture;
 
-class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
+class MagicLoginAuthenticationTest extends BaseFunctionalTest
 {
 	/**
 	 * @var \FunctionalTester
@@ -31,7 +29,7 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
 	public function _before()
 	{
 		// Assign default user to Magic Login group.
-		$group = $this->_getMagicLoginGroup();
+		$group = $this->getMagicLoginGroup();
 		Craft::$app->getUsers()->assignUserToGroups(self::ADMIN_USER, [$group->id]);
 	}
 
@@ -70,7 +68,7 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
 	{
 		/** @var \creode\magiclogin\records\AuthRecord $authRecord */
 		$authRecord = $this->tester->grabFixture('auth_records', 'valid_auth_record');
-		$link = $this->_generateValidLink($authRecord);
+		$link = $this->generateValidMagicLink($authRecord);
 
 		$this->tester->amLoggedInAs(1);
 		$this->tester->amOnPage($link);
@@ -134,7 +132,7 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
 	 */
 	public function testInvalidMagicLinkPublicKey()
 	{
-		$link = $this->_getMagicLoginLinkBase();
+		$link = $this->getMagicLoginLinkBase();
 
 		$this->tester->amOnPage($link);
 
@@ -153,7 +151,7 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
 		$authRecord = $this->tester->grabFixture('auth_records', 'valid_auth_record');
 
 		$date = new \DateTime($authRecord->dateCreated);
-		$link = $this->_getMagicLoginLinkBase($authRecord->publicKey, $date->getTimestamp());
+		$link = $this->getMagicLoginLinkBase($authRecord->publicKey, $date->getTimestamp());
 
 		$this->tester->amOnPage($link);
 		$this->tester->seeCurrentUrlEquals('/magic-login/login');
@@ -177,7 +175,7 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
 			$date->getTimestamp()
 		);
 
-		$link = $this->_getMagicLoginLinkBase(
+		$link = $this->getMagicLoginLinkBase(
 			$authRecord->publicKey,
 			$date->getTimestamp(),
 			$signature
@@ -202,7 +200,7 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
 		// Unassign from magic login group to validate test case.
 		Craft::$app->getUsers()->assignUserToGroups($validRecord->userId, []);
 
-		$link = $this->_generateValidLink($validRecord);
+		$link = $this->generateValidMagicLink($validRecord);
 		$this->tester->amOnPage($link);
 
 		$this->tester->seeCurrentUrlEquals('/magic-login/login');
@@ -218,7 +216,7 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
 	{
 		/** @var \creode\magiclogin\records\AuthRecord $authRecord */
 		$authRecord = $this->tester->grabFixture('auth_records', 'valid_auth_record');
-		$link = $this->_generateValidLink($authRecord);
+		$link = $this->generateValidMagicLink($authRecord);
 
 		$userServiceMock = $this->make(
 			User::class,
@@ -252,7 +250,7 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
 	{
 		/** @var \creode\magiclogin\records\AuthRecord $authRecord */
 		$authRecord = $this->tester->grabFixture('auth_records', 'valid_auth_record');
-		$link = $this->_generateValidLink($authRecord);
+		$link = $this->generateValidMagicLink($authRecord);
 
 		$userServiceMock = $this->make(
 			User::class,
@@ -279,93 +277,5 @@ class MagicLoginAuthenticationTest extends \Codeception\Test\Unit
 		$this->tester->seeCurrentUrlEquals($expectedRedirectUrl);
 
 		$this->tester->dontSeeRecord(AuthRecord::class, $authRecord->getAttributes());
-	}
-
-	/**
-	 * Helper function to generate a valid magic link based on provided auth record.
-	 *
-	 * @param AuthRecord $authRecord
-	 *
-	 * @return void
-	 */
-	private function _generateValidLink(AuthRecord $authRecord)
-	{
-		$date = new \DateTime($authRecord->dateCreated);
-		$signature = MagicLogin::$plugin->magicLoginAuthService->generateSignature(
-			$authRecord->privateKey,
-			$authRecord->publicKey,
-			$date->getTimestamp()
-		);
-
-		return $this->_getMagicLoginLinkBase(
-			$authRecord->publicKey,
-			$date->getTimestamp(),
-			$signature
-		);
-	}
-
-	/**
-	 * Helper function to get an invalid magic link base.
-	 *
-	 * @param string  $publicKey
-	 * @param boolean $timestamp
-	 * @param string  $signature
-	 *
-	 * @return void
-	 */
-	private function _getMagicLoginLinkBase($publicKey = 'randominvalidkey', $timestamp = false, $signature = 'invalidsignature')
-	{
-		if (!$timestamp) {
-			$timestamp = time();
-		}
-		return "/magic-login/auth/$publicKey/$timestamp/$signature";
-	}
-
-	/**
-	 * Helper function to generate Public and Private keys.
-	 *
-	 * @return void
-	 */
-	private function _generateKeys()
-	{
-		$generator = MagicLogin::$plugin
-			->magicLoginRandomGeneratorService
-			->getHighStrengthGenerator();
-
-		$publicKey = $generator->generateString(
-			64,
-			'abcdefghjkmnpqrstuvwxyz23456789'
-		);
-		$privateKey = $generator->generateString(
-			128,
-			'abcdefghjkmnpqrstuvwxyz23456789'
-		);
-
-		return compact(['privateKey', 'publicKey']);
-	}
-
-	/**
-	 * Gets a magic login group object if exists, creates one if not.
-	 *
-	 * @return craft\records\UserGroup
-	 */
-	private function _getMagicLoginGroup()
-	{
-		$magicLoginGroup = Craft::$app
-			->getUserGroups()
-			->getGroupByHandle(MagicLogin::MAGIC_LOGIN_USER_GROUP_HANDLE);
-
-		if (!$magicLoginGroup) {
-			// Make the magic login group. (Ideally we should have this already with plugin
-			// install but due to a craft issue we need to manually create it in order for
-			// tests to pass.
-			$magicLoginGroup = new UserGroup();
-			$magicLoginGroup->name = 'Magic Login';
-			$magicLoginGroup->handle = MagicLogin::MAGIC_LOGIN_USER_GROUP_HANDLE;
-			$magicLoginGroup->description = 'Allows a user to login via magic link';
-			$magicLoginGroup->save();
-		}
-
-		return $magicLoginGroup;
 	}
 }

@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'authenticationEmailSubject' => 'Here is your magic login link',
+	'authenticationEmailSubject' => 'Here is your magic login link',
 ];

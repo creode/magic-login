@@ -47,7 +47,7 @@ Documented in the sections below are tips on using the magic login plugin within
 All of the templates on this plugin are overwritable using the [Template Roots](https://craftcms.com/docs/3.x/extend/template-roots.html#plugin-control-panel-templates) feature of Craft. The templates you can overwrite are listed below:
 
  - [magic-login/_login-form.twig](https://github.com/creode/magic-login/blob/1.x/src/templates/magic-login/_login-form.twig) - Main Login form rendered at /magic-login/login
- - [magic-login/_login-link_sent.twig](https://github.com/creode/magic-login/blob/1.x/src/templates/magic-login/_login-link_sent.twig) - Shows link sent form once a user attempts to login
+ - [magic-login/_login-link-sent.twig](https://github.com/creode/magic-login/blob/1.x/src/templates/magic-login/_login-link-sent.twig) - Shows link sent form once a user attempts to login
  - [magic-login/_register-form.twig](https://github.com/creode/magic-login/blob/1.x/src/templates/magic-login/_register-form.twig) - Main Registration form rendered at /magic-login/register
  - [magic-login/emails/_login.twig](https://github.com/creode/magic-login/blob/1.x/src/templates/magic-login/emails/_login.twig) - Email template sent out to a user which contains the Magic Login Link
 
@@ -85,7 +85,11 @@ In order to get the magic link functionality to work we have had to make a few a
 
 In order to distinguish users which are allowed to use Magic Login functionality we create a new user group titled "Magic Login". This group was created so that we can target users using it with updates in the future in required. Another route we could have taken would be to assign a permission to a user but this felt a little too loose but maybe this is an option for the future.
 
-## Running Magic Login Test Suite ##
+### User activation
+
+In order to let this plugins user journey work as smoothly as possible, we tweak the user activation journey provided by Craft CMS. When a user registers using the Magic Login user journey, we cancel any user activation emails sent out. This is because at the end of this process we will send out a magic login link anyway prior to logging the user in, therefore an account will instead be activated instead once the Magic Login link has been clicked.
+
+## Running Magic Login Test Suite
 
 From the root of this plugin ensure to install the dependencies using composer:
 

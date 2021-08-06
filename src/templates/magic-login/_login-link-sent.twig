@@ -1,0 +1,15 @@
+<html>
+    <head>
+    </head>
+    <body>
+        {{ beginBody() }}
+
+		<div class="ml-wrap">
+			<p>{{ 'Login link has been sent to email address provided. Upon receiving this link, please click it in order to log in.'|t('magic-login') }}</p>
+		</div>
+
+		{% do view.registerAssetBundle("creode\\magiclogin\\assetbundles\\magiclogin\\MagicLoginAsset") %}
+
+        {{ endBody() }}
+    </body>
+<html>

@@ -52,6 +52,9 @@ class Settings extends Model
 	 */
 	public $authenticationEmailSubject = 'Magic Login Link';
 
+	// TODO: Add a setting to say if magic login click should also verify a user.
+	// Grey out the option if verification is disabled on the website.
+
 	// Public Methods
 	// =========================================================================
 
