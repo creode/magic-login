@@ -144,6 +144,10 @@ class MagicLogin extends Plugin
 			UsersController::class,
 			UsersController::EVENT_BEFORE_ACTION,
 			function (ActionEvent $event) {
+				if (! $this->request->getBodyParam('magicLoginRegistration')) {
+					return false;
+				}
+
 				if ($event->sender->action->actionMethod === 'actionSaveUser') {
 					$this->handleMagicLoginBeforeUserSave($event);
 				}
@@ -155,6 +159,10 @@ class MagicLogin extends Plugin
 			UsersController::class,
 			UsersController::EVENT_AFTER_ACTION,
 			function (ActionEvent $event) {
+				if (! $this->request->getBodyParam('magicLoginRegistration')) {
+					return false;
+				}
+
 				if ($event->sender->action->actionMethod === 'actionSaveUser') {
 					$this->handleMagicLoginAfterUserSave($event);
 				}
@@ -172,6 +180,10 @@ class MagicLogin extends Plugin
 			Mailer::class,
 			Mailer::EVENT_BEFORE_SEND,
 			function (MailEvent $event) {
+				if (! $this->request->getBodyParam('magicLoginRegistration')) {
+					return false;
+				}
+
 				if ($event->message->key == 'account_activation') {
 					$event->isValid = false;
 				}
