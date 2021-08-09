@@ -291,7 +291,10 @@ class MagicLogin extends Plugin
 			return;
 		}
 		
-		$user = User::findOne(['email' => $email]);
+		$user = User::find()
+			->anyStatus()
+			->email($email)
+			->one();
 
 		// If we can't find user something must have happened.
 		// We will stop here and allow things to run it's course.

@@ -107,7 +107,7 @@ class LoginFormTest extends BaseFunctionalTest
 		$this->assertEquals(count($updatedAuthRecords), count($authRecords));
 
 		// As far as user is concerned, they should see a message about this.
-		$this->tester->canSee('Login link has been sent to email address provided.');
+		$this->tester->canSee('Upon receiving this link, please click it in order to log in.');
 	}
 
 	/**
@@ -176,7 +176,7 @@ class LoginFormTest extends BaseFunctionalTest
 			'submitButton'
 		);
 
-		$this->tester->canSee('Login link has been sent to email address provided.');
+		$this->tester->canSee('Upon receiving this link, please click it in order to log in.');
 
 		// Recollect the auth records from database.
 		$updatedAuthRecords = AuthRecord::find()->all();

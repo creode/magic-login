@@ -147,12 +147,18 @@ class MagicLoginController extends Controller
 					'Magic link could not be sent.'
 				)
 			);
+			// TODO: Replace these with the login path config variable.
 			return $this->redirect('/magic-login/login');
 		}
 
 		return $this->renderTemplate('magic-login/_login-link-sent');
 	}
 
+	/**
+	 * Renders a template stating that the magic login link has been sent.
+	 *
+	 * @return string
+	 */
 	public function actionLoginLinkSent()
 	{
 		if (Craft::$app->getUser()->getIdentity()) {
@@ -166,7 +172,7 @@ class MagicLoginController extends Controller
 	/**
 	 * Renders the Register form.
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public function actionRegisterForm()
 	{
@@ -178,6 +184,11 @@ class MagicLoginController extends Controller
 		return $this->renderTemplate('magic-login/_register-form');
 	}
 
+	/**
+	 * Register or login user.
+	 *
+	 * @return string
+	 */
 	public function actionRegister()
 	{
 		$this->requirePostRequest();
@@ -222,85 +233,6 @@ class MagicLoginController extends Controller
 	}
 
 	/**
-	 * Render the form which allows to a user to either login or register.
-	 *
-	 * @return string
-	 */
-	public function actionLoginRegisterForm()
-	{
-		if (Craft::$app->getUser()->getIdentity()) {
-			$generalConfig = Craft::$app->getConfig()->getGeneral();
-			$this->redirect($generalConfig->postLoginRedirect);
-		}
-
-		return $this->renderTemplate('magic-login/_login-register-form');
-	}
-
-	/**
-	 * Handles registering or logging in a user.
-	 *
-	 * @return string
-	 */
-	public function actionLoginOrRegister()
-	{
-		$this->requirePostRequest();
-
-		// Attach magic login registration post data.
-		$this->request->setBodyParams(
-			array_merge(
-				$this->request->getBodyParams(),
-				['magicLoginRegistration' => true]
-			)
-		);
-
-		if (Craft::$app->getUser()->getIdentity()) {
-			$generalConfig = Craft::$app->getConfig()->getGeneral();
-			$this->setSuccessFlash(\Craft::t('magic-login', 'You are already logged in.'));
-			return $this->redirect($generalConfig->postLoginRedirect);
-		}
-
-		$email = Craft::$app
-			->getRequest()
-			->getRequiredParam('email');
-
-		if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-			// TODO: Maybe set this to be configurable in future.
-			$this->setFailFlash(\Craft::t('magic-login', 'Please enter a valid email address.'));
-			return;
-		}
-
-		// Lookup email address - do we have a user?
-		$user = User::findOne(['email' => $email]);
-		if ($user === null) {
-			// Save the user
-			Craft::$app->runAction('users/save-user');
-
-			// Send the new user a magic login link email.
-			Craft::$app->runAction('magic-login/magic-login/login');
-
-			// Render the login_link_sent template.
-			return $this->redirectToPostedUrl(null, 'magic-login/login-link-sent');
-		}
-
-		$magicLoginGroup = Craft::$app
-			->getUserGroups()
-			->getGroupByHandle(MagicLogin::MAGIC_LOGIN_USER_GROUP_HANDLE);
-
-		// If we have the magic login group and a user isn't in it then mark it as disabled.
-		if ($magicLoginGroup && !$user->isInGroup($magicLoginGroup)) {
-			$this->setFailFlash(
-				Craft::t(
-					'magic-login',
-					'Magic login is disabled, please contact an admin if you feel this is in error.'
-				)
-			);
-			return;
-		}
-
-		return Craft::$app->runAction('magic-login/magic-login/login');
-	}
-
-	/**
 	 * Handle any authentication check needed within the application.
 	 * e.g.: actions/magic-login/magic-login/auth
 	 *
@@ -332,7 +264,18 @@ class MagicLoginController extends Controller
 		}
 
 		// Get the user and magic link group.
-		$user = User::find()->anyStatus()->id($authRecord->userId)->one();
+		$user = User::find()
+			->id($authRecord->userId)
+			->anyStatus()
+			->one();
+		
+		// If we can't find record trigger a failure.
+		if (!$user) {
+			// Throw an error.
+			$this->setFailFlash(Craft::t('magic-login', 'Invalid login link provided.'));
+			return $this->redirect('/magic-login/login');
+		}
+
 		$magicLoginGroup = Craft::$app
 			->getUserGroups()
 			->getGroupByHandle(MagicLogin::MAGIC_LOGIN_USER_GROUP_HANDLE);

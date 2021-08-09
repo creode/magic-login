@@ -8,7 +8,7 @@ return [
 		'pending' => 1,
 	],
 	'creode_test_user' => [
-		'id' => 3,
+		'id' => 2,
 		'username' => 'test',
 		'email' => 'creode-test@example.com',
 		'pending' => 1,
