@@ -305,7 +305,7 @@ class MagicLoginController extends Controller
 
 		// Check if timestamp is within bounds set by plugin configuration
 		$linkExpiryAmount = MagicLogin::getInstance()->getSettings()->linkExpiry;
-		$dateCreatedObject = new DateTime($authRecord->dateCreated);
+		$dateCreatedObject = new DateTime($authRecord->dateCreated, new \DateTimeZone('UTC'));
 		$expiryTimestamp = $dateCreatedObject->getTimestamp() + ($linkExpiryAmount * 60);
 		if (time() > $expiryTimestamp) {
 			// Link expired, throw an error.

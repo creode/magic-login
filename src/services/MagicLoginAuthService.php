@@ -16,7 +16,6 @@ use craft\base\Component;
 use creode\magiclogin\MagicLogin;
 use creode\magiclogin\models\AuthModel;
 use creode\magiclogin\records\AuthRecord;
-use DateTime;
 
 /**
  * MagicLoginAuthService Service
@@ -56,7 +55,7 @@ class MagicLoginAuthService extends Component
 		// If the link has not expired for this user then just issue it again.
 		$existingAuthRecord = AuthRecord::findOne(['userId' => $user->id]);
 		if (!$this->linkHasExpired($existingAuthRecord)) {
-			$dateTimeCreatedObject = new DateTime($existingAuthRecord->dateCreated);
+			$dateTimeCreatedObject = new \DateTime($existingAuthRecord->dateCreated, new \DateTimeZone('UTC'));
 			$dateCreatedTimestamp = $dateTimeCreatedObject->getTimestamp();
 
 			$signature = $this->generateSignature(
@@ -99,7 +98,7 @@ class MagicLoginAuthService extends Component
 		$record->save();
 
 		// Generate Datetime for current dateCreated and use it's timestamp.
-		$dateTimeCreatedObject = new DateTime($record->dateCreated);
+		$dateTimeCreatedObject = new \DateTime($record->dateCreated, new \DateTimeZone('UTC'));
 		$dateCreatedTimestamp = $dateTimeCreatedObject->getTimestamp();
 
 		// Build up a signature for validation and sent the link back to the user.
@@ -168,7 +167,7 @@ class MagicLoginAuthService extends Component
 			'privateKey',
 		]));
 
-		$authModel->dateCreated = new DateTime($authRecord->dateCreated);
+		$authModel->dateCreated = new \DateTime($authRecord->dateCreated, new \DateTimeZone('UTC'));
 
 		return $authModel->isExpired();
 	}

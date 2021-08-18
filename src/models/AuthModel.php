@@ -80,7 +80,8 @@ class AuthModel extends Model
 	{
 		// Check if timestamp is within bounds set by plugin configuration
 		$linkExpiryAmount = MagicLogin::getInstance()->getSettings()->linkExpiry;
-		$expiryTimestamp = $this->dateCreated->getTimestamp() + ($linkExpiryAmount * 60);
+		$dateCreated = new \DateTime($this->dateCreated, new \DateTimeZone('UTC'));
+		$expiryTimestamp = $dateCreated->getTimestamp() + ($linkExpiryAmount * 60);
 		return $expiryTimestamp < time();
 	}
 
