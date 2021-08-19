@@ -94,7 +94,7 @@ class MagicLoginAuthService extends Component
 		$record->privateKey = $privateKey;
 		$record->redirectUrl = Craft::$app
 			->getRequest()
-			->getValidatedBodyParam('redirect') ?? $generalConfig->postLoginRedirect;
+			->getValidatedBodyParam('magicLoginRedirectUrl') ?? $generalConfig->postLoginRedirect;
 		$record->save();
 
 		// Generate Datetime for current dateCreated and use it's timestamp.
