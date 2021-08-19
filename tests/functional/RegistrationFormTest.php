@@ -31,6 +31,10 @@ class RegistrationFormTest extends BaseFunctionalTest
 	protected function _before()
 	{
 		Craft::$app->setEdition(Craft::Pro);
+
+		// Set login path to login page to ensure that the templates exist.
+		$generalConfig = Craft::$app->getConfig()->getGeneral();
+		$generalConfig->loginPath = '/magic-login/login';
 	}
 
 	/**
@@ -77,9 +81,6 @@ class RegistrationFormTest extends BaseFunctionalTest
 	 */
 	public function testRegisteringNewUserWithNoActivationGetsMagicLink()
 	{
-		// Remove all existing auth records to give the opportunity for a proper test.
-		AuthRecord::deleteAll();
-
 		// Get all Auth Records.
 		$authRecords = AuthRecord::find()->all();
 
@@ -87,7 +88,7 @@ class RegistrationFormTest extends BaseFunctionalTest
 		$this->tester->submitForm(
 			'#magic-login-register',
 			[
-				'email' => 'test@example.com'
+				'email' => 'no-activation@example.com'
 			],
 			'submitButton'
 		);
@@ -105,7 +106,7 @@ class RegistrationFormTest extends BaseFunctionalTest
 
 		// Delete user created during this process.
 		/** @var \craft\elements\User $user */
-		$user = Craft::$app->users->getUserByUsernameOrEmail('test@example.com');
+		$user = Craft::$app->users->getUserByUsernameOrEmail('no-activation@example.com');
 		Craft::$app->elements->deleteElement($user);
 	}
 
@@ -119,12 +120,8 @@ class RegistrationFormTest extends BaseFunctionalTest
 		$userSettings['requireEmailVerification'] = true;
 		Craft::$app->projectConfig->set('users', $userSettings);
 
-		// Remove all existing auth records to give the opportunity for a proper test.
-		AuthRecord::deleteAll();
-
 		// Get all Auth Records.
 		$authRecords = AuthRecord::find()->all();
-		$this->assertCount(0, $authRecords);
 
 		// Attempt to use register form.
 		$this->tester->amOnPage('/magic-login/register');
@@ -156,9 +153,6 @@ class RegistrationFormTest extends BaseFunctionalTest
 
 	public function testUserVerifiedOnMagicLoginAuthorization()
 	{
-		// // Remove all existing auth records to give the opportunity for a proper test.
-		// AuthRecord::deleteAll();
-
 		// Enable setting to Require Email Verification on new users.
 		$userSettings = Craft::$app->getProjectConfig()->get('users') ?? [];
 		$userSettings['requireEmailVerification'] = true;

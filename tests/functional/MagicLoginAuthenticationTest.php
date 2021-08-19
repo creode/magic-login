@@ -90,7 +90,7 @@ class MagicLoginAuthenticationTest extends BaseFunctionalTest
 		$user = UserElement::findOne(1);
 		$link = MagicLogin::$plugin->magicLoginAuthService->createMagicLogin($user->email);
 
-		$dateObject = new \DateTime($authRecord->dateCreated);
+		$dateObject = new \DateTime($authRecord->dateCreated, new \DateTimeZone('UTC'));
 
 		$this->assertStringContainsString($authRecord->publicKey, $link);
 		$this->assertStringContainsString(strval($dateObject->getTimestamp()), $link);

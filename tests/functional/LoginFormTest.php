@@ -44,6 +44,7 @@ class LoginFormTest extends BaseFunctionalTest
 	public function testGetLoginFormRedirectIfLoggedIn()
 	{
 		$generalConfig = Craft::$app->getConfig()->getGeneral();
+		$generalConfig->postLoginRedirect = '/login-successful';
 		$validUser = User::findOne();
 
 		$this->tester->amLoggedInAs($validUser);
@@ -118,6 +119,9 @@ class LoginFormTest extends BaseFunctionalTest
 	 * */
 	public function testEmailNotSentMessage()
 	{
+		$generalConfig = Craft::$app->getConfig()->getGeneral();
+		$generalConfig->loginPath = '/magic-login/login';
+
 		$mailerMock = $this->make(
 			Mailer::class,
 			[
@@ -136,7 +140,7 @@ class LoginFormTest extends BaseFunctionalTest
 		// Load up a valid user since they need to be registered to login.
 		$validUser = User::findOne();
 
-		$this->tester->amOnPage('/magic-login/login');
+		$this->tester->amOnPage($generalConfig->loginPath);
 		$this->tester->submitForm(
 			'#magic-login-form',
 			[

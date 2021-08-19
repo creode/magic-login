@@ -136,6 +136,25 @@ class MagicLoginAuthService extends Component
 	}
 
 	/**
+	 * Looks in the Craft General Config for a login path. If one doesn't exist then it uses
+	 * the default magic-login/login one.
+	 *
+	 * @param string $defaultUrl Default url if config option couldn't be located.
+	 * @return string Url of the login path.
+	 */
+	public function getLoginPath($defaultUrl = '/magic-login/login')
+	{
+		$loginUrl = $defaultUrl;
+		$generalConfig = Craft::$app->getConfig()->getGeneral();
+		// Login path.
+		if ($generalConfig->loginPath) {
+			$loginUrl = $generalConfig->loginPath;
+		}
+
+		return $loginUrl;
+	}
+
+	/**
 	 * Generate a full magic login link with the base url.
 	 *
 	 * @param string $publicKey

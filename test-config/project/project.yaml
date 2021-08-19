@@ -12,8 +12,8 @@ system:
   edition: pro
   live: true
   name: 'Craft test site'
-  schemaVersion: 3.7.7
-  timeZone: America/Los_Angeles
+  schemaVersion: 3.7.9
+  timeZone: Europe/London
 users:
   allowPublicRegistration: true
   defaultGroup: null

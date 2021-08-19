@@ -87,6 +87,10 @@ class MagicLoginController extends Controller
 	{
 		$this->requirePostRequest();
 
+		$loginUrl = MagicLogin::$plugin
+			->magicLoginAuthService
+			->getLoginPath();
+
 		if (Craft::$app->getUser()->getIdentity()) {
 			$generalConfig = Craft::$app->getConfig()->getGeneral();
 			$this->setSuccessFlash(\Craft::t('magic-login', 'You are already logged in.'));
@@ -102,7 +106,7 @@ class MagicLoginController extends Controller
 			$this->setFailFlash(\Craft::t('magic-login', 'Please enter a valid email address.'));
 			return;
 		}
-		
+
 		$link = MagicLogin::$plugin
 			->magicLoginAuthService
 			->createMagicLogin($email);
@@ -147,8 +151,8 @@ class MagicLoginController extends Controller
 					'Magic link could not be sent.'
 				)
 			);
-			// TODO: Replace these with the login path config variable.
-			return $this->redirect('/magic-login/login');
+
+			return $this->redirect($loginUrl);
 		}
 
 		return $this->renderTemplate('magic-login/_login-link-sent');
@@ -248,12 +252,17 @@ class MagicLoginController extends Controller
 		$authRecord = MagicLogin::$plugin
 			->magicLoginAuthService
 			->getAuthorisationRecord($publicKey);
+
+		$loginUrl = MagicLogin::$plugin
+			->magicLoginAuthService
+			->getLoginPath();
 		
 		// If we can't find record trigger a failure.
 		if (!$authRecord) {
 			// Throw an error.
 			$this->setFailFlash(Craft::t('magic-login', 'Invalid login link provided.'));
-			return $this->redirect('/magic-login/login');
+
+			return $this->redirect($loginUrl);
 		}
 
 		// If we are logged in then redirect and delete the record.
@@ -273,7 +282,7 @@ class MagicLoginController extends Controller
 		if (!$user) {
 			// Throw an error.
 			$this->setFailFlash(Craft::t('magic-login', 'Invalid login link provided.'));
-			return $this->redirect('/magic-login/login');
+			return $this->redirect($loginUrl);
 		}
 
 		$magicLoginGroup = Craft::$app
@@ -288,7 +297,7 @@ class MagicLoginController extends Controller
 					'Magic login is disabled, please contact an admin if you feel this is in error.'
 				)
 			);
-			return $this->redirect('/magic-login/login');
+			return $this->redirect($loginUrl);
 		}
 
 		// Check the signature.
@@ -300,7 +309,7 @@ class MagicLoginController extends Controller
 			// Signatures don't match. Throw an error.
 			$this->setFailFlash(Craft::t('magic-login', 'Invalid login link provided.'));
 			Craft::warning('User attempted to login with invalid signature.', __METHOD__);
-			return $this->redirect('/magic-login/login');
+			return $this->redirect($loginUrl);
 		}
 
 		// Check if timestamp is within bounds set by plugin configuration
@@ -315,7 +324,7 @@ class MagicLoginController extends Controller
 					'Login Link has expired, please login and try the link again.'
 				)
 			);
-			return $this->redirect('/magic-login/login');
+			return $this->redirect($loginUrl);
 		}
 
 		$userSettings = Craft::$app->getProjectConfig()->get('users') ?? [];
@@ -337,7 +346,7 @@ class MagicLoginController extends Controller
 				__METHOD__
 			);
 			$this->setFailFlash(Craft::t('magic-login', 'Unable to login. Please try again later.'));
-			return $this->redirect('/magic-login/login');
+			return $this->redirect($loginUrl);
 		}
 
 		// Remove the auth record since we are logged in now.
