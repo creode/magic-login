@@ -17,7 +17,7 @@
             <form method="post" class="ml-form" id="magic-login-register">
                 {{ actionInput('magic-login/magic-login/register') }}
                 {{ csrfInput() }}
-                {{ magicLoginRedirectUrl('magic-login/login-link-sent') }}
+                {{ redirectInput('magic-login/login-link-sent') }}
 
                 <label for="email">Email</label>
                 <input id="email" type="email" name="email" value="" placeholder="{{ 'Enter a valid email...'|t('magic-login') }}" /><br/>
