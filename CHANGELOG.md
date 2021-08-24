@@ -4,6 +4,30 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 2.0.0 - 2021-08-24
+### ⚠ BREAKING CHANGES
+
+* Login path now uses one from craft config. (f5d74a)
+
+### Features
+
+* Extra test to check that backend user registration works (08c49d)
+* Refactor tests and move login flow inside of registration one. (e1ac0c)
+
+### Bug Fixes
+
+* Coding standards (9965b0)
+* Fix a bug with timezones and link expiry (4fc9e5)
+* Fixes issue with failing tests. (b1743d)
+* Issue caused by accidental left in code (ad8320)
+* Issue with code caused when refactoring. (805ee4)
+* Issue with passing object into another when string expected (7489f3)
+* Issue with styles on login and register forms (40c0ad)
+* Move some code around and add in extra check for events (6e13e2)
+* Redirection now uses separate post variable. (8512de)
+* Remove conventional commit patch since it is no longer required (d65434)
+* Updates changelog to make it look nicer on craft plugin store. (6528ca)
+
 ## 1.0.5 - 2021-07-28
 ### Bug Fixes
 
