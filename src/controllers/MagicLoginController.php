@@ -330,7 +330,7 @@ class MagicLoginController extends Controller
         $userSettings = Craft::$app->getProjectConfig()->get('users') ?? [];
         $requireEmailVerification = $userSettings['requireEmailVerification'] ?? true;
 
-        // TODO: If we require verification and user is not verified, then verify them.
+        // If we require verification and user is not verified, then verify them.
         if ($requireEmailVerification && !$user->suspended) {
             $userService = Craft::$app->users;
             $userService->activateUser($user);

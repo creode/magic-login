@@ -7,7 +7,6 @@ use craft\web\View;
 use craft\mail\Mailer;
 use craft\elements\User;
 use creode\magiclogin\records\AuthRecord;
-use creode\magiclogintests\acceptance\BaseFunctionalCest;
 
 class LoginFormTest extends BaseFunctionalTest
 {

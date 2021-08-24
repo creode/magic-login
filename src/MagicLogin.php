@@ -169,12 +169,6 @@ class MagicLogin extends Plugin
             }
         );
 
-        
-        // TODO: Test the implications of not setting a password when registering a user here.
-        // I don't want to break existing registration functionality if it can be avoided.
-        // I might just be able to check if this isn't in the request params and let the activation
-        // email still be sent if this is the case.
-
         // Attempt to prevent user from getting activation emails.
         Event::on(
             Mailer::class,
@@ -238,8 +232,6 @@ class MagicLogin extends Plugin
             $event->isValid = false;
             return;
         }
-
-        // TODO: What do we do if already registered. Do we throw an error?
 
         // If we already have a password set then we should stop function here.
         if ($this->request->getBodyParam('password')) {
@@ -348,8 +340,6 @@ class MagicLogin extends Plugin
             );
             return;
         }
-
-        // TODO: If we require verification (set by a config option in Craft), send user a magic login link.
     }
 
     /**
