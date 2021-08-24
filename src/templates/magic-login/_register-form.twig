@@ -1,21 +1,33 @@
-<div class="ml-wrap">
+<html>
+    <head>
+    </head>
+    <body>
+        {{ beginBody() }}
 
-    {% if craft.app.session.hasFlash('notice') %}
-        <p class="message notice">{{ craft.app.session.getFlash('notice') }}</p>
-    {% elseif craft.app.session.hasFlash('error') %}
-        <p class="message error">{{ craft.app.session.getFlash('error') }}</p>
-    {% endif %}
+        <div class="ml-wrap">
 
-    <p class="ml-instructions">{{ 'Please enter your email below in order to register.'|t('magic-login') }}</p>
+            {% if craft.app.session.hasFlash('notice') %}
+                <p class="message notice">{{ craft.app.session.getFlash('notice') }}</p>
+            {% elseif craft.app.session.hasFlash('error') %}
+                <p class="message error">{{ craft.app.session.getFlash('error') }}</p>
+            {% endif %}
 
-    <form method="post" class="ml-form" id="register">
-        {{ actionInput('users/save-user') }}
-        {{ csrfInput() }}
-        {{ redirectInput('user') }}
+            <p class="ml-instructions">{{ 'Please enter your email below in order to register.'|t('magic-login') }}</p>
 
-        <label for="email">Email</label>
-        <input id="email" type="email" name="email" value="" placeholder="{{ 'Enter a valid email...'|t('magic-login') }}" /><br/>
+            <form method="post" class="ml-form" id="magic-login-register">
+                {{ actionInput('magic-login/magic-login/register') }}
+                {{ csrfInput() }}
+                {{ redirectInput('magic-login/login-link-sent') }}
 
-        <button class="ml-button" type="submit">{{ 'Submit'|t('magic-login') }}</button>
-    </form>
-</div>
+                <label for="email">Email</label>
+                <input id="email" type="email" name="email" value="" placeholder="{{ 'Enter a valid email...'|t('magic-login') }}" /><br/>
+
+                <button class="ml-button" type="submit">{{ 'Submit'|t('magic-login') }}</button>
+            </form>
+        </div>
+
+        {% do view.registerAssetBundle("creode\\magiclogin\\assetbundles\\magiclogin\\MagicLoginAsset") %}
+
+        {{ endBody() }}
+    </body>
+<html>

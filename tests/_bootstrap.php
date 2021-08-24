@@ -13,6 +13,8 @@ define('CRAFT_MIGRATIONS_PATH', __DIR__ . '/_craft/migrations');
 define('CRAFT_TRANSLATIONS_PATH', __DIR__ . '/_craft/translations');
 define('CRAFT_VENDOR_PATH', dirname(__DIR__) . '/vendor');
 
+require_once __DIR__ . '/functional/BaseFunctionalTest.php';
+
 $devMode = true;
 
 TestSetup::configureCraft();

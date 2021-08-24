@@ -2,7 +2,7 @@
 /**
  * Magic Login plugin for Craft CMS 3.x
  *
- * A plugin which sits on top of the existing 
+ * A Magic Link plugin which sits on top of the existing user sign in and registration process.
  *
  * @link      https://www.creode.co.uk
  * @copyright Copyright (c) 2021 Creode
@@ -24,7 +24,7 @@
 
 return [
 
-    // This controls blah blah blah
-    "someAttribute" => true,
+	// This controls blah blah blah
+	"someAttribute" => true,
 
 ];

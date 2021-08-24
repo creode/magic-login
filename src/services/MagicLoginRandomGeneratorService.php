@@ -2,7 +2,7 @@
 /**
  * Magic Login plugin for Craft CMS 3.x
  *
- * A plugin which sits on top of the existing 
+ * A Magic Link plugin which sits on top of the existing user sign in and registration process.
  *
  * @copyright 2021 Creode
  * @link      https://www.creode.co.uk
@@ -28,33 +28,33 @@ use craft\base\Component;
  */
 class MagicLoginRandomGeneratorService extends Component
 {
-    protected $factory;
+	protected $factory;
 
-    /**
-     * Constructor for Random Generator Service.
-     */
-    public function __construct(RandomLibFactory $factory)
-    {
-        $this->factory = $factory;
-    }
+	/**
+	 * Constructor for Random Generator Service.
+	 */
+	public function __construct(RandomLibFactory $factory)
+	{
+		$this->factory = $factory;
+	}
 
-    /**
-     * Gets a medium strength generator used for Keys and Salts.
-     *
-     * @return \RandomLib\Generator
-     */
-    public function getMediumStrengthGenerator()
-    {
-        return $this->factory->getMediumStrengthGenerator();
-    }
+	/**
+	 * Gets a medium strength generator used for Keys and Salts.
+	 *
+	 * @return \RandomLib\Generator
+	 */
+	public function getMediumStrengthGenerator()
+	{
+		return $this->factory->getMediumStrengthGenerator();
+	}
 
-    /**
-     * Gets a high strength generator used for Cryptography.
-     *
-     * @return \RandomLib\Generator
-     */
-    public function getHighStrengthGenerator()
-    {
-        return $this->factory->getHighStrengthGenerator();
-    }
+	/**
+	 * Gets a high strength generator used for Cryptography.
+	 *
+	 * @return \RandomLib\Generator
+	 */
+	public function getHighStrengthGenerator()
+	{
+		return $this->factory->getHighStrengthGenerator();
+	}
 }

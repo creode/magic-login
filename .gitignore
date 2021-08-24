@@ -32,6 +32,7 @@ composer.lock
 !.vscode/extensions.json
 config.codekit3
 prepros-6.config
+.ddev
 
 # Test Caching / Logging
 tests/_craft/config/project/*

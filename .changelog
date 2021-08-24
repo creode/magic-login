@@ -3,4 +3,5 @@
 return [
     'disableLinks' => true,
     'changelogVersionFormat' => '## {{version}} - {{date}}',
+    'hiddenVersionSeparator' => true,
 ];

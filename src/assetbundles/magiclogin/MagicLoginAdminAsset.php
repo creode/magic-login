@@ -2,7 +2,7 @@
 /**
  * Magic Login plugin for Craft CMS 3.x
  *
- * A plugin which sits on top of the existing 
+ * A Magic Link plugin which sits on top of the existing user sign in and registration process.
  *
  * @link      https://www.creode.co.uk
  * @copyright Copyright (c) 2021 Creode
@@ -34,32 +34,32 @@ use craft\web\assets\cp\CpAsset;
  */
 class MagicLoginAdminAsset extends AssetBundle
 {
-    // Public Methods
-    // =========================================================================
+	// Public Methods
+	// =========================================================================
 
-    /**
-     * Initializes the bundle.
-     */
-    public function init()
-    {
-        // define the path that your publishable resources live
-        $this->sourcePath = "@creode/magiclogin/assetbundles/magiclogin/dist";
+	/**
+	 * Initializes the bundle.
+	 */
+	public function init()
+	{
+		// define the path that your publishable resources live
+		$this->sourcePath = "@creode/magiclogin/assetbundles/magiclogin/dist";
 
-        // define the dependencies
-        $this->depends = [
-            CpAsset::class,
-        ];
+		// define the dependencies
+		$this->depends = [
+			CpAsset::class,
+		];
 
-        // define the relative path to CSS/JS files that should be registered with the page
-        // when this asset bundle is registered
-        $this->js = [
-            'js/MagicLoginAdmin.js',
-        ];
+		// define the relative path to CSS/JS files that should be registered with the page
+		// when this asset bundle is registered
+		$this->js = [
+			'js/MagicLoginAdmin.js',
+		];
 
-        $this->css = [
-            'css/MagicLoginAdmin.css',
-        ];
+		$this->css = [
+			'css/MagicLoginAdmin.css',
+		];
 
-        parent::init();
-    }
+		parent::init();
+	}
 }

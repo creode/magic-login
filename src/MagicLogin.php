@@ -2,7 +2,7 @@
 /**
  * Magic Login plugin for Craft CMS 3.x
  *
- * A plugin which sits on top of the existing 
+ * A Magic Link plugin which sits on top of the existing user sign in and registration process.
  *
  * @copyright 2021 Creode
  * @link      https://www.creode.co.uk
@@ -15,16 +15,20 @@ use craft\web\View;
 
 use yii\base\Event;
 use craft\base\Plugin;
+use craft\mail\Mailer;
+use yii\mail\MailEvent;
+use craft\elements\User;
+use craft\services\Users;
 use craft\web\UrlManager;
 use yii\base\ActionEvent;
+use craft\events\UserEvent;
+use craft\models\UserGroup;
 use craft\services\Plugins;
 use craft\events\PluginEvent;
 use craft\controllers\UsersController;
-use craft\elements\User;
 use creode\magiclogin\models\Settings;
 use craft\events\RegisterUrlRulesEvent;
 use craft\events\RegisterTemplateRootsEvent;
-use craft\models\UserGroup;
 use creode\magiclogin\services\MagicLoginAuthService;
 use creode\magiclogin\services\MagicLoginRandomGeneratorService;
 
@@ -140,6 +144,10 @@ class MagicLogin extends Plugin
             UsersController::class,
             UsersController::EVENT_BEFORE_ACTION,
             function (ActionEvent $event) {
+                if (! $this->request->getBodyParam('magicLoginRegistration')) {
+                    return false;
+                }
+
                 if ($event->sender->action->actionMethod === 'actionSaveUser') {
                     $this->handleMagicLoginBeforeUserSave($event);
                 }
@@ -151,8 +159,27 @@ class MagicLogin extends Plugin
             UsersController::class,
             UsersController::EVENT_AFTER_ACTION,
             function (ActionEvent $event) {
+                if (! $this->request->getBodyParam('magicLoginRegistration')) {
+                    return false;
+                }
+
                 if ($event->sender->action->actionMethod === 'actionSaveUser') {
                     $this->handleMagicLoginAfterUserSave($event);
+                }
+            }
+        );
+
+        // Attempt to prevent user from getting activation emails.
+        Event::on(
+            Mailer::class,
+            Mailer::EVENT_BEFORE_SEND,
+            function (MailEvent $event) {
+                if (! $this->request->getBodyParam('magicLoginRegistration')) {
+                    return false;
+                }
+
+                if ($event->message->key == 'account_activation') {
+                    $event->isValid = false;
                 }
             }
         );
@@ -206,8 +233,6 @@ class MagicLogin extends Plugin
             return;
         }
 
-        // TODO: What do we do if already registered. Do we throw an error?
-
         // If we already have a password set then we should stop function here.
         if ($this->request->getBodyParam('password')) {
             return;
@@ -220,7 +245,7 @@ class MagicLogin extends Plugin
             $this->getSettings()->passwordLength
         );
 
-        // Add password into the request body so that it can be set during 
+        // Add password into the request body so that it can be set during
         // user registration action.
         $this->request->setBodyParams(
             array_merge(
@@ -258,7 +283,10 @@ class MagicLogin extends Plugin
             return;
         }
         
-        $user = User::findOne(['email' => $email]);
+        $user = User::find()
+            ->anyStatus()
+            ->email($email)
+            ->one();
 
         // If we can't find user something must have happened.
         // We will stop here and allow things to run it's course.
@@ -330,7 +358,7 @@ class MagicLogin extends Plugin
         if (Craft::$app->getEdition() !== Craft::Pro) {
             Craft::$app->session->setError(
                 Craft::t(
-                    'magic-login', 
+                    'magic-login',
                     'For this plugin to function correctly, you must have a pro license for Craft.'
                 )
             );
@@ -341,7 +369,10 @@ class MagicLogin extends Plugin
         $magicLoginUserGroup = new UserGroup();
         $magicLoginUserGroup->name = 'Magic Login';
         $magicLoginUserGroup->handle = self::MAGIC_LOGIN_USER_GROUP_HANDLE;
-        $magicLoginUserGroup->description = Craft::t('magic-login', 'Users within this group were registered with magic login capabilities.');
+        $magicLoginUserGroup->description = Craft::t(
+            'magic-login',
+            'Users within this group were registered with magic login capabilities.'
+        );
 
         $groupSaved = Craft::$app
             ->getUserGroups()
@@ -436,6 +467,7 @@ class MagicLogin extends Plugin
             function (RegisterUrlRulesEvent $event) {
                 $event->rules['magic-login/login'] = 'magic-login/magic-login/login-form';
                 $event->rules['magic-login/register'] = 'magic-login/magic-login/register-form';
+                $event->rules['magic-login/login-link-sent'] = 'magic-login/magic-login/login-link-sent';
                 $event->rules['magic-login/auth/<publicKey:\w+>/<timestamp:\d+>/<signature:\w+>'] = 'magic-login/magic-login/auth';
             }
         );

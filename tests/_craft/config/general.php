@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'devMode' => true,
-
-    'postLoginRedirect' => '/'
+	'devMode' => true,
+	'postLoginRedirect' => '/',
+	'requireUserAgentAndIpForSession' => false,
 ];
