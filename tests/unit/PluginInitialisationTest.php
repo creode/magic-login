@@ -58,4 +58,10 @@ class PluginInitialisationTest extends Unit
             Craft::$app->getEdition()
         );
     }
+
+    // TODO: Plugin install functionality needs testing.
+
+    // TODO: Plugin uninstall functionality needs testing.
+
+    // TODO: Check settings page response (move this to integration tests).
 }

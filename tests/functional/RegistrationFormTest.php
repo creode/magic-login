@@ -76,6 +76,25 @@ class RegistrationFormTest extends BaseFunctionalTest
         $this->tester->canSeeInSource($registrationActionInputMarkup);
     }
 
+    // TODO: Add a test to redirect you if already logged in and posting to magic-login register action route.
+
+    // TODO: Before saving a user if already logged in ensure magic login event is not being fired.
+
+    // TODO: If providing userId to user save ensure magic login before event isn't being handled.
+
+    // TODO: If email not provided before registering a user ensure our error is thrown.
+
+    // TODO: After saving a user if already logged in check if it is working as we expect around assigning magic
+    // login role etc.
+
+    // TODO: After saving, if userId param is provided ensure that magic login role is not given.
+
+    // TODO: After saving, test the checks around deleted users with email. (MagicLogin.php:293).
+
+    // TODO: If we can't find the magic login group ensure that valid message is provided to user.
+
+    // TODO: If we can't add the user to the magic login group ensure that valid message is provided to user.
+
     /**
      * Tests that a user is registered without requiring activation will send us to right place.
      */

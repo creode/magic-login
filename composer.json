@@ -53,6 +53,7 @@
     },
     "scripts": {
         "test": "php vendor/bin/codecept run",
+        "coverage-test": "XDEBUG_MODE=coverage ./vendor/bin/codecept run --coverage-html coverage-report",
         "changelog": "php vendor/bin/conventional-changelog",
         "release": "php vendor/bin/conventional-changelog --commit",
         "release:patch": "php vendor/bin/conventional-changelog --patch --commit",
