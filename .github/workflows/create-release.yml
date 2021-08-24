@@ -2,7 +2,9 @@ name: Create Release
 
 on: 
   workflow_dispatch:
-    branches: [ 1.x ]
+    branches: 
+      - 1.x
+      - 2.x
 
 jobs:
   build-release:
