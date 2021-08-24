@@ -42,6 +42,12 @@ The Magic Login plugin comes with a few different configuration options as stand
 
 Documented in the sections below are tips on using the magic login plugin within your existing project. This covers overwriting their templates, the list of routes provided by this plugin, using the existing stylesheets with your overwritten templates and how to include existing templates as partials in your project.
 
+### Registration
+
+As of Version 2.0 the user registration functionality for Magic Logins will no longer throw an error if the user already exists. Instead it will send the link off the user and log them in if a Craft account is present for them.
+
+For security reasons we don't want to make it apparent that an email has already registered on the website so as a fallback we will always show the link has been sent text. Perhaps in future we can add extra configuration settings to the plugin to allow these messages to be displayed back to the user.
+
 ### Overwriting magic login templates
 
 All of the templates on this plugin are overwritable using the [Template Roots](https://craftcms.com/docs/3.x/extend/template-roots.html#plugin-control-panel-templates) feature of Craft. The templates you can overwrite are listed below:
@@ -88,6 +94,10 @@ In order to distinguish users which are allowed to use Magic Login functionality
 ### User activation
 
 In order to let this plugins user journey work as smoothly as possible, we tweak the user activation journey provided by Craft CMS. When a user registers using the Magic Login user journey, we cancel any user activation emails sent out. This is because at the end of this process we will send out a magic login link anyway prior to logging the user in, therefore an account will instead be activated instead once the Magic Login link has been clicked.
+
+For now this suited the needs of the project this plugin was built for however if required we can always have an extra checkbox in the admin area to turn this functionality on and off.
+
+This change is only applied when following the Magic Login Registration route however and all other functionality that depends on the standard Craft `actionUserSave` functionality will remain in tact. 
 
 ## Running Magic Login Test Suite
 

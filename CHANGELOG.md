@@ -55,7 +55,7 @@ All notable changes to this project will be documented in this file.
 
 * Remove version from composer file as it caused tests to fail. ([89c491](https://github.com/creode/magic-login/commit/89c4915accc77d9164a370417883b6c87d651545))
 
-## 1.0.1 2021-07-26
+## 1.0.1 - 2021-07-26
 
 
 ### Fixes
