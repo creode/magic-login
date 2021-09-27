@@ -4,6 +4,7 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 2.0.1 - 2021-09-27
 ## 2.0.0 - 2021-08-24
 ### ⚠ BREAKING CHANGES
 
