@@ -180,7 +180,7 @@ class MagicLoginAuthService extends Component
             ->compose()
             ->setTo($email)
             ->setSubject($subject)
-            ->setHtmlBody($emailHtml->data)
+            ->setHtmlBody($emailHtml)
             ->send();
     }
 
