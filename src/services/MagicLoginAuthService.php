@@ -163,7 +163,7 @@ class MagicLoginAuthService extends Component
      */
     public function sendMagicLoginLink(string $link, string $email)
     {
-        $emailHtml = $this->renderTemplate(
+        $emailHtml = Craft::$app->view->renderTemplate(
             'magic-login/emails/_login',
             [
                 'loginLink' => $link,
