@@ -123,27 +123,7 @@ class MagicLoginController extends Controller
             return $this->renderTemplate('magic-login/_login-link-sent');
         }
         
-        $template_variables = [
-            'loginLink' => $link,
-        ];
-        $emailHtml = $this->renderTemplate(
-            'magic-login/emails/_login',
-            $template_variables
-        );
-
-        $subject = MagicLogin::getInstance()
-            ->getSettings()
-            ->authenticationEmailSubject;
-
-        // Send an email out to the user.
-        $email_sent = Craft::$app
-            ->getMailer()
-            ->compose()
-            ->setTo($email)
-            ->setSubject($subject)
-            ->setHtmlBody($emailHtml->data)
-            ->send();
-
+        $email_sent = MagicLogin::$plugin->magicLoginAuthService->sendMagicLoginLink($link, $email);
         if (!$email_sent) {
             $this->setFailFlash(
                 \Craft::t(
