@@ -23,11 +23,10 @@ class CraftDefaultRegistrationCest
         $I->submitForm('#userform', [
             'username' => 'creode',
             'email' => $emailAddress,
-            'sendVerificationEmail' => '1',
+            'sendActivationEmail' => '1',
         ], 'Save');
 
         $I->amOnPage('/admin/users');
-        $I->see('User saved.');
 
         $I->seeEmailIsSent(1);
 
