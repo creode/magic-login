@@ -72,21 +72,21 @@ class MagicLogin extends Plugin
      *
      * @var string
      */
-    public $schemaVersion = '1.0.0';
+    public string $schemaVersion = '1.0.0';
 
     /**
      * Set to `true` if the plugin should have a settings view in the control panel.
      *
      * @var bool
      */
-    public $hasCpSettings = true;
+    public bool $hasCpSettings = true;
 
     /**
      * Set to `true` if the plugin should have its own section (main nav item) in the control panel.
      *
      * @var bool
      */
-    public $hasCpSection = false;
+    public bool $hasCpSection = false;
     
     public const MAGIC_LOGIN_USER_GROUP_HANDLE = 'magicLogin';
 
@@ -98,7 +98,7 @@ class MagicLogin extends Plugin
      *
      * @return bool
      */
-    protected function beforeInstall(): bool
+    protected function beforeInstall(): void
     {
         // This line breaks tests until https://github.com/craftcms/cms/issues/7724 is resolved.
         // if (Craft::$app->getEdition() !== Craft::Pro) {
@@ -427,7 +427,7 @@ class MagicLogin extends Plugin
      *
      * @return \craft\base\Model|null
      */
-    protected function createSettingsModel()
+    protected function createSettingsModel(): ?\craft\base\Model
     {
         return new Settings();
     }
@@ -435,7 +435,7 @@ class MagicLogin extends Plugin
     /**
      * @inheritdoc
      */
-    public function getSettingsResponse()
+    public function getSettingsResponse(): mixed
     {
         $view = Craft::$app->getView();
         $namespace = $view->getNamespace();
