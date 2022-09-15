@@ -72,47 +72,26 @@ class MagicLogin extends Plugin
      *
      * @var string
      */
-    public string $schemaVersion = '1.0.0';
+//    public string $schemaVersion = '1.0.0';
 
     /**
      * Set to `true` if the plugin should have a settings view in the control panel.
      *
      * @var bool
      */
-    public bool $hasCpSettings = true;
+//    public bool $hasCpSettings = true;
 
     /**
      * Set to `true` if the plugin should have its own section (main nav item) in the control panel.
      *
      * @var bool
      */
-    public bool $hasCpSection = false;
+//    public bool $hasCpSection = false;
     
     public const MAGIC_LOGIN_USER_GROUP_HANDLE = 'magicLogin';
 
     // Public Methods
     // =========================================================================
-
-    /**
-     * @inheritdoc
-     *
-     * @return bool
-     */
-    protected function beforeInstall(): void
-    {
-        // This line breaks tests until https://github.com/craftcms/cms/issues/7724 is resolved.
-        // if (Craft::$app->getEdition() !== Craft::Pro) {
-        //     \Craft::error(
-        //         Craft::t(
-        //             'magic-login',
-        //             'This plugin requires features from Craft Pro before in order to be installed.'
-        //         )
-        //     );
-        //     return false;
-        // }
-        return true;
-    }
-
     /**
      * Set our $plugin static property to this class so that it can be accessed via
      * MagicLogin::$plugin

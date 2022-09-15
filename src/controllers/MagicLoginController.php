@@ -44,12 +44,9 @@ class MagicLoginController extends Controller
 
     /**
      * Allow the following routes to be anonymous.
-     *
-     * @var    bool|array Allows anonymous access to this controller's actions.
-     *         The actions must be in 'kebab-case'
-     * @access protected
+     * @inheritdoc
      */
-    protected array|int|bool $allowAnonymous = [
+    protected int|bool|array $allowAnonymous = [
         'login',
         'login-form',
         'register',
