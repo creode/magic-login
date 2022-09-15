@@ -4,6 +4,15 @@ A Magic Link plugin which sits on top of the existing user sign in and registrat
 
 ![Plugin Logo](resources/img/plugin-logo.png)
 
+## Versions
+
+For details about which version of this package to use with your version of Craft CMS please see the table below:
+
+| Craft Version | Magic Login Version |
+|-------------|---------------------|
+| <4.0.0      | 2.x                 |
+| 4.0.0       | 3.x                 |
+
 ## Requirements
 
 This plugin requires Craft CMS Pro 3.5.0 or later in order to take advantage of the [Template Roots](https://craftcms.com/docs/3.x/extend/template-roots.html#plugin-control-panel-templates) feature.
