@@ -4,6 +4,26 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 3.0.0 - 2022-09-16
+
+### ⚠ BREAKING CHANGES
+
+* Updates composer file to allow support for Craft 4. (b32ab2)
+
+### Bug Fixes
+
+* Adds type declarations to support Craft CMS 4 (5b3e3c)
+* Fixes an error where tests are failing due to missing configuration variable. (97373a)
+* Fixes issues from the test suite. (047764)
+* Issues with test suite due to field and functionality changes in Craft Core. (48b589)
+* Revert change introduced in wrong commit. (d77da5)
+
+##### Ci
+
+* Add missing environment variable. (c22e03)
+* Allow releases to be created on new 3.x branch. (929627)
+* Upgrade CI to run on newer versions of PHP. (b5cd6f)
+
 ## 2.0.2 - 2021-09-27
 ### Bug Fixes
 
