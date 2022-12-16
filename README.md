@@ -61,10 +61,10 @@ For security reasons we don't want to make it apparent that an email has already
 
 All of the templates on this plugin are overwritable using the [Template Roots](https://craftcms.com/docs/3.x/extend/template-roots.html#plugin-control-panel-templates) feature of Craft. The templates you can overwrite are listed below:
 
- - [magic-login/_login-form.twig](https://github.com/creode/magic-login/blob/1.x/src/templates/magic-login/_login-form.twig) - Main Login form rendered at /magic-login/login
- - [magic-login/_login-link-sent.twig](https://github.com/creode/magic-login/blob/1.x/src/templates/magic-login/_login-link-sent.twig) - Shows link sent form once a user attempts to login
- - [magic-login/_register-form.twig](https://github.com/creode/magic-login/blob/1.x/src/templates/magic-login/_register-form.twig) - Main Registration form rendered at /magic-login/register
- - [magic-login/emails/_login.twig](https://github.com/creode/magic-login/blob/1.x/src/templates/magic-login/emails/_login.twig) - Email template sent out to a user which contains the Magic Login Link
+ - [magic-login/_login-form.twig](https://github.com/creode/magic-login/blob/3.x/src/templates/magic-login/_login-form.twig) - Main Login form rendered at /magic-login/login
+ - [magic-login/_login-link-sent.twig](https://github.com/creode/magic-login/blob/3.x/src/templates/magic-login/_login-link-sent.twig) - Shows link sent form once a user attempts to login
+ - [magic-login/_register-form.twig](https://github.com/creode/magic-login/blob/3.x/src/templates/magic-login/_login-link-sent.twig) - Main Registration form rendered at /magic-login/register
+ - [magic-login/emails/_login.twig](https://github.com/creode/magic-login/blob/3.x/src/templates/magic-login/emails/_login.twig) - Email template sent out to a user which contains the Magic Login Link
 
 If you follow that folder structure inside your sites /templates file any of the above templates can be completely re-written in order to be configured or styled however you would like.
 
