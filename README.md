@@ -47,6 +47,8 @@ The Magic Login plugin comes with a few different configuration options as stand
  - Login Link Timeout - How long a link lasts before it expires (Default Value: 15 mins)
  - Magic Link Email Subject - (Default Value: Magic Login Link)
 
+You can manage these from within the Control Panel or by copying the [config file](https://github.com/creode/magic-login/blob/3.x/src/config.php) to `magic-link.php` within the project config folder.
+
 ## Using Magic Login
 
 Documented in the sections below are tips on using the magic login plugin within your existing project. This covers overwriting their templates, the list of routes provided by this plugin, using the existing stylesheets with your overwritten templates and how to include existing templates as partials in your project.
