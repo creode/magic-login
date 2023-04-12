@@ -4,6 +4,17 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 3.1.0 - 2023-04-12
+
+### Features
+
+* Adds the ability to rate limit magic login email sending. (2ae240)
+
+### Bug Fixes
+
+* Display the config menu in the admin panel. (b56eff)
+* Update deprecated query function. (2ed201)
+
 ## 3.0.0 - 2022-09-16
 
 ### ⚠ BREAKING CHANGES
