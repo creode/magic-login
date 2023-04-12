@@ -4,6 +4,13 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 3.1.1 - 2023-04-12
+
+### Bug Fixes
+
+* Add in various example configuration options available to the plugin (with defaults). (d0729d)
+* Fixes an issue with email rate limiting caused by timezones. (6c91ad)
+
 ## 3.1.0 - 2023-04-12
 
 ### Features
