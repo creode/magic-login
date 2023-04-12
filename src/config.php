@@ -23,8 +23,12 @@
  */
 
 return [
-
-	// This controls blah blah blah
-	"someAttribute" => true,
-
+    // How long (in minutes) until a Magic Link expires.
+    'linkExpiry' => 15,
+    // Users in Craft still need a password this plugin therefore generates one. You can set the length of this here.
+    'passwordLength' => 16,
+    // What to display on the subject line for Magic Link emails.
+    'authenticationEmailSubject' => 'Magic Login Link',
+    // Rate Limit for how frequently a magic login email can be sent (in minutes).
+    'emailRateLimit' => 5,
 ];
