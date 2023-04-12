@@ -207,7 +207,6 @@ class MagicLoginAuthService extends Component
                 ->emailRateLimit * 60;
 
             $nextEmailSendDate = new \DateTime();
-            $nextEmailSendDate->setTimezone(new \DateTimeZone('UTC'));
             $authRecord->nextEmailSend = $nextEmailSendDate->setTimestamp(time() + $emailRateLimitInSeconds);
             $authRecord->save();
         }

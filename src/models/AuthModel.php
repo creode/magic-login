@@ -97,16 +97,14 @@ class AuthModel extends Model
 	 */
 	public function hasHitEmailRateLimit()
 	{
-		$emailNextRateLimitInMinutes = MagicLogin::getInstance()->getSettings()->emailRateLimit;
-
 		if (is_null($this->nextEmailSend)) {
 			return false;
 		}
 
-		$nextEmailSend = new \DateTime($this->nextEmailSend->format('Y-m-d H:i:s'), new \DateTimeZone('UTC'));
-
-		$nextEmailSend = $nextEmailSend->getTimestamp() + ($emailNextRateLimitInMinutes * 60);
-		return $nextEmailSend > time();
+		$nextEmailSend = new \DateTime($this->nextEmailSend->format('Y-m-d H:i:s'));
+		$now = new \DateTime();
+		$now->getTimestamp();
+		return $nextEmailSend->getTimestamp() > $now->getTimestamp();
 	}
 
 	/**
