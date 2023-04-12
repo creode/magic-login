@@ -36,14 +36,14 @@ class Settings extends Model
 	 *
 	 * @var integer
 	 */
-	public $linkExpiry = 15;
+	public ?int $linkExpiry = 15;
 
 	/**
 	 * Default random password length generated with a user.
 	 *
 	 * @var integer
 	 */
-	public $passwordLength = 16;
+	public ?int $passwordLength = 16;
 
 	/**
 	 * Subject line on the Magic Login authentication email.
@@ -51,6 +51,13 @@ class Settings extends Model
 	 * @var string
 	 */
 	public $authenticationEmailSubject = 'Magic Login Link';
+
+	/**
+	 * Rate Limit for how frequently a magic login email can be sent (in minutes).
+	 *
+	 * @var integer
+	 */
+	public ?int $emailRateLimit = 5;
 
 	// TODO: Add a setting to say if magic login click should also verify a user.
 	// Grey out the option if verification is disabled on the website.
@@ -71,7 +78,7 @@ class Settings extends Model
 	public function rules(): array
 	{
 		return [
-			[['linkExpiry', 'passwordLength'], 'number'],
+			[['linkExpiry', 'passwordLength', 'emailRateLimit'], 'number'],
 			[['authenticationEmailSubject'], 'string'],
 		];
 	}
