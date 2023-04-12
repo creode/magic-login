@@ -46,6 +46,9 @@ The Magic Login plugin comes with a few different configuration options as stand
  - Random Password Length - (Default Value: 16, Min: 16)
  - Login Link Timeout - How long a link lasts before it expires (Default Value: 15 mins)
  - Magic Link Email Subject - (Default Value: Magic Login Link)
+ - Email Rate Limit - Email sending Rate limit (Default Value: 5 mins)
+
+You can manage these from within the Control Panel or by copying the [config file](https://github.com/creode/magic-login/blob/3.x/src/config.php) to `magic-link.php` within the project config folder.
 
 ## Using Magic Login
 
