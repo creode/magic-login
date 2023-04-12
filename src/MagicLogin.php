@@ -263,7 +263,7 @@ class MagicLogin extends Plugin
         }
         
         $user = User::find()
-            ->anyStatus()
+            ->status(null)
             ->email($email)
             ->one();
 
