@@ -77,7 +77,7 @@ class MagicLogin extends Plugin
      *
      * @var bool
      */
-//    public bool $hasCpSettings = true;
+    public bool $hasCpSettings = true;
 
     /**
      * Set to `true` if the plugin should have its own section (main nav item) in the control panel.
