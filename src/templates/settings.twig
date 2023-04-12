@@ -51,6 +51,15 @@
                 max: 50,
                 value: settings.passwordLength})
             }}
+
+            {{ forms.textField({
+                label: 'Email Rate Limit',
+                instructions: 'When sending magic login links, we may need some form of a rate limit. This is set here in minutes.',
+                id: 'emailRateLimit',
+                name: 'emailRateLimit',
+                min: 1,
+                value: settings.emailRateLimit})
+            }}
         </div>
 
         <div id="emails" class="hidden">

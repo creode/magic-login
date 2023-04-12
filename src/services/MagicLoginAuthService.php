@@ -163,6 +163,24 @@ class MagicLoginAuthService extends Component
      */
     public function sendMagicLoginLink(string $link, string $email)
     {
+        // Get public key.
+        $publicKey = $this->extractPublicKeyFromLink($link);
+
+        // Find record.
+        $authRecord = AuthRecord::findOne(['publicKey' => $publicKey]);
+        $authModel = new AuthModel(
+            $authRecord->getAttributes(
+                [
+                    'nextEmailSend',
+                ]
+            )
+        );
+
+        // If we hit rate limit say we couldn't send the email.
+        if ($authModel->hasHitEmailRateLimit()) {
+            return false;
+        }
+
         $emailHtml = Craft::$app->view->renderTemplate(
             'magic-login/emails/_login',
             [
@@ -174,14 +192,28 @@ class MagicLoginAuthService extends Component
             ->getSettings()
             ->authenticationEmailSubject;
 
-        // Send an email out to the user.
-        return Craft::$app
+        // Set the email send.
+        $emailSent = Craft::$app
             ->getMailer()
             ->compose()
             ->setTo($email)
             ->setSubject($subject)
             ->setHtmlBody($emailHtml)
             ->send();
+
+        if ($emailSent) {
+            $emailRateLimitInSeconds = MagicLogin::getInstance()
+                ->getSettings()
+                ->emailRateLimit * 60;
+
+            $nextEmailSendDate = new \DateTime();
+            $nextEmailSendDate->setTimezone(new \DateTimeZone('UTC'));
+            $authRecord->nextEmailSend = $nextEmailSendDate->setTimestamp(time() + $emailRateLimitInSeconds);
+            $authRecord->save();
+        }
+
+        // Send an email out to the user.
+        return $emailSent;
     }
 
     /**
@@ -197,6 +229,21 @@ class MagicLoginAuthService extends Component
         $baseUrl = Craft::$app->getRequest()->getHostInfo();
 
         return $baseUrl . "/magic-login/auth/$publicKey/$timestamp/$signature";
+    }
+
+    /**
+     * Extracts a public key from a link.
+     *
+     * @param string $link
+     * @return string
+     */
+    private function extractPublicKeyFromLink(string $link)
+    {
+        $urlParts = explode('/', $link);
+
+        $urlPartsIndex = count($urlParts) - 3;
+
+        return $urlParts[$urlPartsIndex];
     }
 
     /**

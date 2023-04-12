@@ -68,6 +68,11 @@ class AuthModel extends Model
 	 */
 	public $dateCreated;
 
+	/**
+	 * Timestamp for when next email can send.
+	 */
+	public ?\DateTime $nextEmailSend;
+
 	// Public Methods
 	// =========================================================================
 
@@ -86,6 +91,25 @@ class AuthModel extends Model
 	}
 
 	/**
+	 * Checks if model has hit the email rate limit.
+	 *
+	 * @return boolean
+	 */
+	public function hasHitEmailRateLimit()
+	{
+		$emailNextRateLimitInMinutes = MagicLogin::getInstance()->getSettings()->emailRateLimit;
+
+		if (is_null($this->nextEmailSend)) {
+			return false;
+		}
+
+		$nextEmailSend = new \DateTime($this->nextEmailSend->format('Y-m-d H:i:s'), new \DateTimeZone('UTC'));
+
+		$nextEmailSend = $nextEmailSend->getTimestamp() + ($emailNextRateLimitInMinutes * 60);
+		return $nextEmailSend > time();
+	}
+
+	/**
 	 * Returns the validation rules for attributes.
 	 *
 	 * Validation rules are used by [[validate()]] to check if attribute values are valid.
@@ -100,7 +124,7 @@ class AuthModel extends Model
 		$rules = parent::rules();
 		$rules[] = [['publicKey', 'privateKey', 'redirectUrl'], 'string'];
 		$rules[] = [['userId'], 'number'];
-		$rules[] = [['dateCreated'], DateTimeValidator::class];
+		$rules[] = [['dateCreated', 'nextEmailSend'], DateTimeValidator::class];
 		
 		return $rules;
 	}

@@ -115,6 +115,7 @@ class Install extends Migration
 					'dateUpdated' => $this->dateTime()->notNull(),
 					// 'siteId' => $this->integer()->notNull(), - I don't think this is required right now but may be in future.
 					'uid' => $this->uid(),
+					'nextEmailSend' => $this->dateTime()->null()->defaultValue(null),
 				]
 			);
 		}

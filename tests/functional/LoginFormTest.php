@@ -199,4 +199,48 @@ class LoginFormTest extends BaseFunctionalTest
         $magicLoginEmail = $this->tester->grabLastSentEmail();
         $this->assertEquals($emailSubject, $magicLoginEmail->getSubject());
     }
+
+    /**
+     * Tests that we have a rate limit setup for Magic Login.
+     */
+    public function testMagicLoginEmailRateLimit()
+    {
+        // Load up a valid user since they need to be registered to login.
+        $validUser = User::findOne();
+
+        // Remove all existing auth records to give the opportunity for a proper test.
+        AuthRecord::deleteAll();
+
+        // Get all Auth Records.
+        $authRecords = AuthRecord::find()->all();
+
+        // Send off login form.
+        $this->tester->amOnPage('/magic-login/login');
+        $this->tester->submitForm(
+            '#magic-login-form',
+            [
+                'email' => $validUser->email,
+            ],
+            'submitButton'
+        );
+
+        // Recollect the auth records from database.
+        $updatedAuthRecords = AuthRecord::find()->all();
+
+        // We should have a new AuthRecord added to the database.
+        $this->assertEquals(count($updatedAuthRecords), count($authRecords) + 1);
+
+        // Send off login form.
+        $this->tester->amOnPage('/magic-login/login');
+        $this->tester->submitForm(
+            '#magic-login-form',
+            [
+                'email' => $validUser->email,
+            ],
+            'submitButton'
+        );
+
+        // Check that even though we sent two requests only one email was sent.
+        $this->tester->seeEmailIsSent(1);
+    }
 }

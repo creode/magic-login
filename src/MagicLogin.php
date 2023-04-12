@@ -18,10 +18,8 @@ use craft\base\Plugin;
 use craft\mail\Mailer;
 use yii\mail\MailEvent;
 use craft\elements\User;
-use craft\services\Users;
 use craft\web\UrlManager;
 use yii\base\ActionEvent;
-use craft\events\UserEvent;
 use craft\models\UserGroup;
 use craft\services\Plugins;
 use craft\events\PluginEvent;
@@ -72,7 +70,7 @@ class MagicLogin extends Plugin
      *
      * @var string
      */
-//    public string $schemaVersion = '1.0.0';
+    public string $schemaVersion = '2.0.0';
 
     /**
      * Set to `true` if the plugin should have a settings view in the control panel.

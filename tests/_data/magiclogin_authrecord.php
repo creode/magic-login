@@ -10,7 +10,8 @@ return [
 		'redirectUrl' => '/',
 		'dateCreated' => $date->format('Y-m-d H:i:s'),
 		'dateUpdated' => $date->format('Y-m-d H:i:s'),
-		'uid' => '1fc4a27f-7615-4d7a-9248-760b1099711b'
+		'uid' => '1fc4a27f-7615-4d7a-9248-760b1099711b',
+		'nextEmailSend' => null,
 	],
 	'expired_auth_record' => [
 		'userId' => 1,
@@ -19,6 +20,7 @@ return [
 		'redirectUrl' => '',
 		'dateCreated' => '2020-01-01 00:00:00',
 		'dateUpdated' => '2020-01-01 00:00:00',
+		'nextEmailSend' => null,
 	],
 	'test_user_4_auth_record' => [
 		'userId' => 6,
@@ -27,6 +29,7 @@ return [
 		'redirectUrl' => '/',
 		'dateCreated' => $date->format('Y-m-d H:i:s'),
 		'dateUpdated' => $date->format('Y-m-d H:i:s'),
-		'uid' => '1fc4a27f-7615-4d7a-9248-760b1099711b'
+		'uid' => '1fc4a27f-7615-4d7a-9248-760b1099711b',
+		'nextEmailSend' => null,
 	],
 ];
