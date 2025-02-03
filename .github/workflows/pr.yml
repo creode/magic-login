@@ -1,0 +1,16 @@
+name: Check Conventional PR
+
+on:
+  pull_request:
+    branches: [ 1.x, 2.x, 3.x, 4.x ]
+
+jobs:
+  build:
+    name: Ensure Conventional Commits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2-beta
+      - uses: beemojs/conventional-pr-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
