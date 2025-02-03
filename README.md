@@ -122,6 +122,10 @@ From there you can access the codecept executable with the following:
 
 `php vendor/bin/codecept run`
 
+## Contributing
+
+Any contributions to this repository are welcomed. Please be aware that we are using [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) to assist in self documentation and reduce manual work involved with releases.
+
 ## Magic Login Roadmap
 
 Some things to do, and ideas for potential features:
