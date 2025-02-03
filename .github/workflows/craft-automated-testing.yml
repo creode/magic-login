@@ -9,7 +9,7 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        php: [8.0, 8.1]
+        php: [8.2, 8.3]
         dependency-version: [prefer-stable]
         os: [ubuntu-latest]
 
@@ -20,7 +20,7 @@ jobs:
       # Label used to access the service container
       mysql:
         # Docker Hub image
-        image: mysql:5.7
+        image: mysql:8.0
         # Provide the password for postgres
         env:
           MYSQL_DATABASE: craft_tests
@@ -31,7 +31,7 @@ jobs:
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Setup PHP
       uses: shivammathur/setup-php@v2
@@ -43,17 +43,10 @@ jobs:
     - name: Install dependencies
       run: composer update --${{ matrix.dependency-version }} --prefer-dist --no-interaction
 
-    # Add a test script to composer.json, for instance: "test": "vendor/bin/phpunit"
-    # Docs: https://getcomposer.org/doc/articles/scripts.md
-
     - name: Setup Tests
       run: cp tests/example-env-ci tests/.env
 
     - name: Run test suite
       run: composer run-script test
       env:
-        DB_USER: root
-        DB_SERVER: 127.0.0.1
-        DB_DRIVER: mysql
-        DB_DATABASE: craft_tests
         DB_PORT: ${{ job.services.mysql.ports[3306] }}

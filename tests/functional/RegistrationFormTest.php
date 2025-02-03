@@ -9,6 +9,7 @@ use craft\records\User;
 use RandomLib\Generator;
 use creode\magiclogin\MagicLogin;
 use craft\elements\User as UserElement;
+use craft\enums\CmsEdition;
 use creode\magiclogin\records\AuthRecord;
 use creode\magiclogintests\fixtures\AuthRecordFixture;
 use creode\magiclogin\services\MagicLoginRandomGeneratorService;
@@ -30,7 +31,7 @@ class RegistrationFormTest extends BaseFunctionalTest
      */
     protected function _before()
     {
-        Craft::$app->setEdition(Craft::Pro);
+        Craft::$app->setEdition(CmsEdition::Pro);
 
         // Set login path to login page to ensure that the templates exist.
         $generalConfig = Craft::$app->getConfig()->getGeneral();
@@ -178,7 +179,7 @@ class RegistrationFormTest extends BaseFunctionalTest
         Craft::$app->projectConfig->set('users', $userSettings);
 
         // Register a new user into Craft.
-        $registrationEmail = 'creode-test@example.com';
+        $registrationEmail = 'creode-test-2@example.com';
         $this->tester->amOnPage('/magic-login/register');
         $this->tester->submitForm(
             '#magic-login-register',
@@ -191,11 +192,11 @@ class RegistrationFormTest extends BaseFunctionalTest
         // Load in a user so we can validate their status.
         $user = UserElement::find()
             ->email($registrationEmail)
-            ->anyStatus()
+            ->status(null)
             ->one();
 
         // Ensure that the user has a pending status.
-        $this->assertEquals('1', $user->pending);
+        $this->assertEquals(true, $user->pending);
 
         // Grab an auth record.
         /** @var \creode\magiclogin\records\AuthRecord $validRecord */
@@ -205,13 +206,15 @@ class RegistrationFormTest extends BaseFunctionalTest
         $validLink = $this->generateValidMagicLink($validRecord);
         $this->tester->amOnPage($validLink);
 
+        $this->tester->pause();
+
         $user = UserElement::find()
             ->email($registrationEmail)
-            ->anyStatus()
+            ->status(null)
             ->one();
         
         // Ensure that the user is no longer pending.
-        $this->assertEquals('0', $user->pending);
+        $this->assertEquals(false, $user->pending);
 
         // Reset Verification back to how it was before the test.
         // This ensures any tests after this are using expected parameters.
@@ -317,7 +320,7 @@ class RegistrationFormTest extends BaseFunctionalTest
         $user = UserElement::find()
             ->addSelect(['users.password'])
             ->email($registrationEmail)
-            ->anyStatus()
+            ->status(null)
             ->one();
 
         $this->assertTrue($user->authenticate($password));

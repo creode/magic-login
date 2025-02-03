@@ -1,7 +1,8 @@
 actor: Tester
 paths:
   tests: tests
-  log: tests/_output
+  log: tests/_log
+  output: tests/_output
   data: tests/_data
   support: tests/_support
   envs: tests/_envs
@@ -24,12 +25,13 @@ coverage:
     - /*.svg
     - src/config.php
 params:
+  - env
   - tests/.env
 modules:
   config:
     \craft\test\Craft:
       configFile: "tests/_craft/config/test.php"
-      entryUrl: 'https://test.craftcms.test/index.php'
+      entryUrl: 'http://test.craftcms.test/index.php'
       projectConfig:
         folder: 'test-config/project'
       migrations: []

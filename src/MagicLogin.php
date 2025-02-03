@@ -20,6 +20,7 @@ use yii\mail\MailEvent;
 use craft\elements\User;
 use craft\web\UrlManager;
 use yii\base\ActionEvent;
+use craft\enums\CmsEdition;
 use craft\models\UserGroup;
 use craft\services\Plugins;
 use craft\events\PluginEvent;
@@ -70,7 +71,7 @@ class MagicLogin extends Plugin
      *
      * @var string
      */
-    public string $schemaVersion = '2.0.0';
+    public string $schemaVersion = '2.1.0';
 
     /**
      * Set to `true` if the plugin should have a settings view in the control panel.
@@ -78,15 +79,16 @@ class MagicLogin extends Plugin
      * @var bool
      */
     public bool $hasCpSettings = true;
+    
+    /**
+     * User Group Handle.
+     */
+    public const MAGIC_LOGIN_USER_GROUP_HANDLE = 'magicLogin';
 
     /**
-     * Set to `true` if the plugin should have its own section (main nav item) in the control panel.
-     *
-     * @var bool
+     * @inheritdoc
      */
-//    public bool $hasCpSection = false;
-    
-    public const MAGIC_LOGIN_USER_GROUP_HANDLE = 'magicLogin';
+    public CmsEdition $minCmsEdition = CmsEdition::Pro;
 
     // Public Methods
     // =========================================================================
@@ -332,7 +334,7 @@ class MagicLogin extends Plugin
         }
 
         // TODO: This will need removing once the check for beforeInstall can pass.
-        if (Craft::$app->getEdition() !== Craft::Pro) {
+        if (Craft::$app->getEdition() !== CmsEdition::Pro) {
             Craft::$app->session->setError(
                 Craft::t(
                     'magic-login',
@@ -423,10 +425,13 @@ class MagicLogin extends Plugin
         /** @var Controller $controller */
         $controller = Craft::$app->controller;
 
+        $overrides = Craft::$app->getConfig()->getConfigFromFile(strtolower($this->handle));
+
         return $controller->renderTemplate('magic-login/settings', [
             'plugin' => $this,
             'settingsHtml' => $settingsHtml,
             'settings' => $this->getSettings(),
+            'overrides' => array_keys($overrides),
         ]);
     }
 

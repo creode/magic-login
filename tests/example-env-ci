@@ -1,6 +1,9 @@
 # Set in accordance to your environment
 
+DB_USER=root
+DB_SERVER=127.0.0.1
+DB_DRIVER=mysql
+DB_DATABASE=craft_tests
 DB_SCHEMA=""
 DB_TABLE_PREFIX="craft"
-DB_PORT="3306"
 SECURITY_KEY="abcde12345"

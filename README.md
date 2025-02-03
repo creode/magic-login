@@ -12,6 +12,7 @@ For details about which version of this package to use with your version of Craf
 | ------------- | ------------------- |
 | <4.0.0        | 2.x                 |
 | 4.0.0         | 3.x                 |
+| 5.0.0         | 4.x                 |
 
 ## Requirements
 
@@ -120,6 +121,10 @@ From the root of this plugin ensure to install the dependencies using composer:
 From there you can access the codecept executable with the following:
 
 `php vendor/bin/codecept run`
+
+## Contributing
+
+Any contributions to this repository are welcomed. Please be aware that we are using [conventional commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) to assist in self documentation and reduce manual work involved with releases.
 
 ## Magic Login Roadmap
 

@@ -31,4 +31,6 @@ return [
     'authenticationEmailSubject' => 'Magic Login Link',
     // Rate Limit for how frequently a magic login email can be sent (in minutes).
     'emailRateLimit' => 5,
+    // Amount of times a link can be accessed before it expires.
+    'linkAccessLimit' => 1,
 ];

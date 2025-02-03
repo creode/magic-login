@@ -206,6 +206,12 @@ class MagicLoginController extends Controller
         // Save the user
         Craft::$app->runAction('users/save-user');
 
+        // Handle users which can be logged in automatically.
+        $currentUser = Craft::$app->getUser()->getIdentity();
+        if ($currentUser) {
+            return $this->redirectToPostedUrl(null, 'magic-login/login-link-sent');
+        }
+
         // Send the new user a magic login link email.
         Craft::$app->runAction('magic-login/magic-login/login');
 
@@ -252,7 +258,7 @@ class MagicLoginController extends Controller
         // Get the user and magic link group.
         $user = User::find()
             ->id($authRecord->userId)
-            ->anyStatus()
+            ->status(null)
             ->one();
         
         // If we can't find record trigger a failure.
@@ -326,8 +332,14 @@ class MagicLoginController extends Controller
             return $this->redirect($loginUrl);
         }
 
-        // Remove the auth record since we are logged in now.
-        $authRecord->delete();
+        // Increment the access count.
+        $authRecord->accessCount++;
+        $authRecord->save();
+
+        if ($authRecord->hasExpired()) {
+            // Remove the auth record since we are logged in now.
+            $authRecord->delete();
+        }
 
         // Redirect user to the url provided by the login page.
         return $this->redirect($authRecord->redirectUrl);

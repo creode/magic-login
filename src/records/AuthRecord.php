@@ -52,4 +52,34 @@ class AuthRecord extends ActiveRecord
 	{
 		return '{{%magiclogin_authrecord}}';
 	}
+
+	/**
+	 * Determine if we have hit the access limit for the auth record.
+	 *
+	 * @return boolean
+	 */
+	public function hasHitAccessLimit() {
+		$linkAccessLimit = MagicLogin::$plugin->getSettings()->linkAccessLimit;
+		if ($linkAccessLimit !== null && $this->accessCount >= $linkAccessLimit) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function hasExpired() {
+		// Check if timestamp is within bounds set by plugin configuration
+		$linkExpiryAmount = MagicLogin::getInstance()->getSettings()->linkExpiry;
+		$dateCreated = new \DateTime($this->dateCreated, new \DateTimeZone('UTC'));
+		$expiryTimestamp = $dateCreated->getTimestamp() + ($linkExpiryAmount * 60);
+		if ($expiryTimestamp < time()) {
+			return true;
+		}
+
+		if ($this->hasHitAccessLimit()) {
+			return true;
+		}
+
+		return false;
+	}
 }

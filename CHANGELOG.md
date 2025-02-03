@@ -4,6 +4,39 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 4.3.0 - 2024-08-20
+
+### Features
+
+* Allow registration process to log a user in if correct configuration has allowed for it. (cd5549)
+
+### Bug Fixes
+
+* Tests schema version bump (2348fe)
+
+## 4.2.0 - 2024-07-15
+
+### Features
+
+* Add in functionality to allow a configurable amount of times a link can be accessed before it is expired. (65c274)
+* Add migrations to count how many times a link has been accessed (fa28ee)
+
+## 4.1.0 - 2024-06-25
+
+### Features
+
+* Disable settings field and display message to user if being overridden in config (1a5dbf)
+
+## 4.0.0 - 2024-06-24
+
+### ⚠ BREAKING CHANGES
+
+* Bumps dependencies for magic login for initial craft 5 support. (4c5384)
+
+### Bug Fixes
+
+* Deprecated function. (823894)
+
 ## 3.1.1 - 2023-04-12
 
 ### Bug Fixes

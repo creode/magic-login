@@ -22,7 +22,7 @@
     ],
     "config": {
         "platform": {
-            "php": "8.0.2"
+            "php": "8.2"
         },
         "allow-plugins": {
             "yiisoft/yii2-composer": true,
@@ -36,18 +36,20 @@
         }
     ],
     "require": {
-        "craftcms/cms": "^4.0.0",
+        "php": "^8.2",
+        "craftcms/cms": "^5.0",
         "paragonie/random-lib": "^2.0"
     },
     "replace": {
         "paragonie/random_compat": "^2"
     },
     "require-dev": {
-        "codeception/codeception": "^4.0",
-        "vlucas/phpdotenv": "^3.4.0",
-        "codeception/module-yii2": "^1.1",
-        "codeception/module-asserts": "^1.3",
-        "marcocesarato/php-conventional-changelog": "^1.12"
+        "codeception/codeception": "^5.0.11",
+        "vlucas/phpdotenv": "^5.4.1",
+        "codeception/module-yii2": "^1.1.9",
+        "codeception/module-asserts": "^3.0.0",
+        "marcocesarato/php-conventional-changelog": "^1.17",
+        "craftcms/phpstan": "dev-main"
     },
     "autoload": {
         "psr-4": {
@@ -57,6 +59,7 @@
     },
     "scripts": {
         "test": "php vendor/bin/codecept run",
+        "phpstan": "phpstan --memory-limit=1G",
         "coverage-test": "XDEBUG_MODE=coverage ./vendor/bin/codecept run --coverage-html coverage-report",
         "changelog": "php vendor/bin/conventional-changelog",
         "release": "php vendor/bin/conventional-changelog --commit",
@@ -77,5 +80,7 @@
         },
         "class": "creode\\magiclogin\\MagicLogin"
     },
-    "version": "3.1.1"
+    "version": "4.3.0",
+    "minimum-stability": "dev",
+    "prefer-stable": true
 }
