@@ -7,12 +7,12 @@ plugins:
   magic-login:
     edition: standard
     enabled: true
-    schemaVersion: 1.0.0
+    schemaVersion: 2.0.0
 system:
   edition: pro
   live: true
   name: 'Craft test site'
-  schemaVersion: 3.7.9
+  schemaVersion: 4.5.3.0
   timeZone: Europe/London
 users:
   allowPublicRegistration: true
