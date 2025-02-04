@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 3.1.2 - 2024-08-30
+
+* Backports several features to 3.x
+
+### Features
+
+* Add in functionality to allow a configurable amount of times a link can be accessed before it is expired. (65c274)
+* Add migrations to count how many times a link has been accessed (fa28ee)
+* Disable settings field and display message to user if being overridden in config (1a5dbf)
+
 ## 3.1.1 - 2023-04-12
 
 ### Bug Fixes

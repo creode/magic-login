@@ -70,7 +70,7 @@ class MagicLogin extends Plugin
      *
      * @var string
      */
-    public string $schemaVersion = '2.0.0';
+    public string $schemaVersion = '2.1.0';
 
     /**
      * Set to `true` if the plugin should have a settings view in the control panel.
@@ -423,10 +423,14 @@ class MagicLogin extends Plugin
         /** @var Controller $controller */
         $controller = Craft::$app->controller;
 
+        $overrides = Craft::$app->getConfig()->getConfigFromFile(strtolower($this->handle));
+
+
         return $controller->renderTemplate('magic-login/settings', [
             'plugin' => $this,
             'settingsHtml' => $settingsHtml,
             'settings' => $this->getSettings(),
+            'overrides' => array_keys($overrides),
         ]);
     }
 

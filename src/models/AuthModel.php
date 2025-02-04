@@ -62,6 +62,13 @@ class AuthModel extends Model
 	public $redirectUrl;
 
 	/**
+	 * Amount of times the link has been accessed.
+	 *
+	 * @var integer
+	 */
+	public $accessCount = 0;
+
+	/**
 	 * Creation date of the record.
 	 *
 	 * @var \DateTime
@@ -83,6 +90,12 @@ class AuthModel extends Model
 	 */
 	public function isExpired()
 	{
+		// Access count.
+		$linkAccessLimit = MagicLogin::getInstance()->getSettings()->linkAccessLimit;
+		if ($linkAccessLimit !== null && $this->accessCount >= $linkAccessLimit) {
+			return true;
+		}
+
 		// Check if timestamp is within bounds set by plugin configuration
 		$linkExpiryAmount = MagicLogin::getInstance()->getSettings()->linkExpiry;
 		$dateCreated = new \DateTime($this->dateCreated->format('Y-m-d H:i:s'), new \DateTimeZone('UTC'));
@@ -121,7 +134,7 @@ class AuthModel extends Model
 	{
 		$rules = parent::rules();
 		$rules[] = [['publicKey', 'privateKey', 'redirectUrl'], 'string'];
-		$rules[] = [['userId'], 'number'];
+		$rules[] = [['userId', 'accessCount'], 'number'];
 		$rules[] = [['dateCreated', 'nextEmailSend'], DateTimeValidator::class];
 		
 		return $rules;

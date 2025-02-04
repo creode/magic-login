@@ -326,8 +326,14 @@ class MagicLoginController extends Controller
             return $this->redirect($loginUrl);
         }
 
-        // Remove the auth record since we are logged in now.
-        $authRecord->delete();
+        // Increment the access count.
+        $authRecord->accessCount++;
+        $authRecord->save();
+
+        if ($authRecord->hasExpired()) {
+            // Remove the auth record since we are logged in now.
+            $authRecord->delete();
+        }
 
         // Redirect user to the url provided by the login page.
         return $this->redirect($authRecord->redirectUrl);

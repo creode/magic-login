@@ -59,6 +59,13 @@ class Settings extends Model
 	 */
 	public ?int $emailRateLimit = 5;
 
+	/**
+	 * How many times a login link can be accessed before it expires.
+	 *
+	 * @var integer
+	 */
+	public ?int $linkAccessLimit = 1;
+
 	// TODO: Add a setting to say if magic login click should also verify a user.
 	// Grey out the option if verification is disabled on the website.
 
@@ -78,7 +85,7 @@ class Settings extends Model
 	public function rules(): array
 	{
 		return [
-			[['linkExpiry', 'passwordLength', 'emailRateLimit'], 'number'],
+			[['linkExpiry', 'passwordLength', 'emailRateLimit', 'linkAccessLimit'], 'number'],
 			[['authenticationEmailSubject'], 'string'],
 		];
 	}
