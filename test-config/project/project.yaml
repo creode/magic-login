@@ -1,8 +1,16 @@
-dateModified: 1616079770
+dateModified: 1738659450
 email:
   fromEmail: support@craftcms.com
   fromName: 'Craft test site'
   transportType: craft\mail\transportadapters\Sendmail
+graphql:
+  publicToken:
+    enabled: false
+    expiryDate: null
+meta:
+  __names__:
+    0ec9b1fd-034b-4a84-99af-1758de94e5da: 'Magic login testing' # Magic login testing
+    2eb44645-1260-46fe-9ca5-5f80e350f1b7: 'Magic login testing' # Magic login testing
 plugins:
   magic-login:
     edition: standard
@@ -11,12 +19,6 @@ plugins:
 system:
   edition: pro
   live: true
-  name: 'Craft test site'
-  schemaVersion: 5.3.0.2
-  timeZone: Europe/London
-users:
-  allowPublicRegistration: true
-  defaultGroup: null
-  photoSubpath: null
-  photoVolumeUid: null
-  requireEmailVerification: false
+  name: 'Magic login testing'
+  schemaVersion: 5.6.0.2
+  timeZone: America/Los_Angeles
