@@ -153,6 +153,11 @@ class MagicLogin extends Plugin
             Mailer::class,
             Mailer::EVENT_BEFORE_SEND,
             function (MailEvent $event) {
+                // Skip for console requests (e.g. queue jobs) — getBodyParam() is not available
+                if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+                    return;
+                }
+
                 if (! $this->request->getBodyParam('magicLoginRegistration')) {
                     return false;
                 }
