@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 4.3.1 - 2026-04-02
+
+### Bug Fixes
+
+* Add console request check to EVENT_BEFORE_SEND handler (600832)
+
 ## 4.3.0 - 2024-08-20
 
 ### Features
