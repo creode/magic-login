@@ -340,6 +340,17 @@ class MagicLogin extends Plugin
 
         // TODO: This will need removing once the check for beforeInstall can pass.
         if (Craft::$app->getEdition() !== CmsEdition::Pro) {
+            if (Craft::$app->getRequest()->getIsConsoleRequest()) {
+                Craft::warning(
+                    Craft::t(
+                        'magic-login',
+                        'For this plugin to function correctly, you must have a pro license for Craft.'
+                    ),
+                    __METHOD__
+                );
+                return;
+            }
+
             Craft::$app->session->setError(
                 Craft::t(
                     'magic-login',
