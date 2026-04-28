@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 4.3.3 - 2026-04-28
+
+### Bug Fixes
+
+* Avoid session flash during console install (b489dd)
+
 ## 4.3.2 - 2026-04-28
 
 ### Bug Fixes
