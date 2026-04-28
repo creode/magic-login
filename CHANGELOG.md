@@ -4,6 +4,12 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 4.3.2 - 2026-04-28
+
+### Bug Fixes
+
+* Fixes an issue with validation of redirection urls, adds documentation test for it (07ea0a)
+
 ## 4.3.1 - 2026-04-02
 
 ### Bug Fixes
