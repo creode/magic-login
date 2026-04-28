@@ -13,6 +13,7 @@ namespace creode\magiclogin\services;
 use Craft;
 
 use craft\base\Component;
+use craft\helpers\UrlHelper;
 use creode\magiclogin\MagicLogin;
 use creode\magiclogin\models\AuthModel;
 use creode\magiclogin\records\AuthRecord;
@@ -92,9 +93,12 @@ class MagicLoginAuthService extends Component
         $record->userId = $user->id;
         $record->publicKey = $publicKey;
         $record->privateKey = $privateKey;
-        $record->redirectUrl = Craft::$app
-            ->getRequest()
-            ->getValidatedBodyParam('magicLoginRedirectUrl') ?? $generalConfig->postLoginRedirect;
+        $redirectUrl = Craft::$app->getRequest()->getBodyParam('magicLoginRedirectUrl');
+        if (is_string($redirectUrl) && UrlHelper::isFullUrl($redirectUrl)) {
+            $record->redirectUrl = $redirectUrl;
+        } else {
+            $record->redirectUrl = $generalConfig->postLoginRedirect;
+        }
         $record->save();
 
         // Generate Datetime for current dateCreated and use it's timestamp.
