@@ -1,5 +1,9 @@
 <?php
 
+/**
+ * Functional tests for Magic Login login form.
+ */
+
 namespace creode\magiclogintests\acceptance;
 
 use Craft;
@@ -8,9 +12,14 @@ use craft\mail\Mailer;
 use craft\elements\User;
 use creode\magiclogin\records\AuthRecord;
 
+/**
+ * Tests the Magic Login frontend login form workflow.
+ */
 class LoginFormTest extends BaseFunctionalTest
 {
     /**
+     * Functional test actor.
+     *
      * @var \FunctionalTester
      */
     protected $tester;
@@ -201,7 +210,43 @@ class LoginFormTest extends BaseFunctionalTest
     }
 
     /**
+     * Tests that the magicLoginRedirectUrl POST param is persisted on the auth record,
+     * and will be used after the user clicks their magic link.
+     *
+     * @return void
+     */
+    public function testSuccessfulLoginPersistsProvidedRedirectUrl()
+    {
+        $validUser = User::findOne();
+
+        AuthRecord::deleteAll();
+
+        $authRecords = AuthRecord::find()->all();
+
+        $targetRedirect = '/after-magic-login';
+
+        $this->tester->amOnPage('/magic-login/login');
+        $this->tester->submitForm(
+            '#magic-login-form',
+            [
+                'email' => $validUser->email,
+                'magicLoginRedirectUrl' => $targetRedirect,
+            ],
+            'submitButton'
+        );
+
+        $updatedAuthRecords = AuthRecord::find()->all();
+        $this->assertEquals(count($authRecords) + 1, count($updatedAuthRecords));
+
+        $authRecord = AuthRecord::find()->one();
+        $this->assertNotNull($authRecord, 'AuthRecord should be created for a valid login request.');
+        $this->assertEquals($targetRedirect, $authRecord->redirectUrl);
+    }
+
+    /**
      * Tests that we have a rate limit setup for Magic Login.
+     *
+     * @return void
      */
     public function testMagicLoginEmailRateLimit()
     {

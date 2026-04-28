@@ -94,6 +94,36 @@ We are also aware with this plugin that sometimes you may want to inject the exi
 
 `{% include 'magic-login/_login-form' %}`
 
+### Redirecting after a successful Magic Login
+
+When generating a magic login link, you can control where the user is redirected after they click the emailed link and authentication completes.
+
+To do this, include a hidden field named `magicLoginRedirectUrl` in the POST that requests the magic link.
+
+```twig
+<form method="post">
+  {{ actionInput('magic-login/magic-login/login') }}
+  {{ csrfInput() }}
+
+  {{ hiddenInput('magicLoginRedirectUrl', url('account')) }}
+
+  <input type="email" name="email">
+  <button type="submit">Send link</button>
+</form>
+```
+
+If `magicLoginRedirectUrl` is not provided (or isn’t considered valid), the plugin will fall back to Craft’s `postLoginRedirect` general config setting.
+
+**Valid redirect URLs**
+
+The `magicLoginRedirectUrl` value must be a “full” URL. That means one of:
+
+- Absolute URL (includes a scheme), e.g. `https://example.com/account`
+- Root-relative URL (starts with `/`), e.g. `/account`
+- Protocol-relative URL (starts with `//`), e.g. `//example.com/account`
+
+Values like `account` (no leading `/`) will be treated as invalid and the plugin will fall back to `postLoginRedirect`.
+
 ## Technical Features / Under the Hood
 
 ### Password Generation

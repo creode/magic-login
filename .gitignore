@@ -35,6 +35,7 @@ prepros-6.config
 .ddev
 
 # Test Caching / Logging
+tests/.env
 tests/_craft/config/project/*
 tests/_craft/storage/logs/*
 tests/_output/*
