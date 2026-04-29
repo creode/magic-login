@@ -8,4 +8,5 @@ return [
 	'requireUserAgentAndIpForSession' => false,
 	'securityKey' => App::env('SECURITY_KEY'),
 	'enableCsrfProtection' => false,
+	'useEmailAsUsername' => true,
 ];

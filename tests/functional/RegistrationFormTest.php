@@ -366,6 +366,37 @@ class RegistrationFormTest extends BaseFunctionalTest
     }
 
     /**
+     * Test that we return a 404, not the user registration page when public registration is disabled.
+     */
+    public function testWhenPublicRegistrationDisabledUserCannotRegister()
+    {
+        $userSettings = Craft::$app->getProjectConfig()->get('users') ?? [];
+        $userSettings['allowPublicRegistration'] = false;
+        Craft::$app->projectConfig->set('users', $userSettings);
+
+        $this->tester->amOnPage('/magic-login/register');
+        $this->tester->seeResponseCodeIs(404);
+    }
+
+    public function testWhenPublicRegistrationDisabledUserCannotRegisterWithMagicLink()
+    {
+        $this->tester->amOnPage('/magic-login/register');
+
+        $userSettings = Craft::$app->getProjectConfig()->get('users') ?? [];
+        $userSettings['allowPublicRegistration'] = false;
+
+        Craft::$app->projectConfig->set('users', $userSettings);
+        $this->tester->submitForm(
+            '#magic-login-register',
+            [
+                'email' => 'creode-test@example.com',
+            ],
+        );
+
+        $this->tester->seeResponseCodeIs(404);
+    }
+
+    /**
      * Tests that when a user is successfully registered the magic
      * login group is attached.
      *

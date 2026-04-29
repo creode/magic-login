@@ -11,10 +11,11 @@
 namespace creode\magiclogin\controllers;
 
 use Craft;
+use DateTime;
 use craft\elements\User;
 use craft\web\Controller;
 use creode\magiclogin\MagicLogin;
-use DateTime;
+use yii\web\NotFoundHttpException;
 
 /**
  * MagicLogin Controller
@@ -162,6 +163,11 @@ class MagicLoginController extends Controller
             $this->redirect($generalConfig->postLoginRedirect);
         }
 
+        $userConfig = Craft::$app->getProjectConfig()->get('users') ?? [];
+        if (! $userConfig['allowPublicRegistration']) {
+            throw new NotFoundHttpException();
+        }
+
         return $this->renderTemplate('magic-login/_register-form');
     }
 
@@ -181,6 +187,11 @@ class MagicLoginController extends Controller
             )
         );
 
+        $userSettings = Craft::$app->getProjectConfig()->get('users');
+        if (!$userSettings['allowPublicRegistration']) {
+            throw new NotFoundHttpException();
+        }
+
         if (Craft::$app->getUser()->getIdentity()) {
             $generalConfig = Craft::$app->getConfig()->getGeneral();
             $this->setSuccessFlash(\Craft::t('magic-login', 'You are already logged in.'));
@@ -190,6 +201,12 @@ class MagicLoginController extends Controller
         $email = Craft::$app
             ->getRequest()
             ->getRequiredParam('email');
+
+        $generalConfig = Craft::$app->getConfig()->getGeneral();
+        if (! $generalConfig->useEmailAsUsername) {
+            $this->setFailFlash(\Craft::t('magic-login', 'Please enter a valid username.'));
+            return;
+        }
 
         if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
             // TODO: Maybe set this to be configurable in future.

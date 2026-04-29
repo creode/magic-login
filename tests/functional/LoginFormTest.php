@@ -109,7 +109,7 @@ class LoginFormTest extends BaseFunctionalTest
         $this->tester->submitForm(
             '#magic-login-form',
             [
-                'email' => 'test@example.com',
+                'email' => 'test-2@example.com',
             ],
             'submitButton'
         );
